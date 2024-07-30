@@ -5,26 +5,26 @@
 #' @param bins A vector object including the composition bins
 #' @param merge_fleets TRUE/FALSE should fleets be merged to calculate variance and biases (Defaults to FALSE)
 #' @param merge_seasons TRUE/FALSE should seasons be merged to calculate variance and biases (Defaults to TRUE)
-#' @param merge_genders TRUE/FALSE should genders be merged to calculate variance and biases (Defaults to TRUE)
+#' @param merge_sexes TRUE/FALSE should sexes be merged to calculate variance and biases (Defaults to TRUE)
 #' @param fleets A vector of the fleet numbers to analyze composition uncertainty for (Default is all fleets if NULL)
 #' @param years A vector of the years to include when calculating composition uncertainty (Default is all years if NULL)
 #' @param seasons A vector of the seasons to include when calculating composition uncertainty (Default is all years if NULL)
-#' @param genders A vector of the genders to analyze composition uncertainty for (Default is all genders if NULL)
+#' @param sexes A vector of the sexes to analyze composition uncertainty for (Default is all sexes if NULL)
 #'
 #'
 #' @author Nathan R. Vaughan
 #'
 #' @return A list object with uncertainty and bias characteristics to inform data simulation.
 #'
-calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL, seasons = NULL, merge_genders = TRUE, genders = NULL, merge_seasons = TRUE, merge_fleets = FALSE) {
+calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL, seasons = NULL, merge_sexes = TRUE, sexes = NULL, merge_seasons = TRUE, merge_fleets = FALSE) {
   # Create a list to hold the calculated uncertainty results
   Comp_uncert <- list()
 
   # Check if a range of years is specified if not select all years in the input composition data frame
   if (!is.null(years)) {
-    years <- years[is.element(years, unique(data_obs[["Yr"]]))]
+    years <- years[is.element(years, unique(data_obs[["year"]]))]
   } else {
-    years <- unique(data_obs[["Yr"]])
+    years <- unique(data_obs[["year"]])
   }
 
   # Check if select seasons are specified if not select all seasons in the input composition data frame
@@ -34,64 +34,64 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
     seasons <- unique(data_obs[["Seas"]])
   }
 
-  # Check if select genders are specified if not select all genders in the input composition data frame
-  if (!is.null(genders)) {
-    genders <- genders[is.element(genders, unique(data_obs[["Gender"]]))]
+  # Check if select sexes are specified if not select all sexes in the input composition data frame
+  if (!is.null(sexes)) {
+    sexes <- sexes[is.element(sexes, unique(data_obs[["sex"]]))]
   } else {
-    genders <- unique(data_obs[["Gender"]])
+    sexes <- unique(data_obs[["sex"]])
   }
 
   # Check if select fleets are specified if not select all fleets in the input composition data frame
   if (!is.null(fleets)) {
-    fleets <- fleets[is.element(fleets, unique(data_obs[["FltSvy"]]))]
+    fleets <- fleets[is.element(fleets, unique(data_obs[["fleet"]]))]
   } else {
-    fleets <- unique(data_obs[["FltSvy"]])
+    fleets <- unique(data_obs[["fleet"]])
   }
 
-  # Subset the input observed and selected data to retain only the year, season, gender, and fleet
+  # Subset the input observed and selected data to retain only the year, season, sex, and fleet
   # elements specified above
-  data_obs <- data_obs[is.element(data_obs[["Yr"]], years) & is.element(data_obs[["FltSvy"]], fleets) & is.element(data_obs[["Seas"]], seasons) & is.element(data_obs[["Gender"]], genders) & data_obs[["Yr"]] > 0, ]
-  data_exp <- data_exp[is.element(data_exp[["Yr"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["Gender"]], genders) & data_exp[["Yr"]] > 0, ]
+  data_obs <- data_obs[is.element(data_obs[["year"]], years) & is.element(data_obs[["fleet"]], fleets) & is.element(data_obs[["Seas"]], seasons) & is.element(data_obs[["sex"]], sexes) & data_obs[["year"]] > 0, ]
+  data_exp <- data_exp[is.element(data_exp[["year"]], years) & is.element(data_exp[["fleet"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["sex"]], sexes) & data_exp[["year"]] > 0, ]
 
   # If merge fleets was set as true change all fleets to 0 so that data will be aggregated across them all
   if (merge_fleets == TRUE) {
     fleets <- 0
-    data_obs[["FltSvy"]] <- 0
-    data_exp[["FltSvy"]] <- 0
+    data_obs[["fleet"]] <- 0
+    data_exp[["fleet"]] <- 0
   }
 
-  # If merge genders was set as true change all genders to 0 so that data will be aggregated across them all
-  if (merge_genders == TRUE) {
-    genders <- 0
-    data_obs[["Gender"]] <- 0
-    data_exp[["Gender"]] <- 0
+  # If merge sexes was set as true change all sexes to 0 so that data will be aggregated across them all
+  if (merge_sexes == TRUE) {
+    sexes <- 0
+    data_obs[["sex"]] <- 0
+    data_exp[["sex"]] <- 0
   }
 
   # If merge seasons was set as true change all seasons to 0 so that data will be aggregated across them all
   if (merge_seasons == TRUE) {
     seasons <- 0
-    data_obs[["Seas"]] <- 0
-    data_exp[["Seas"]] <- 0
+    data_obs[["month"]] <- 0
+    data_exp[["month"]] <- 0
   }
 
-  # Add the target fleets, seasons, and genders to the output list object
+  # Add the target fleets, seasons, and sexes to the output list object
   # data is always aggregated over years hence they are not included
   Comp_uncert[[1]] <- list()
   Comp_uncert[[1]][[1]] <- fleets
   Comp_uncert[[1]][[2]] <- seasons
-  Comp_uncert[[1]][[3]] <- genders
+  Comp_uncert[[1]][[3]] <- sexes
   Comp_uncert[[2]] <- list()
-  # Loop over all fleets, genders and seasons and calculate bias and variance effects relative to
+  # Loop over all fleets, sexes and seasons and calculate bias and variance effects relative to
   # composition category (e.g. size/age bin) and expected sample size respectively
   for (i in 1:length(fleets)) {
     Comp_uncert[[2]][[i]] <- list()
-    for (j in 1:length(genders)) {
+    for (j in 1:length(sexes)) {
       Comp_uncert[[2]][[i]][[j]] <- list()
       for (l in 1:length(seasons)) {
         Comp_uncert[[2]][[i]][[j]][[l]] <- list()
-        # For each fleet, gender, and season combination subset the data for analysis
-        sub_dat_obs <- data_obs[data_obs[["FltSvy"]] == fleets[i] & data_obs[["Gender"]] == genders[j] & data_obs[["Seas"]] == seasons[l], ((length(data_obs[1, ]) - length(bins) + 1):length(data_obs[1, ]))]
-        sub_dat_exp <- data_exp[data_exp[["FltSvy"]] == fleets[i] & data_exp[["Gender"]] == genders[j] & data_obs[["Seas"]] == seasons[l], ((length(data_exp[1, ]) - length(bins) + 1):length(data_exp[1, ]))]
+        # For each fleet, sex, and season combination subset the data for analysis
+        sub_dat_obs <- data_obs[data_obs[["fleet"]] == fleets[i] & data_obs[["sex"]] == sexes[j] & data_obs[["month"]] == seasons[l], ((length(data_obs[1, ]) - length(bins) + 1):length(data_obs[1, ]))]
+        sub_dat_exp <- data_exp[data_exp[["fleet"]] == fleets[i] & data_exp[["sex"]] == sexes[j] & data_obs[["month"]] == seasons[l], ((length(data_exp[1, ]) - length(bins) + 1):length(data_exp[1, ]))]
 
         # Calculate the total observed and expected samples to allow scaling and unlisting of matrix data
         total_obs <- apply(sub_dat_obs, 1, sum)
@@ -205,42 +205,42 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
 #' @param years A vector of the years to simulate data for. default is all years in data_exp if NULL.
 #' @param seasons A vector of the seasons to simulate data for. default is all seasons in data_exp  if NULL.
 #' @param fleets A vector of the fleets to simulate data for. default is all fleets in data_exp  if NULL.
-#' @param genders A vector of the genders to simulate data for. default is all genders in data_exp  if NULL.
+#' @param sexes A vector of the sexes to simulate data for. default is all sexes in data_exp  if NULL.
 #'
 #' @author Nathan R. Vaughan
 #'
 #' @return A list object with uncertainty and bias characteristics to inform data simulation.
 #'
-Sim_comp <- function(Comp_uncert, data_exp, bins, years = NULL, seasons = NULL, fleets = NULL, genders = NULL) {
-  # For each of years, seasons, genders, and fleets check if a fix simulation range has been set and
+Sim_comp <- function(Comp_uncert, data_exp, bins, years = NULL, seasons = NULL, fleets = NULL, sexes = NULL) {
+  # For each of years, seasons, sexes, and fleets check if a fix simulation range has been set and
   # if not use the full range present in the expected data frame
   if (!is.null(years)) {
-    years <- years[is.element(years, unique(data_exp[["Yr"]]))]
+    years <- years[is.element(years, unique(data_exp[["year"]]))]
   } else {
-    years <- unique(data_exp[["Yr"]])
+    years <- unique(data_exp[["year"]])
   }
 
   if (!is.null(seasons)) {
-    seasons <- seasons[is.element(seasons, unique(data_exp[["Seas"]]))]
+    seasons <- seasons[is.element(seasons, unique(data_exp[["month"]]))]
   } else {
-    seasons <- unique(data_exp[["Seas"]])
+    seasons <- unique(data_exp[["month"]])
   }
 
-  if (!is.null(genders)) {
-    genders <- genders[is.element(genders, unique(data_exp[["Gender"]]))]
+  if (!is.null(sexes)) {
+    sexes <- sexes[is.element(sexes, unique(data_exp[["sex"]]))]
   } else {
-    genders <- unique(data_exp[["Gender"]])
+    sexes <- unique(data_exp[["sex"]])
   }
 
   if (!is.null(fleets)) {
-    fleets <- fleets[is.element(fleets, unique(data_exp[["FltSvy"]]))]
+    fleets <- fleets[is.element(fleets, unique(data_exp[["fleet"]]))]
   } else {
-    fleets <- unique(data_exp[["FltSvy"]])
+    fleets <- unique(data_exp[["fleet"]])
   }
 
-  # Subset the expected data to only include the selected fleet, year, season, gender range and the replicate this as the
+  # Subset the expected data to only include the selected fleet, year, season, sex range and the replicate this as the
   # observed data object to be filled with new random observations
-  data_exp <- data_exp[is.element(data_exp[["Yr"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["Gender"]], genders) & data_exp[["Yr"]] > 0, ]
+  data_exp <- data_exp[is.element(data_exp[["year"]], years) & is.element(data_exp[["fleet"]], fleets) & is.element(data_exp[["month"]], seasons) & is.element(data_exp[["sex"]], sexes) & data_exp[["year"]] > 0, ]
   data_obs <- data_exp
 
   # offset assumes that the observed composition bins are represented buy the final columns of the data frame
@@ -248,14 +248,14 @@ Sim_comp <- function(Comp_uncert, data_exp, bins, years = NULL, seasons = NULL, 
   offset <- length(data_obs[1, ]) - length(bins)
   # Now loop over first all rows of the expected data dataframe
   for (i in 1:length(data_obs[, 1])) {
-    # Each row represents a year, fleet, season, gender which may have been estimated to have unique composition uncertainty
-    # For each of fleet, season, and gender select the corresponding reference link to the uncertainty list object
-    fleet_ref <- which(Comp_uncert[[1]][[1]] == data_obs[["FltSvy"]][i])
-    season_ref <- which(Comp_uncert[[1]][[2]] == data_obs[["Seas"]][i])
-    gender_ref <- which(Comp_uncert[[1]][[3]] == data_obs[["Gender"]][i])
-    # Extract the variance and bias information for the referenced fleet, gender, season
-    sub_var <- Comp_uncert[[2]][[fleet_ref]][[gender_ref]][[season_ref]][[2]]
-    sub_bias <- Comp_uncert[[2]][[fleet_ref]][[gender_ref]][[season_ref]][[3]]
+    # Each row represents a year, fleet, season, sex which may have been estimated to have unique composition uncertainty
+    # For each of fleet, season, and sex select the corresponding reference link to the uncertainty list object
+    fleet_ref <- which(Comp_uncert[[1]][[1]] == data_obs[["fleet"]][i])
+    season_ref <- which(Comp_uncert[[1]][[2]] == data_obs[["month"]][i])
+    sex_ref <- which(Comp_uncert[[1]][[3]] == data_obs[["sex"]][i])
+    # Extract the variance and bias information for the referenced fleet, sex, season
+    sub_var <- Comp_uncert[[2]][[fleet_ref]][[sex_ref]][[season_ref]][[2]]
+    sub_bias <- Comp_uncert[[2]][[fleet_ref]][[sex_ref]][[season_ref]][[3]]
 
     # Now loop over all composition bins to calculate a new sample observation
     for (j in 1:length(bins)) {

@@ -75,7 +75,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
   )
   check_avail_dat(
     EM_dat = EM_dat, OM_dat = OM_dat, list_item = "CPUE",
-    colnames = c("year", "seas", "index")
+    colnames = c("year", "month", "index")
   )
   # check population length bins
   # check lcomp bins and lcomp bins (if exists)
@@ -94,10 +94,10 @@ check_OM_dat <- function(OM_dat, EM_dat) {
         "and EM. Please make the length comp bins the same."
       )
     }
-    # check there is the same data for Years, Seas, FltSvy available
+    # check there is the same data for Years, month, fleet available
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "lencomp",
-      colnames = c("Yr", "Seas", "FltSvy")
+      colnames = c("year", "month", "fleet")
     )
     # there may be more rigorous checks to do (checking that sex and partion
     # is the same?
@@ -113,7 +113,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
   }
   check_avail_dat(
     EM_dat = EM_dat, OM_dat = OM_dat, list_item = "agecomp",
-    colnames = c("Yr", "Seas", "FltSvy")
+    colnames = c("year", "month", "fleet")
   )
   # check mean size
   if (EM_dat[["use_meanbodywt"]] == 1) {
@@ -125,7 +125,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "meanbodywt",
-      colnames = c("Year", "Seas", "Fleet", "Type")
+      colnames = c("Year", "month", "fleet", "type")
     )
   }
   # check mean size at age
@@ -138,7 +138,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "MeanSize_at_Age_obs",
-      colnames = c("Yr", "Seas", "FltSvy", "AgeErr")
+      colnames = c("year", "month", "fleet", "ageErr")
     )
     if (paste0(colnames(OM_dat[["MeanSize_at_Age_obs"]]), collapse = "") !=
       paste0(colnames(EM_dat[["MeanSize_at_Age_obs"]]), collapse = "")) {
@@ -163,7 +163,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
 #' @author Kathryn Doering
 check_avail_dat <- function(EM_dat, OM_dat,
                             list_item = "CPUE",
-                            colnames = c("year", "seas", "index")) {
+                            colnames = c("year", "month", "index")) {
   EM_item <- EM_dat[[list_item]]
   OM_item <- OM_dat[[list_item]]
   combo_EM <- combo_OM <- NULL
@@ -190,22 +190,22 @@ check_avail_dat <- function(EM_dat, OM_dat,
 #' @author Kathryn Doering
 check_sample_struct <- function(sample_struct,
                                 valid_names = list(
-                                  catch = c("Yr", "Seas", "FltSvy", "SE"),
-                                  CPUE = c("Yr", "Seas", "FltSvy", "SE"),
+                                  catch = c("year", "month", "FltSvy", "SE"),
+                                  CPUE = c("year", "month", "FltSvy", "SE"),
                                   lencomp = c(
-                                    "Yr", "Seas", "FltSvy", "Sex",
+                                    "year", "month", "FltSvy", "Sex",
                                     "Part", "Nsamp"
                                   ),
                                   agecomp = c(
-                                    "Yr", "Seas", "FltSvy", "Sex", "Part",
+                                    "year", "month", "FltSvy", "Sex", "Part",
                                     "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp"
                                   ),
                                   meanbodywt = c(
-                                    "Yr", "Seas", "FltSvy", "Part",
+                                    "year", "month", "FltSvy", "Part",
                                     "Type", "Std_in"
                                   ),
                                   MeanSize_at_Age_obs = c(
-                                    "Yr", "Seas",
+                                    "year", "month",
                                     "FltSvy", "Sex", "Part", "Ageerr", "N_"
                                   )
                                 )) {

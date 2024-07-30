@@ -3,7 +3,7 @@ context("Test functions in calc_F script")
 nfleets <- 2
 test_timeseries <- data.frame(
   Area = 1,
-  Yr = rep(-1:4, 2),
+  year = rep(-1:4, 2),
   Seas = rep(c(1, 2), times = c(6, 6)),
   Era = c("VIRG", "INIT", "TIME", "TIME", "TIME", "FORE"),
   Bio_all = 3910080000,
@@ -131,12 +131,12 @@ test_that("get_retained_catch works", {
   )
   expect_type(ret_catch, "list")
   expect_s3_class(ret_catch, "data.frame")
-  expect_equal(unique(ret_catch[ret_catch[["Fleet"]] == 1, "Units"]), "retain(B)")
-  expect_equal(unique(ret_catch[ret_catch[["Fleet"]] == 2, "Units"]), "retain(N)")
+  expect_equal(unique(ret_catch[ret_catch[["fleet"]] == 1, "Units"]), "retain(B)")
+  expect_equal(unique(ret_catch[ret_catch[["fleet"]] == 2, "Units"]), "retain(N)")
   expect_equivalent(ncol(ret_catch), 6)
   expect_equal(
     colnames(ret_catch),
-    c("Yr", "Era", "Seas", "Units", "Fleet", "retained_catch")
+    c("year", "Era", "Seas", "Units", "fleet", "retained_catch")
   )
 })
 

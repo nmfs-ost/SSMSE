@@ -293,8 +293,8 @@ plot_comp_sampling <- function(dir = getwd(), comp_type = c("agecomp", "lencomp"
     comp_dbase[["type_obs"]]
   )
   comp_dbase <- tidyr::spread(comp_dbase, .data[["model_type_obs"]], .data[["obs_value"]]) %>%
-    dplyr::mutate(Yr_lab = paste0("Yr: ", .data[["Yr"]])) %>%
-    dplyr::mutate(Seas_lab = paste0("Seas: ", .data[["Seas"]])) %>%
+    dplyr::mutate(Yr_lab = paste0("year: ", .data[["year"]])) %>%
+    dplyr::mutate(month_lab = paste0("month: ", .data[["month"]])) %>%
     dplyr::mutate(Sex_lab = paste0("Sex: ", .data[["Sex"]]))
   # Make the plot ----
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -308,22 +308,22 @@ plot_comp_sampling <- function(dir = getwd(), comp_type = c("agecomp", "lencomp"
   if (comp_type == "lencomp") xlab_val <- "Size Bins"
   # need a loop for multiple fleets (I think we just want a plot per fleet)
   # Need to add in better labels for sex
-  comp_plot <- vector(mode = "list", length = length(unique(comp_dbase[["Fleet"]])))
-  for (f in unique(comp_dbase[["Fleet"]])) {
-    ind <- which(unique(comp_dbase[["Fleet"]]) == f)
-    tmp_dbase_subset <- comp_dbase[comp_dbase[["Fleet"]] == f, ]
+  comp_plot <- vector(mode = "list", length = length(unique(comp_dbase[["fleet"]])))
+  for (f in unique(comp_dbase[["fleet"]])) {
+    ind <- which(unique(comp_dbase[["fleet"]]) == f)
+    tmp_dbase_subset <- comp_dbase[comp_dbase[["fleet"]] == f, ]
     comp_plot[[ind]] <- ggplot(tmp_dbase_subset, aes(x = .data[["Bin"]], y = .data[["om_Exp"]])) +
       geom_area(fill = "grey") +
       geom_point(aes(y = .data[["om_Obs"]]), color = "red", size = 2) +
       geom_point(aes(y = .data[["em_Obs"]], shape = .data[["iteration"]]), color = "black") +
-      facet_wrap(vars(.data[["Yr_lab"]], .data[["Seas_lab"]], .data[["Sex_lab"]])) +
+      facet_wrap(vars(.data[["Yr_lab"]], .data[["month_lab"]], .data[["Sex_lab"]])) +
       scale_shape_manual(
         values =
           rep(15, length(unique(comp_dbase[["iteration"]])))
       ) +
       ylab("Proportion") +
       xlab(xlab_val) +
-      ggtitle(paste0("Fleet ", f)) +
+      ggtitle(paste0("fleet ", f)) +
       theme_classic()
   }
 

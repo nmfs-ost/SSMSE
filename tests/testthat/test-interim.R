@@ -15,7 +15,7 @@ test_that("run_SSMSE runs with interim assessment workflow", {
   # use sample_struct to get the structure, then modify
   # use suppress warnings to avoid seeing "Pattern not found" warning in test that output
   suppressWarnings(sample_struct <- create_sample_struct(dat = datfile, nyrs = nyrs))
-  sample_struct[["CPUE"]] <- data.frame(Yr = 101:110, Seas = 7, FltSvy = 2, SE = 0.2)
+  sample_struct[["CPUE"]] <- data.frame(year = 101:110, Seas = 7, fleet = 2, SE = 0.2)
   sample_struct[["agecomp"]] <- NULL
   sample_struct[["lencomp"]] <- NULL
   sample_struct[["meanbodywt"]] <- NULL

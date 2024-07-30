@@ -475,22 +475,22 @@ test_that("clean init_mod_files_works", {
   OM_dat_orig <- SS_readdat(file.path(OM_dir, "ss3.dat"), verbose = FALSE)
   dat <- SS_readdat(file.path(EM_dir, "ss3.dat"), verbose = FALSE)
   dat[["CPUE"]][1, "year"] <- -dat[["CPUE"]][1, "year"]
-  dat[["agecomp"]][1, "Yr"] <- -dat[["agecomp"]][1, "Yr"]
+  dat[["agecomp"]][1, "year"] <- -dat[["agecomp"]][1, "year"]
   neg_val_CPUE <- dat[["CPUE"]][1, "year"]
-  neg_val_agecomp <- dat[["agecomp"]][1, "Yr"]
+  neg_val_agecomp <- dat[["agecomp"]][1, "year"]
   r4ss::SS_writedat(dat, file.path(EM_dir, "ss3.dat"), verbose = FALSE)
 
   clean_dat_list <- clean_init_mod_files(OM_out_dir = OM_dir, EM_out_dir = EM_dir)
   expect_true(all(clean_dat_list[["EM_dat"]][["CPUE"]][["year"]] >= 0))
-  expect_true(all(clean_dat_list[["EM_dat"]][["agecomp"]][["Yr"]] >= 0))
+  expect_true(all(clean_dat_list[["EM_dat"]][["agecomp"]][["year"]] >= 0))
   expect_true(all(clean_dat_list[["OM_dat"]][["CPUE"]][["year"]] == OM_dat_orig[["CPUE"]][["year"]]))
-  expect_true(all(clean_dat_list[["OM_dat"]][["lencomp"]][["Yr"]] == OM_dat_orig[["lencomp"]][["Yr"]]))
+  expect_true(all(clean_dat_list[["OM_dat"]][["lencomp"]][["year"]] == OM_dat_orig[["lencomp"]][["year"]]))
   expect_true(!is.null(clean_dat_list[["EM_start"]]))
   expect_equivalent(clean_dat_list[["EM_start"]][["init_values_src"]], 0)
 
   clean_dat_list_2 <- clean_init_mod_files(OM_out_dir = OM_dir, EM_out_dir = NULL)
   expect_true(all(clean_dat_list_2[["EM_dat"]][["CPUE"]][["year"]] >= 0))
-  expect_true(all(clean_dat_list_2[["EM_dat"]][["agecomp"]][["Yr"]] >= 0))
+  expect_true(all(clean_dat_list_2[["EM_dat"]][["agecomp"]][["year"]] >= 0))
   expect_true(is.null(clean_dat_list_2[[2]]))
   expect_true(is.null(clean_dat_list_2[["EM_start"]]))
 })
