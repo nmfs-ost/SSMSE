@@ -189,7 +189,7 @@ sample_struct_1_scen <- create_sample_struct(dat = datfile, nyrs = 6) # note war
 sample_struct_1_scen
 ```
 
-By default, `create_sample_struct` identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from FltSvy 2 in Yr 102; the user could add another line to the dataframe in `sample_struct$agecomp`).
+By default, `create_sample_struct` identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from fleet 2 in year 102; the user could add another line to the dataframe in `sample_struct$agecomp`).
 
 Note that length comp (lencomp) includes an `NA` value for year. This is because
 no consistent pattern was identified, so the user must define their own input.

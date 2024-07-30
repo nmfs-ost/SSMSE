@@ -24,19 +24,19 @@ test_that("get_EM_dat works", {
 
   EM_dat[["CPUE"]][["obs"]] <- 999 # to make it easier to identify if the values change
   new_dat <- get_EM_dat(OM_dat, EM_dat, do_checks = FALSE)
-  row_names <- c("year", "seas", "index")
+  row_names <- c("year", "month", "index")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["CPUE"]][x], new_dat[["CPUE"]][x])
   })
   expect_equal(OM_dat[["CPUE"]][["obs"]][-rm_ind], new_dat[["CPUE"]][["obs"]])
   # check length comps changed
-  row_names <- c("Yr", "Seas", "FltSvy")
+  row_names <- c("year", "month", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["lencomp"]][x], new_dat[["lencomp"]][x])
   })
   expect_equal(OM_dat[["lencomp"]][["obs"]][-rm_ind], new_dat[["lencomp"]][["obs"]])
   # chack age comps changed
-  row_names <- c("Yr", "Seas", "FltSvy")
+  row_names <- c("year", "month", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["agecomp"]][x], new_dat[["agecomp"]][x])
   })
@@ -134,7 +134,7 @@ test_that("add_new_dat works when meansize at age obs", {
   OM_dat[["meanbodywt"]] <- rbind(OM_dat[["meanbodywt"]], OM_dat[["meanbodywt"]])
   OM_dat[["meanbodywt"]][["Year"]] <- c(1995, 1995, 2000, 2000)
   OM_dat[["MeanSize_at_Age_obs"]] <- rbind(OM_dat[["MeanSize_at_Age_obs"]], OM_dat[["MeanSize_at_Age_obs"]])
-  OM_dat[["MeanSize_at_Age_obs"]][["Yr"]] <- c(
+  OM_dat[["MeanSize_at_Age_obs"]][["year"]] <- c(
     1971, 1995, 1995, 1995, 1971, 1995,
     1997, 1998, 1998, 1998, 1999, 2000
   )
@@ -246,7 +246,7 @@ test_that("change_yrs_fcast works/errors with allocation as expected", {
   # mock a forecast file with allocation. assume has 3 fleets with catch.
   fore[["N_allocation_groups"]] <- 3
   fore[["fleet_assignment_to_allocation_group"]] <- data.frame(
-    Fleet = 1:3,
+    fleet = 1:3,
     Group = c(1, 1, 2)
   )
   fore[["allocation_among_groups"]] <-
@@ -291,7 +291,7 @@ test_that("change_yrs_fcast works/errors with allocation as expected", {
     fixed = TRUE
   )
   fore[["ForeCatch"]] <- data.frame(
-    Year = 101:102, Seas = 1, Fleet = 1:2,
+    Year = 101:102, Seas = 1, fleet = 1:2,
     Catch = c(200, 300)
   )
   expect_warning(new_fore <- change_yrs_fcast(fore,

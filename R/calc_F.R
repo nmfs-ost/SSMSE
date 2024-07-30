@@ -9,11 +9,11 @@
 #'  the order that they are specified in the model. This vector helps the
 #'  function know which order the fleets appear in the model.
 #' @importFrom tidyr gather separate
-#' @return a list containing: F_df, a long dataframe with F by Yr, Era, Seas,
+#' @return a list containing: F_df, a long dataframe with F by year, Era, Seas,
 #'  and fleet; F_rate, a data frame with F for the time frame of the model
-#'  only by Yr, Seas, and Fleet, ordered as the ss.par file expects; init_F,
-#'  a named vector of initial F values by Season and Fleet, ordered (and named)
-#'  as SS expects; and F_rate_fcast, a dataframe of forecasted F by Yr, Seas,
+#'  only by year, Seas, and fleet, ordered as the ss.par file expects; init_F,
+#'  a named vector of initial F values by Season and fleet, ordered (and named)
+#'  as SS expects; and F_rate_fcast, a dataframe of forecasted F by year, Seas,
 #'  and fleet, ordered as SS would expect in F_rate.
 get_F <- function(timeseries, fleetnames, fleetnames_all) {
   assertive.types::assert_is_data.frame(timeseries)
@@ -24,11 +24,11 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   nfleets <- length(F_col_ind)
   assertive.properties::assert_is_of_length(fleetnames, nfleets)
   # 1 area
-  other_col_ind <- which(colnames(timeseries) %in% c("Yr", "Era", "Seas"))
+  other_col_ind <- which(colnames(timeseries) %in% c("year", "Era", "Seas"))
   # Note: pivot_longer is a newer alternative, but it is not yet stable, so
   # the "retired" function gather was used
   # may also be able to use stats::reshape or aggregate here.
-  # create a long F data frame so columns are Yr, Era, Seas, Fleet, F
+  # create a long F data frame so columns are year, Era, Seas, fleet, F
   F_df <- timeseries[, c(other_col_ind, F_col_ind)]
   # change from log to wide formate
   F_df <- tidyr::gather(F_df,
@@ -38,7 +38,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   # make the fleet column just the numerical values. could maybe to with
   # strsplit instead?
   F_df <- tidyr::separate(F_df,
-    col = "tmp_Fleet", into = c(NA, "Fleet"),
+    col = "tmp_Fleet", into = c(NA, "fleet"),
     sep = ":_", convert = TRUE
   )
 
@@ -50,7 +50,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   ]
   # the following should work, but this sanity check added to avoid assigning
   # the wrong column names. May not work if order of df col changes.
-  if (all(colnames(F_rate) == c("Yr", "Seas", "Fleet", "F"))) {
+  if (all(colnames(F_rate) == c("year", "Seas", "fleet", "F"))) {
     colnames(F_rate) <- c("year", "seas", "fleet", "F")
   } else {
     stop("Column names not in the correct order.")
@@ -70,21 +70,21 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   # form init_F
   # Report.sso PARAMETERS implies there can be 1 init F per fleet and season
   # (if there is initial catch for that fleet and season)
-  init_F <- F_df[F_df[["F"]] > 0 & F_df[["Era"]] == "INIT", c("Seas", "Fleet", "F")]
+  init_F <- F_df[F_df[["F"]] > 0 & F_df[["Era"]] == "INIT", c("Seas", "fleet", "F")]
   if (nrow(init_F) == 0) {
     init_F <- NULL
   } else {
     # feed back as a named vector sorted by fleet, then season. Names are the
     # same as in the PARAMETERS section of report.sso
-    init_F <- init_F[order(init_F[, "Fleet"], init_F[, "Seas"]), ]
+    init_F <- init_F[order(init_F[, "fleet"], init_F[, "Seas"]), ]
 
     # edit to account for fleets of type==3 in list of fleets
     fleetnumbers <- which(fleetnames_all %in% fleetnames)
-    fleetnames_df <- data.frame(Fleet = fleetnumbers, fleetname = fleetnames)
+    fleetnames_df <- data.frame(fleet = fleetnumbers, fleetname = fleetnames)
 
     init_F <- merge(init_F, fleetnames_df)
     init_F_names <- paste0(
-      "InitF_seas_", init_F[["Seas"]], "_flt_", init_F[["Fleet"]],
+      "InitF_seas_", init_F[["Seas"]], "_flt_", init_F[["fleet"]],
       init_F[["fleetname"]]
     )
     init_F <- init_F[, "F", drop = TRUE]
@@ -98,7 +98,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   ]
   # the following should work, but this sanity check added to avoid assigning
   # the wrong column names. May not work if order of df col changes.
-  if (all(colnames(F_rate_fcast) == c("Yr", "Seas", "Fleet", "F"))) {
+  if (all(colnames(F_rate_fcast) == c("year", "Seas", "fleet", "F"))) {
     colnames(F_rate_fcast) <- c("year", "seas", "fleet", "F")
   } else {
     stop("Column names not in the correct order.")
@@ -135,7 +135,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
 #' @param units_of_catch From datalist, the catch units. A named list where the
 #' names are the fleets (to provide an extra check)
 #' @importFrom tidyr gather separate
-#' @return a data frame with retained catch by Yr, Era, Seas, Fleet, and
+#' @return a data frame with retained catch by year, Era, Seas, fleet, and
 #'  units (long format)
 get_retained_catch <- function(timeseries, units_of_catch) {
   # input checks
@@ -163,7 +163,7 @@ get_retained_catch <- function(timeseries, units_of_catch) {
   ]
 
   # switch from wide to long format.
-  retain_catch_df <- timeseries[, c("Yr", "Era", "Seas", retain_catch_colnames)]
+  retain_catch_df <- timeseries[, c("year", "Era", "Seas", retain_catch_colnames)]
   retain_catch_df <- tidyr::gather(retain_catch_df,
     key = "tmp_units_fleet",
     value = "retained_catch",
@@ -176,14 +176,14 @@ get_retained_catch <- function(timeseries, units_of_catch) {
   # strsplit instead?
   retain_catch_df <- tidyr::separate(retain_catch_df,
     col = "tmp_units_fleet",
-    into = c("Units", "Fleet"),
+    into = c("Units", "fleet"),
     sep = ":_", convert = TRUE
   )
 
   retain_catch_df <- retain_catch_df %>%
-    dplyr::group_by(.data[["Yr"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["Fleet"]]) %>%
+    dplyr::group_by(.data[["year"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
     dplyr::summarise(retained_catch = sum(.data[["retained_catch"]])) %>%
-    dplyr::select(dplyr::all_of(c("Yr", "Era", "Seas", "Units", "Fleet", "retained_catch")))
+    dplyr::select(dplyr::all_of(c("year", "Era", "Seas", "Units", "fleet", "retained_catch")))
   retain_catch_df <- as.data.frame(retain_catch_df) # want as df and not tibble
   # units are not as concise as they could be, but leave for now.
   retain_catch_df
@@ -195,7 +195,7 @@ get_retained_catch <- function(timeseries, units_of_catch) {
 #' @param units_of_catch From datalist, the catch units. A named list where the
 #' names are the fleets (to provide an extra check)
 #' @importFrom tidyr gather separate
-#' @return a data frame with retained catch by Yr, Era, Seas, Fleet, and
+#' @return a data frame with retained catch by year, Era, Seas, fleet, and
 #'  units (long format)
 get_dead_catch <- function(timeseries, units_of_catch) {
   # input checks
@@ -223,7 +223,7 @@ get_dead_catch <- function(timeseries, units_of_catch) {
   ]
 
   # switch from wide to long format.
-  dead_catch_df <- timeseries[, c("Yr", "Era", "Seas", dead_catch_colnames)]
+  dead_catch_df <- timeseries[, c("year", "Era", "Seas", dead_catch_colnames)]
   dead_catch_df <- tidyr::gather(dead_catch_df,
     key = "tmp_units_fleet",
     value = "retained_catch",
@@ -236,14 +236,14 @@ get_dead_catch <- function(timeseries, units_of_catch) {
   # strsplit instead?
   dead_catch_df <- tidyr::separate(dead_catch_df,
     col = "tmp_units_fleet",
-    into = c("Units", "Fleet"),
+    into = c("Units", "fleet"),
     sep = ":_", convert = TRUE
   )
   dead_catch_df <- dead_catch_df %>%
-    dplyr::group_by(.data[["Yr"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["Fleet"]]) %>%
+    dplyr::group_by(.data[["year"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
     dplyr::summarise(retained_catch = sum(.data[["retained_catch"]])) %>%
     dplyr::select(dplyr::all_of(c(
-      "Yr", "Era", "Seas", "Units", "Fleet",
+      "year", "Era", "Seas", "Units", "fleet",
       "retained_catch"
     )))
   dead_catch_df <- as.data.frame(dead_catch_df)

@@ -214,7 +214,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
     }
     df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["Yr"]],
+      year = fcast_catch_df[["year"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab],
@@ -223,7 +223,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
 
     bio_df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["Yr"]],
+      year = fcast_catch_df[["year"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab_bio],
@@ -232,7 +232,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
 
     F_df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["Yr"]],
+      year = fcast_catch_df[["year"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab_F],
@@ -274,14 +274,14 @@ get_EM_catch_df <- function(EM_dir, dat) {
     # 3, values are in numbers(thousands)
     se_dis <- get_input_value(dat[["discard_data"]],
       method = "most_common_value",
-      colname = "Std_in", group = "Flt"
+      colname = "stderr", group = "Flt"
     )
     dis_df_list <- vector(
       mode = "list",
       length = nrow(dat[["discard_fleet_info"]])
     )
-    for (i in seq_along(dat[["discard_fleet_info"]][, "Fleet"])) {
-      tmp_flt <- dat[["discard_fleet_info"]][i, "Fleet"]
+    for (i in seq_along(dat[["discard_fleet_info"]][, "fleet"])) {
+      tmp_flt <- dat[["discard_fleet_info"]][i, "fleet"]
       # tmp_units_code can be 1, 2, or 3.
       tmp_units_code <- dat[["discard_fleet_info"]][i, "units"]
       # get the discard units
@@ -301,7 +301,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
         dis_df_list[[i]] <- NULL
       } else {
         # check that an se was created for that fleet (a sanity check)
-        if (length(se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]) == 0) {
+        if (length(se_dis[se_dis[["Flt"]] == tmp_flt, "stderr"]) == 0) {
           stop(
             "A standard error value for fleet ", tmp_flt, "could not be ",
             "determined because there was no discard data for that fleet in ",
@@ -311,11 +311,11 @@ get_EM_catch_df <- function(EM_dir, dat) {
           )
         }
         dis_df_list[[i]] <- data.frame(
-          Yr = fcast_catch_df[["Yr"]],
+          year = fcast_catch_df[["year"]],
           Seas = fcast_catch_df[["Seas"]],
           Flt = tmp_flt,
           Discard = tmp_discard_amount,
-          Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
+          stderr = se_dis[se_dis[["Flt"]] == tmp_flt, "stderr"]
         )
       }
     }
@@ -473,7 +473,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     # with no estimation. modify forecast ----
     # put in the forecasting catch and make sure using the correct number of years
     fore[["ForeCatch"]] <- df_catch[, c("year", "seas", "fleet", "catch")]
-    colnames(fore[["ForeCatch"]]) <- c("Year", "Seas", "Fleet", "Catch or F")
+    colnames(fore[["ForeCatch"]]) <- c("Year", "Seas", "fleet", "Catch or F")
     fore[["Nforecastyrs"]] <- max(fore[["ForeCatch"]][["Year"]]) - dat[["endyr"]]
     r4ss::SS_writeforecast(fore,
       dir = OM_dir, writeAll = TRUE, overwrite = TRUE,
@@ -515,7 +515,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
         times = NROW(dat[["fleetinfo"]][dat[["fleetinfo"]][["type"]] %in% c(1, 2), ])
       )
     )
-    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("Yr", "Seas", "Fleet", "retained_catch")]
+    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("year", "Seas", "fleet", "retained_catch")]
     colnames(catch_bio) <- c("year", "seas", "fleet", "catch")
   } else {
     # all should be 0. note for now there is no catch_se column.
@@ -720,7 +720,7 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
       new_catch_list[["catch"]] <- new_catch_list[["catch"]][is.element(new_catch_list[["catch"]][["year"]], dat_yrs), ]
     }
     if (!is.null(new_catch_list[["discards"]])) {
-      new_catch_list[["discards"]] <- new_catch_list[["discards"]][is.element(new_catch_list[["discards"]][["Yr"]], dat_yrs), ]
+      new_catch_list[["discards"]] <- new_catch_list[["discards"]][is.element(new_catch_list[["discards"]][["year"]], dat_yrs), ]
     }
     if (!is.null(new_catch_list[["catch_bio"]])) {
       new_catch_list[["catch_bio"]] <- new_catch_list[["catch_bio"]][is.element(new_catch_list[["catch_bio"]][["year"]], dat_yrs), ]
@@ -930,7 +930,7 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
         new_catch_list[["catch"]][["catch"]][new_catch_list[["catch"]][["catch"]] > 0] <- new_catch_list[["catch"]][["catch"]][new_catch_list[["catch"]][["catch"]] > 0] * catch_scaling_factor
       }
       if (!is.null(new_catch_list[["discards"]])) {
-        new_catch_list[["discards"]] <- new_catch_list[["discards"]][is.element(new_catch_list[["discards"]][["Yr"]], (new_EM_dat[["endyr"]] + 1):(new_EM_dat[["endyr"]] + nyrs_assess)), ]
+        new_catch_list[["discards"]] <- new_catch_list[["discards"]][is.element(new_catch_list[["discards"]][["year"]], (new_EM_dat[["endyr"]] + 1):(new_EM_dat[["endyr"]] + nyrs_assess)), ]
         new_catch_list[["discards"]][["Discard"]] <- new_catch_list[["discards"]][["Discard"]] * catch_scaling_factor
       }
       if (!is.null(new_catch_list[["catch_bio"]])) {

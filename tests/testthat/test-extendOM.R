@@ -35,17 +35,17 @@ new_yrs <- new_catch[["year"]]
 # create a dataframe here.
 extend_vals <- list(
   CPUE = data.frame(
-    year = c(101, 103, 105), seas = 7, index = 2,
+    year = c(101, 103, 105), month = 7, index = 2,
     se_log = c(0.1, 0.2, 0.3)
   ),
   lencomp = data.frame(
-    Yr = 101:103, Seas = 1, FltSvy = 1,
-    Gender = 0, Part = 0,
+    year = 101:103, month = 1, FltSvy = 1,
+    sex = 0, part = 0,
     Nsamp = c(25, 50, 100)
   ),
   agecomp = data.frame(
-    Yr = 101:104, Seas = 1, FltSvy = 2,
-    Gender = 0, Part = 0, Ageerr = 1,
+    year = 101:104, month = 1, FltSvy = 2,
+    sex = 0, part = 0, ageerr = 1,
     Lbin_lo = -1, Lbin_hi = -1,
     Nsamp = c(25, 50, 100, 150)
   )
@@ -74,18 +74,18 @@ extend_vals <- list(
 #   })
 #   # check CPUE # wrap first exp. in abs() b/c fleet negative in OM as a switch.
 #   expect_equivalent(
-#     abs(return_dat[["CPUE"]][101:102, c("year", "seas", "index", "se_log")]),
+#     abs(return_dat[["CPUE"]][101:102, c("year", "month", "index", "se_log")]),
 #     extend_vals[["CPUE"]][extend_vals[["CPUE"]][["year"]] <= return_dat[["endyr"]], ]
 #   )
 #   # check lencomp
 #   expect_equivalent(
 #     abs(return_dat[["lencomp"]][101:103, colnames(extend_vals[["lencomp"]])]),
-#     extend_vals[["lencomp"]][extend_vals[["lencomp"]][["Yr"]] <= return_dat[["endyr"]], ]
+#     extend_vals[["lencomp"]][extend_vals[["lencomp"]][["year"]] <= return_dat[["endyr"]], ]
 #   )
 #   # check agecomp
 #   expect_equivalent( # wrap both exp. in abs b/c of neg in fleet and in lbin/lbinhi
 #     abs(return_dat[["agecomp"]][101:103, colnames(extend_vals[["agecomp"]])]),
-#     abs(extend_vals[["agecomp"]][extend_vals[["agecomp"]][["Yr"]] <= return_dat[["endyr"]], ])
+#     abs(extend_vals[["agecomp"]][extend_vals[["agecomp"]][["year"]] <= return_dat[["endyr"]], ])
 #   )
 # })
 
@@ -216,18 +216,18 @@ test_that(" add_sample_struct works for adding data during model years and for f
   )
   expect_true(length(future_dat[["CPUE"]][future_dat[["CPUE"]][["year"]] >
     init_endyr, "year"]) == 2)
-  expect_true(length(future_dat[["lencomp"]][future_dat[["lencomp"]][["Yr"]] >
-    init_endyr, "Yr"]) == 3)
-  expect_true(length(future_dat[["agecomp"]][future_dat[["agecomp"]][["Yr"]] >
-    init_endyr, "Yr"]) == 4)
+  expect_true(length(future_dat[["lencomp"]][future_dat[["lencomp"]][["year"]] >
+    init_endyr, "year"]) == 3)
+  expect_true(length(future_dat[["agecomp"]][future_dat[["agecomp"]][["year"]] >
+    init_endyr, "year"]) == 4)
   no_neg_dat <- init_dat
   no_neg_dat[["CPUE"]] <- no_neg_dat[["CPUE"]][no_neg_dat[["CPUE"]][["index"]] > 0, ]
   no_neg_dat[["lencomp"]] <- no_neg_dat[["lencomp"]][no_neg_dat[["lencomp"]][["FltSvy"]] > 0, ]
   no_neg_dat[["agecomp"]] <- no_neg_dat[["agecomp"]][no_neg_dat[["agecomp"]][["FltSvy"]] > 0, ]
   hist_samples <- extend_vals
   hist_samples[["CPUE"]][["year"]] <- 31:33
-  hist_samples[["lencomp"]][["Yr"]] <- 27:29
-  hist_samples[["agecomp"]][["Yr"]] <- 31:34
+  hist_samples[["lencomp"]][["year"]] <- 27:29
+  hist_samples[["agecomp"]][["year"]] <- 31:34
   # for historical years
   hist_dat <- add_sample_struct(
     sample_struct = hist_samples,
