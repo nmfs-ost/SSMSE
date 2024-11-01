@@ -465,9 +465,9 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
   }
   # new_OM_catch_list$catch_bio <- NULL
-  
   if(!is.null(new_OM_catch_list$discards)){
-    tmp_discards <- base::merge(new_OM_catch_list$discards, sample_struct$EM2OMdiscard_bias, all.x=TRUE)
+    tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE)
+    tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
     new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
   }
   if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
