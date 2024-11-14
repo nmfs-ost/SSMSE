@@ -9,3 +9,4 @@ inst/bookdown/_bookdown_files
 
 scen_1/
 R/GetResults_NEW.R
+R/Create_sample_struct_hist_HELPER.R
