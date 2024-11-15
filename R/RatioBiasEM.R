@@ -443,17 +443,32 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
     
     if(nrow(tmp_ss)>0){
       if(!is.null(new_OM_catch_list$catch)){
-        tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss), all.x=TRUE, all.y=FALSE) # merge 
-        tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-        new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
+        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
       }#end if catch exists
       
-      if(!is.null(new_OM_catch_list$catch_bio) & unique(tmp_ss$units)==1){
-        tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss), all.x=TRUE, all.y=FALSE) # merge 
-        tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-        new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
+      if(!is.null(new_OM_catch_list$catch_bio)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
+          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
       }else{
         new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
+      
+      if(!is.null(new_OM_catch_list$catch_F)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
+      }#end if catch exists
     }# end if fixed catches in this mgmt cycle. 
     
   }# end fixed catches
@@ -768,19 +783,34 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     
     if(nrow(tmp_ss)>0){
       if(!is.null(new_OM_catch_list$catch)){
-        tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss), all.x=TRUE, all.y=FALSE) # merge 
-        tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-        new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
+        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
       }#end if catch exists
       
-      if(!is.null(new_OM_catch_list$catch_bio) & unique(tmp_ss$units)==1){
-        tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss), all.x=TRUE, all.y=FALSE) # merge 
-        tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-        new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
+      if(!is.null(new_OM_catch_list$catch_bio)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
+          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
       }else{
         new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-    }# end if fixed catches in this mgmt cycle. 
       
+      if(!is.null(new_OM_catch_list$catch_F)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
+      }#end if catch exists
+    }# end if fixed catches in this mgmt cycle. 
+    
   }# end fixed catches
   
   
