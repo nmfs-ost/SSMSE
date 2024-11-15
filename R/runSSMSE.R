@@ -584,9 +584,10 @@ run_SSMSE_iter <- function(out_dir = NULL,
     )
     # convert to r4ss names
     sample_struct <- convert_to_r4ss_names(sample_struct)
+  }
+  if(!is.null(sample_struct_hist)){
     sample_struct_hist <- convert_to_r4ss_names(sample_struct_hist)
   }
-  
   # Convert the user input parameter modifications into vectors of annual additive deviations
   future_om_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = OM_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
   
