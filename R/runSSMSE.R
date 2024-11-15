@@ -647,7 +647,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
     interim_struct = interim_struct,
     dat_yrs = (init_mod[["dat"]][["endyr"]] - nyrs + 1):(init_mod[["dat"]][["endyr"]] - nyrs + nyrs_assess),
     seed = (iter_seed[["iter"]][1] + 123456),
-    sample_struct = sample_struct # add for bias
+    sample_struct = sample_struct, # add for bias
+    sample_struct_hist = sample_struct_hist  # add for bias
   )
  
   message(
@@ -769,6 +770,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
         OM_out_dir = OM_out_dir,
         dat_yrs = (yr + 1):(yr + nyrs_assess),
         sample_struct = sample_struct,
+        sample_struct_hist = sample_struct_hist,  # add for bias
         interim_struct = interim_struct,
         seed = (iter_seed[["iter"]][1] + 5678901 + yr)
       )

@@ -307,7 +307,7 @@ create_OM <- function(OM_out_dir,
       "error" = rep(1, nyrs)
     )
   }
-
+  
   # modify dat file ----
   dat[["endyr"]] <- dat[["endyr"]] + nyrs # because OM goes through the last simulated year.
   # remove the sampling components not needed
@@ -316,7 +316,7 @@ create_OM <- function(OM_out_dir,
     dat = dat
   )
   # Add in the historical sampling structure, as defined by the user
-  dat <- add_sample_struct(sample_struct = sample_struct_hist, dat = dat)
+  # dat <- add_sample_struct(sample_struct = sample_struct_hist, dat = dat) # temporarily fixes bug that duplicates sample_struct_hist lines
   dat <- add_sample_struct(sample_struct = sample_struct, dat = dat)
   # make sure tail compression is off.
   # turn off tail compression

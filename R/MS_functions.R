@@ -14,11 +14,12 @@
 #'  init_loop is TRUE.
 #' @template OM_out_dir
 #' @template sample_struct
+#' @param sample_struct_hist
 #' @template seed
 #' @param ... Any additional parameters
 #' @author Kathryn Doering
 EM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-               nyrs_assess, dat_yrs, sample_struct = NULL, seed = NULL, OM_out_dir, ...) {
+               nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL, seed = NULL, OM_out_dir, ...) {
   check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"

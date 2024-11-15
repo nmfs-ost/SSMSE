@@ -21,6 +21,7 @@
 #'  init_loop is TRUE.
 #' @template future_om_list
 #' @template sample_struct
+#' @param sample_struct_hist historical sample structure object
 #' @param interim_struct An optional including how many years to average over,
 #'  fleet weights, the scaling rate (Beta) of catch relative to the index change for each fleet,
 #'  and the reference year for each fleet (either a fixed year or <=0 relative to end_yr, fixed year
@@ -33,7 +34,8 @@
 parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
                      init_loop = TRUE, OM_dat, OM_out_dir = NULL,
                      verbose = FALSE, nyrs_assess, dat_yrs, future_om_list = NULL,
-                     sample_struct = NULL, interim_struct = NULL, seed = NULL) {
+                     sample_struct = NULL, sample_struct_hist = NULL, 
+                     interim_struct = NULL, seed = NULL) {
   if (verbose) {
     message("Parsing the management strategy.")
   }
@@ -63,6 +65,7 @@ parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
     nyrs_assess = nyrs_assess,
     dat_yrs = dat_yrs,
     sample_struct = sample_struct,
+    sample_struct_hist = sample_struct_hist,
     interim_struct = interim_struct,
     seed = seed
   )
