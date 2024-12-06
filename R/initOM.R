@@ -43,6 +43,7 @@ create_OM <- function(OM_out_dir,
   start <- r4ss::SS_readstarter(file.path(OM_out_dir, "starter.ss"),
     verbose = FALSE
   )
+  
   # modify starter to use as OM ----
   if (is.null(seed)) {
     seed <- stats::runif(1, 1, 99999999)
@@ -311,6 +312,7 @@ create_OM <- function(OM_out_dir,
   # modify dat file ----
   dat[["endyr"]] <- dat[["endyr"]] + nyrs # because OM goes through the last simulated year.
   # remove the sampling components not needed
+  
   dat <- rm_sample_struct_hist(
     sample_struct_hist = sample_struct_hist,
     dat = dat

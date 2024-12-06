@@ -96,7 +96,7 @@ run_SSMSE <- function(scen_name_vec,
   if (!is.null(custom_MS_source)) {
     source(custom_MS_source)
   }
-
+  
   # input checks
   if (!all(MS_vec %in% c("EM", "no_catch", "Interim"))) {
     invalid_MS <- MS_vec[unlist(lapply(MS_vec, function(x) !exists(x)))]
@@ -305,7 +305,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   if (!is.null(sample_struct)) assertive.types::assert_is_list(sample_struct)
   if (!is.null(sample_struct_hist)) assertive.types::assert_is_list(sample_struct_hist)
   assertive.types::assert_is_a_bool(verbose)
-   
+  
   # create the out_dir to store all files for all iter in the scenario.
   if (is.null(out_dir_scen)) {
     out_dir_iter <- scen_name
@@ -521,8 +521,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
   assertive.types::assert_is_any_of(nyrs_assess, c("integer", "numeric"))
   assertive.types::assert_is_any_of(niter, c("integer", "numeric"))
   assertive.types::assert_is_any_of(nscen, c("integer", "numeric"))
-  
-  if (!is.null(sample_struct)) {
+
+    if (!is.null(sample_struct)) {
     assertive.types::assert_is_list(sample_struct)
     sample_struct <- check_sample_struct(sample_struct)
   } else {

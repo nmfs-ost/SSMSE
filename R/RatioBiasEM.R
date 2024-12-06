@@ -645,7 +645,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
-  
+
   if (init_loop) {
     
     # copy over raw data file from the OM to EM folder
@@ -1202,8 +1202,8 @@ create_sample_struct_hist <- function(dat, rm_NAs = FALSE) { ### edited to inclu
         (length(input_SE_col) == 1 & length(Nsamp_col) == 0) |
         (length(input_SE_col) == 0 & length(Nsamp_col) == 0)
     )
-    # remove equilibrium catch
-    df <- df[df[[yr_col]] != -999, ]
+    # remove equilibrium catch -- do not remove equilibrium catch years in hist
+    # df <- df[df[[yr_col]] != -999, ]
     
     sex_col <- grep("Sex|Gender", colnames(df), # sex
                     ignore.case = TRUE,
@@ -1379,7 +1379,8 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
         (length(input_SE_col) == 0 & length(Nsamp_col) == 0)
     )
     # remove equilibrium catch
-    df <- df[df[[yr_col]] != -999, ]
+    # df <- df[df[[yr_col]] != -999, ] -- DO NOT remove equilibrium years in hist
+    
     sex_col <- grep("Sex|Gender", colnames(df), # sex
                     ignore.case = TRUE,
                     value = TRUE)
@@ -1538,7 +1539,7 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
   if(!is.null(sample_struct_hist)){
     new_EM_dat$catch$catch<-new_EM_dat$catch$catch/sample_struct_hist$EM2OMcatch_bias$bias
     if(new_EM_dat$N_discard_fleets>0){
-      new_EM_dat$discard_data$Discard<-new_EM_datdiscard_data$Discard / sample_struct_hist$EM2OMdiscard_bias$bias
+      new_EM_dat$discard_data$Discard<-new_EM_dat$discard_data$Discard / sample_struct_hist$EM2OMdiscard_bias$bias
     }
   }# end if sample_struct_hist exists
 
