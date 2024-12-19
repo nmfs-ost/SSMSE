@@ -14,7 +14,7 @@
 #' @return A data frame of future catch
 get_RatioEM_catch_df<-function(EM_dir, dat, dat_yrs, 
                                #EM_dir = EM_out_dir; dat = new_EM_dat
-                               changeup=0.2, changedown=0.2,# add inputs, min & max allowable annual percent change in catch
+                               changeup=10, changedown=10,# add inputs, min & max allowable annual percent change in catch
                                c1=0.75,# add inputs, multiplicative constant 
                                option="default", ...)
 {
@@ -368,7 +368,7 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
       )
     }
     
-  } else {
+  } else { # end if init_loop==T
     if (!is.null(sample_struct)) {
       sample_struct_sub <- lapply(sample_struct,
                                   function(df, y) df[df[, 1] %in% y, ],
@@ -1529,7 +1529,7 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
   EM_dat <- SS_readdat(file.path(EM_dir, EM_datfile), verbose = FALSE)
   OM_dat <- SS_readdat(file.path(EM_dir, OM_datfile), verbose = FALSE)
   
-  # remove extra years of data in the OM data file.
+  # remove extra years of data in the OM data file to create EM.
   new_EM_dat <- get_EM_dat(
     OM_dat = OM_dat, EM_dat = EM_dat,
     do_checks = do_checks
