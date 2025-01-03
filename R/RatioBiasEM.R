@@ -473,21 +473,30 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
     
   }# end fixed catches
   
-  ## EM2OM bias correction
+  # Address EM2OM Catch Bias
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
   if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(new_OM_catch_list$catch, sample_struct$EM2OMcatch_bias, all.x=TRUE, all.y=FALSE)
+    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
+    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
   }
   if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(new_OM_catch_list$catch_bio, sample_struct$EM2OMcatch_bias, all.x=TRUE)
+    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
+    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
   }
   # new_OM_catch_list$catch_bio <- NULL
   if(!is.null(new_OM_catch_list$discards)){
-    tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE)
-    tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-    new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
+    if(!is.null(new_OM_catch_list$discards)){
+      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
+      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
+      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    }
   }
+  
   if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
     
     byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
@@ -675,21 +684,30 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
     
   }# end fixed catches
   
-  ## EM2OM bias correction
+  # Address EM2OM Catch Bias
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
   if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(new_OM_catch_list$catch, sample_struct$EM2OMcatch_bias, all.x=TRUE, all.y=FALSE)
+    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
+    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
   }
   if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(new_OM_catch_list$catch_bio, sample_struct$EM2OMcatch_bias, all.x=TRUE)
+    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
+    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
   }
   # new_OM_catch_list$catch_bio <- NULL
   if(!is.null(new_OM_catch_list$discards)){
-    tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE)
-    tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-    new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
+    if(!is.null(new_OM_catch_list$discards)){
+      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
+      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
+      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    }
   }
+  
   if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
     
     byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
@@ -876,21 +894,30 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
     
   }# end fixed catches
   
-  ## EM2OM bias correction
+  # Address EM2OM Catch Bias
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
+  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
   if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(new_OM_catch_list$catch, sample_struct$EM2OMcatch_bias, all.x=TRUE, all.y=FALSE)
+    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
+    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
   }
   if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(new_OM_catch_list$catch_bio, sample_struct$EM2OMcatch_bias, all.x=TRUE)
+    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
+    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
   }
   # new_OM_catch_list$catch_bio <- NULL
   if(!is.null(new_OM_catch_list$discards)){
-    tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE)
-    tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-    new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
+    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
+    if(!is.null(new_OM_catch_list$discards)){
+      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
+      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
+      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
+    }
   }
+  
   if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
     
     byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
