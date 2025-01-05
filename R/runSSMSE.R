@@ -585,8 +585,6 @@ run_SSMSE_iter <- function(out_dir = NULL,
     seed = (iter_seed[["iter"]][1] + 12345)
   )
   
-  browser()
-  
   refit_OM(
     OM_dir = OM_out_dir, base_dat = Base_dat,
     verbose = verbose, seed = (iter_seed[["iter"]][1] + 12345)
