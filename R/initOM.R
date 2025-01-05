@@ -505,6 +505,116 @@ run_OM <- function(OM_dir,
   return(dat)
 }
 
+
+#' Initial run of the Base model to get expected and bootstrap values
+#'
+#' This function is used to initialize the Base model and get expected values
+#' for the OM and bootstraps for the EM.
+#' @template OM_dir
+#' @template verbose
+#' @param debug_par_run If set to TRUE, and the run fails, a new folder called
+#'  error_check will be created, and the model will be run from control start
+#'  values instead of ss.par. The 2 par files are then compared to help debug
+#'  the issue with the model run. Defaults to TRUE.
+#' @template seed
+#' @author Kathryn Doering
+#' @importFrom r4ss SS_readdat SS_readstarter SS_writestarter
+run_Base <- function(OM_dir,
+                   verbose = FALSE,
+                   debug_par_run = TRUE,
+                   seed = NULL) {
+  
+  
+  if (is.null(seed)) {
+    seed <- stats::runif(1, 1, 9999999)
+  }
+  
+  start <- r4ss::SS_readstarter(file.path(OM_dir, "starter.ss"),
+                                verbose = FALSE
+  )
+  
+  start[["init_values_src"]] <- 1
+  start[["N_bootstraps"]] <- 2
+  start[["seed"]] <- seed
+  
+  r4ss::SS_writestarter(start,
+                        dir = OM_dir, verbose = FALSE, overwrite = TRUE
+  )
+  
+  # run SS and get the data set
+  run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
+               verbose = verbose,
+               debug_par_run = debug_par_run
+  )
+  
+  dat <- r4ss::SS_readdat(file.path(OM_dir, "data.ss_new"),
+                          section = 2,
+                          verbose = FALSE
+  )
+  
+  return(dat)
+}
+
+#' Refit OM model using expected values from original OM
+#'
+#' This function is used to initialize the Base model and get expected values
+#' for the OM and bootstraps for the EM.
+#' @template OM_dir
+#' @param base_dat Expected Value data list from base model run.
+#' @template verbose
+#' @param debug_par_run If set to TRUE, and the run fails, a new folder called
+#'  error_check will be created, and the model will be run from control start
+#'  values instead of ss.par. The 2 par files are then compared to help debug
+#'  the issue with the model run. Defaults to TRUE.
+#' @template seed
+#' @author Kathryn Doering
+#' @importFrom r4ss SS_readdat SS_readstarter SS_writestarter
+refit_OM <- function(OM_dir,
+                     base_dat,
+                     verbose = FALSE,
+                     debug_par_run = TRUE,
+                     seed = NULL) {
+  
+  if (is.null(seed)) {
+    seed <- stats::runif(1, 1, 9999999)
+  }
+  
+  start <- r4ss::SS_readstarter(file.path(OM_dir, "starter.ss"),
+                                verbose = FALSE
+  )
+  start[["init_values_src"]] <- 1
+  start[["detailed_age_structure"]] <- 1
+  start[["last_estimation_phase"]] <- 10
+  start[["depl_basis"]] <- 1
+  start[["depl_denom_frac"]] <- 1
+  start[["SPR_basis"]] <- 4
+  start[["F_report_units"]] <- 1
+  start[["F_report_basis"]] <- 0
+  start[["F_age_range"]] <- NULL
+  start[["ALK_tolerance"]] <- 0
+  start[["minyr_sdreport"]] <- -1
+  start[["maxyr_sdreport"]] <- -2
+  start[["N_bootstraps"]] <- 3
+  start[["seed"]] <- seed
+  
+  r4ss::SS_writestarter(start,
+                        dir = OM_dir, verbose = FALSE, overwrite = TRUE
+  )
+  
+  r4ss::SS_writedat(base_dat, file.path(OM_dir, start[["datfile"]]),
+              overwrite = TRUE,
+              verbose = FALSE
+  )
+  
+  # run SS and get the data set
+  run_ss_model(OM_dir, "-nohess",
+               verbose = verbose,
+               debug_par_run = debug_par_run
+  )
+  
+  return(NULL)
+}
+
 #' Get the sampling scheme in a data file.
 #'
 #' Determine what the default sampling scheme is for a given data file.

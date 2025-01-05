@@ -140,11 +140,12 @@ create_scen_list <- function(scen_name_vec,
 #'
 #' @template OM_out_dir
 #' @template EM_out_dir
+#' @param Base_out_dir The directory where the base model files will be written.
 #' @template MS
 #' @template overwrite
 #' @importFrom r4ss SS_readstarter SS_readdat SS_writedat
-clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, MS = "EM",
-                                 overwrite = FALSE) {
+clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, Base_out_dir = NULL, 
+                                 MS = "EM", overwrite = FALSE) {
   # read in files
   OM_start <- SS_readstarter(file.path(OM_out_dir, "starter.ss"),
     verbose = FALSE
@@ -156,6 +157,17 @@ clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, MS = "EM",
   OM_ctl <- SS_readctl(file.path(OM_out_dir, OM_start[["ctlfile"]]),
     datlist = OM_dat,
     verbose = FALSE
+  )
+  Base_start <- SS_readstarter(file.path(Base_out_dir, "starter.ss"),
+                             verbose = FALSE
+  )
+  Base_dat <- SS_readdat(file.path(Base_out_dir, Base_start[["datfile"]]),
+                       verbose = FALSE,
+                       section = 1
+  )
+  Base_ctl <- SS_readctl(file.path(Base_out_dir, Base_start[["ctlfile"]]),
+                       datlist = Base_dat,
+                       verbose = FALSE
   )
   if (!is.null(EM_out_dir)) {
     EM_start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
@@ -177,9 +189,6 @@ clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, MS = "EM",
   # model start and end yr should be the same for both
   styr <- OM_dat[["styr"]]
   endyr <- OM_dat[["endyr"]]
-
-
-
 
   # get years in range function
   get_yrs_in_range <- function(list_name, dat, styr, endyr) {
@@ -513,11 +522,17 @@ create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
   # figure out the OM_name and create the directory within the one just created
   if (!is.null(OM_name)) {
     OM_folder_name <- paste0(OM_name, "_OM")
+    Base_folder_name <- paste0(OM_name, "_OM_Base")
   } else {
     OM_folder_name <- paste0(basename(OM_in_dir), "_OM")
+    Base_folder_name <- paste0(basename(OM_in_dir), "_OM_Base")
   }
   OM_out_dir <- file.path(out_dir, OM_folder_name)
   dir.create(OM_out_dir, showWarnings = FALSE)
+  
+  Base_out_dir <- file.path(out_dir, Base_folder_name)
+  dir.create(Base_out_dir, showWarnings = FALSE)
+  
   # Add the EM dir, if necessary
   if (is.null(EM_name) & !is.null(EM_in_dir)) EM_name <- basename(EM_in_dir)
   if (!is.null(EM_name) & is.null(EM_in_dir)) {
@@ -542,7 +557,8 @@ create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
   }
   OM_mod_loc <- list(
     OM_in_dir = OM_in_dir, OM_out_dir = OM_out_dir,
-    EM_in_dir = EM_in_dir, EM_out_dir = EM_out_dir
+    EM_in_dir = EM_in_dir, EM_out_dir = EM_out_dir,
+    Base_in_dir = OM_in_dir, Base_out_dir = Base_out_dir
   )
 }
 
@@ -587,6 +603,8 @@ locate_in_dirs <- function(OM_name = NULL, OM_in_dir = NULL) {
 #' @template OM_EM_in_dir
 #' @template OM_out_dir
 #' @template EM_out_dir
+#' @param Base_in_dir Relative or absolute path to the input base model
+#' @param Base_out_dir Relative or absolute path to the base model outputs
 #' @template verbose
 #' @return TRUE, if copying is successful
 #'
@@ -594,6 +612,8 @@ copy_model_files <- function(OM_in_dir = NULL,
                              OM_out_dir = NULL,
                              EM_in_dir = NULL,
                              EM_out_dir = NULL,
+                             Base_in_dir = NULL, 
+                             Base_out_dir= NULL,
                              verbose = FALSE) {
   # checks
   if (!is.null(OM_in_dir)) {
@@ -656,7 +676,44 @@ copy_model_files <- function(OM_in_dir = NULL,
   } else {
     success_EM <- TRUE
   }
-  invisible(c(success_OM = success_OM, success_EM = success_EM))
+  
+  if (!is.null(Base_in_dir)) {
+    if (!all(c(
+      "control.ss_new", "data.ss_new", "starter.ss_new",
+      "forecast.ss_new", "ss.par"
+    ) %in% list.files(Base_in_dir))) {
+      stop(
+        ".ss_new files not found in the original Base directory ",
+        Base_in_dir, ". Please run the model to make the .ss_new files available."
+      )
+    }
+  }
+  # copy over Base ----
+  if (!is.null(Base_in_dir) & !is.null(Base_out_dir)) {
+    if (verbose == TRUE) {
+      message(
+        "Copying over .ss_new model files in ", Base_in_dir,
+        " to ", Base_out_dir, "."
+      )
+    }
+    success_Base <- r4ss::copy_SS_inputs(
+      dir.old = Base_in_dir,
+      dir.new = Base_out_dir,
+      overwrite = FALSE,
+      use_ss_new = TRUE, # will rename the ss new files, also.
+      copy_par = TRUE,
+      verbose = FALSE
+    )
+    if (success_Base == FALSE) {
+      stop(
+        "Problem copying SS Base .ss_new files from ", Base_in_dir, " to ",
+        Base_out_dir, "."
+      )
+    }
+  } else {
+    success_Base <- TRUE
+  }
+  invisible(c(success_OM = success_OM, success_EM = success_EM, success_Base = success_Base))
 }
 
 #' function that creates a combined column to the list_item of interest
