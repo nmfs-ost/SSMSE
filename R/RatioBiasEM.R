@@ -35,7 +35,7 @@ get_RatioEM_catch_df<-function(EM_dir, dat, dat_yrs,
   if(SSout$depletion_basis == 1){ # relative to X*SSB0
     # SSout$depletion_basis # 1
     # SSout$depletion_multiplier # 1
-    TargBratio<-SSout$derived_quants["B_MSY/SSB_unfished",]$Value
+    TargBratio<-SSout$derived_quants["B_MSY/SSB_unfished",]$Value #r4ss SS3 syntax for SSBratio
     CurBratio<-SSout$derived_quants[paste0("Bratio_",endyr),"Value"] * SSout$depletion_multiplier
     ratio<- CurBratio/TargBratio
   }
