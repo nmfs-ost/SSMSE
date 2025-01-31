@@ -308,7 +308,7 @@ get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, nyrs_assess,
   SSout<-r4ss::SS_output(EM_dir)
   endyr<-dat_yrs[1]-1
   startyr<-SSout$startyr
-  LastAssessyr<-endyr - nyrs_asses
+  LastAssessyr<-endyr - nyrs_assess
   
   #depletion basis
   # 1 = X*SSB0. Relative to virgin spawning biomass
@@ -322,17 +322,18 @@ get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, nyrs_assess,
   if(SSout$depletion_basis == 1){ # relative to X*SSB0
     # SSout$depletion_basis # 1
     # SSout$depletion_multiplier # 1
-    # TargBratio<-SSout$derived_quants["B_MSY/SSB_unfished",]$Value #r4ss SS3 syntax for SSBratio
-    CurBratio<-SSout$derived_quants[paste0("Bratio_",endyr),"Value"] * SSout$depletion_multiplier
-    LastBratio<-SSout$derived_quants[paste0("Bratio_",LastAssessyr),"Value"] * SSout$depletion_multiplier
-    ratio<- CurBratio/LastBratio
+    TargBratio<-SSout$derived_quants["B_MSY/SSB_unfished",]$Value #r4ss SS3 syntax for SSBratio = SSBMSY/ SSB0
+    CurBratio<-SSout$derived_quants[paste0("Bratio_",endyr),"Value"] * SSout$depletion_multiplier # SSB/SSB0
+    LastBratio<-SSout$derived_quants[paste0("Bratio_",LastAssessyr),"Value"] * SSout$depletion_multiplier # SSB_last / SSB0
+    ratio<- (CurBratio/TargBratio) / (LastBratio/TargBratio) # (SSB/SSB0) / (SSBMSY/SSB0) = SSB/SSBMSY
+    # Note this is the same as CurBratio / LastBratio -- following John's approach. 
   }
   
   if(SSout$depletion_basis == 2){ # relative to X*SSBMSY
-    # TargBratio<-1  #SSout$derived_quants["SSB_MSY",]$Value
+    TargBratio<-1  #SSout$derived_quants["SSB_MSY",]$Value
     CurBratio<-SSout$derived_quants[paste0("Bratio_",endyr),"Value"] * SSout$depletion_multiplier
     LastBratio<-SSout$derived_quants[paste0("Bratio_",LastAssessyr),"Value"] * SSout$depletion_multiplier
-    ratio<- CurBratio/LastBratio
+    ratio<- (CurBratio/TargBratio) / (LastBratio/TargBratio) 
   }
   
   
@@ -1513,6 +1514,7 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
       sample_struct_sub <- NULL
     }
     
+    
     new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
       OM_dat = OM_dat,
       EM_datfile = new_datfile_name,
@@ -1562,6 +1564,7 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
   # get the forecasted catch.
+  
   new_EM_catch_list <- get_PercentEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs, nyrs_assess,
                                               changeup=0.2, changedown=0.2, c1=0.75)
   ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
