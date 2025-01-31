@@ -298,7 +298,7 @@ get_RatioEM_catch_df<-function(EM_dir, dat, dat_yrs,
 #' @param dat A SS datfile read into R using \code{r4ss::SS_readdat()}
 #' @author Kathryn Doering modified by Cassidy Peterson
 #' @return A data frame of future catch
-get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, myrs_assess,
+get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, nyrs_assess,
                                #EM_dir = EM_out_dir; dat = new_EM_dat
                                changeup=10, changedown=10,# add inputs, min & max allowable annual percent change in catch
                                c1=1,# add inputs, multiplicative constant 
