@@ -247,7 +247,7 @@ create_OM <- function(OM_out_dir,
 
   for (i in update_F_years) {
     for (j in unique(new_F_rate[, "seas"])) {
-      for (k in unique(new_F_rate[, "fleet"])) {
+      for (k in unique(new_catch[, "fleet"])) {
         temp_F_rate <- new_F_rate[new_F_rate[, "year"] == i & new_F_rate[, "seas"] == j & new_F_rate[, "fleet"] == k, , drop = FALSE]
         if (length(temp_F_rate[, 1]) == 0) {
           if (length(default_F[default_F[, "seas"] == j & default_F[, "fleet"] == k, "F"]) == 0) {
