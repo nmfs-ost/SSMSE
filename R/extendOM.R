@@ -187,6 +187,11 @@ update_OM <- function(OM_dir,
         catch[, "seas"] == catch_intended[i, "seas"] &
         catch[, "fleet"] == catch_intended[i, "fleet"], "catch"]
       if (length(temp_catch) == 1) {
+        if (is.na(temp_catch)){
+          temp_catch<-0
+        }else {
+          temp_catch<-temp_catch
+        }
         if(temp_catch>0 & dat$fleetinfo[catch_intended[i, "fleet"],1]==1){
           catch_intended[i, "catch"] <- temp_catch
           catch_intended[i, "basis"] <- 1
