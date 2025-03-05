@@ -715,13 +715,14 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-   # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  #  # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -941,13 +942,14 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -1167,13 +1169,14 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -1392,13 +1395,14 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -1622,13 +1626,14 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -1850,13 +1855,14 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -2203,13 +2209,14 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
