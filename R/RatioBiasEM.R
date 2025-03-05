@@ -679,6 +679,16 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
       verbose = verbose
     )
     
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
   } # end else not first iteration
   
   # Update SS random seed
@@ -893,6 +903,16 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
       do_checks = TRUE,
       new_datfile_name = new_datfile_name,
       verbose = verbose
+    )
+    
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
     )
     
   } # end else not first iteration
@@ -1111,6 +1131,16 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
       verbose = verbose
     )
     
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
   } # end else not first iteration
   
   # Update SS random seed
@@ -1324,6 +1354,16 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
       do_checks = TRUE,
       new_datfile_name = new_datfile_name,
       verbose = verbose
+    )
+    
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
     )
     
   } # end else not first iteration
@@ -1546,6 +1586,16 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
       verbose = verbose
     )
     
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
   } # end else not first iteration
   
   # Update SS random seed
@@ -1762,6 +1812,16 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
       do_checks = TRUE,
       new_datfile_name = new_datfile_name,
       verbose = verbose
+    )
+    
+    #Increment main recruitment phase end year by number of assessment years
+    #So the model can continue to estimate rec devs 
+    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+                      datlist = new_EM_dat
+    )
+    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
     )
     
   } # end else not first iteration
