@@ -1,15 +1,16 @@
-## COPIED FROM SSMSE GITHUB ###
-# to use as reference
+## EnvirEM is based off of BiasEM and is aimed at improving
+## the inclusion of environment driven mortality in the SSMSE 
+## process.  
 
-# RatioBiasEM designed to work with Implement_Catch_Bias SSMSE branch (which allows for mismatch between OM and EM catch scales)
-# contains BOTH RatioBiasEM AND BiasEM
-# RatioBiasEM takes SSB / SSBMSY
-# PercentChangeEM takes (SSB/SSBMSY) / (SSB_lastassess / SSBMSY)
-
-
-#### add_new_dat Function Line-By-Line ####
-add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_assess, 
-                             do_checks = TRUE, new_datfile_name = NULL, verbose = FALSE) 
+add_new_dat_BIAS <- function (OM_dat,
+                              EM_datfile,
+                              sample_struct,
+                              EM_dir,
+                              nyrs_assess,
+                              do_checks = TRUE,
+                              new_datfile_name = NULL,
+                              verbose = FALSE)
+  
 {
   if (do_checks) {
     if (OM_dat[["type"]] != "Stock_Synthesis_data_file") {
@@ -72,29 +73,45 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
   
   #extracted_dat takes observations from the OM; then below we use the EM2OM multiplier to put catch back into EM units and remove the EM2OMcatch_basis element so that it doesn't get added to the datafile. 
   
-  if(!is.null(extracted_dat$catch)){
-    extracted_dat$catch <- extracted_dat$catch[order(base::abs(extracted_dat$catch$fleet),base::abs(extracted_dat$catch$year),base::abs(extracted_dat$catch$seas)),]
-    tmp_catch<- merge(extracted_dat$catch, sample_struct$EM2OMcatch_bias)
-    tmp_catch <- tmp_catch[order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-    extracted_dat$catch$catch<- tmp_catch$catch / tmp_catch$bias ### EM2OM edits to get EM catch back to OM
+  if (!is.null(extracted_dat$catch)) {
+    extracted_dat$catch <- extracted_dat$catch[order(
+      base::abs(extracted_dat$catch$fleet),
+      base::abs(extracted_dat$catch$year),
+      base::abs(extracted_dat$catch$seas)
+    ), ]
+    tmp_catch <- merge(extracted_dat$catch, sample_struct$EM2OMcatch_bias)
+    tmp_catch <- tmp_catch[order(
+      base::abs(tmp_catch$fleet),
+      base::abs(tmp_catch$year),
+      base::abs(tmp_catch$seas)
+    ), ]
+    extracted_dat$catch$catch <- tmp_catch$catch / tmp_catch$bias ### EM2OM edits to get EM catch back to OM
   }
   
-  
-  
-  if(!is.null(extracted_dat$discard_data)){
-    extracted_dat$discard_data <- extracted_dat$discard_data[order(base::abs(extracted_dat$discard_data$Flt),base::abs(extracted_dat$discard_data$Yr),base::abs(extracted_dat$discard_data$Seas)),]
-    tmp_discard<- merge(extracted_dat$discard_data, sample_struct$EM2OMdiscard_bias)
-    tmp_discard <- tmp_discard[order(base::abs(tmp_discard$Flt),base::abs(tmp_discard$Yr),base::abs(tmp_discard$Seas)),]
-    extracted_dat$discard_data$Discard<- tmp_discard$Discard / tmp_discard$bias
+  if (!is.null(extracted_dat$discard_data)) {
+    extracted_dat$discard_data <- extracted_dat$discard_data[order(
+      base::abs(extracted_dat$discard_data$Flt),
+      base::abs(extracted_dat$discard_data$Yr),
+      base::abs(extracted_dat$discard_data$Seas)
+    ), ]
+    tmp_discard <- merge(extracted_dat$discard_data,
+                         sample_struct$EM2OMdiscard_bias)
+    tmp_discard <- tmp_discard[order(
+      base::abs(tmp_discard$Flt),
+      base::abs(tmp_discard$Yr),
+      base::abs(tmp_discard$Seas)
+    ), ]
+    extracted_dat$discard_data$Discard <- tmp_discard$Discard / tmp_discard$bias
   }
   
-  extracted_dat[["EM2OMcatch_bias"]]<-NULL
-  extracted_dat[["FixedCatch"]]<-NULL
+  extracted_dat[["EM2OMcatch_bias"]] <- NULL
+  extracted_dat[["FixedCatch"]] <- NULL
+  extracted_dat[["FixedByCatch"]] <- NULL
   
   for (n in names(extracted_dat)) {
     new_EM_dat[[n]] <- rbind(new_EM_dat[[n]], extracted_dat[[n]])
   }
-  if (!is.null(new_datfile_name)) {
+  if  (!is.null(new_datfile_name)) {
     SS_writedat(new_EM_dat, file.path(EM_dir, new_datfile_name), 
                 overwrite = TRUE, verbose = FALSE)
   }
@@ -103,7 +120,98 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
 # assignInNamespace("add_new_dat_BIAS", add_new_dat_BIAS, "SSMSE") ## ERROR
 
 
-
+sample_struct_hist_func<-function(name, dat) {
+  df <- dat[[name]]
+  if (is.null(df)) {
+    return(NA)
+  }
+  # get year, seas, fleet combo, ignoring -999 values.
+  yr_col <- grep("year|yr|Yr", colnames(df), ignore.case = TRUE, value = TRUE)
+  seas_col <- grep("seas|season|Seas", colnames(df), ignore.case = TRUE, value = TRUE)
+  flt_col <- grep("FltSvy|fleet|index|Flt", colnames(df),
+                  ignore.case = TRUE,
+                  value = TRUE
+  )
+  input_SE_col <- grep("_se|se_|Std_in", colnames(df),
+                       ignore.case = TRUE,
+                       value = TRUE
+  ) # catch sample size
+  Nsamp_col <- grep("Nsamp", colnames(df),
+                    ignore.case = TRUE,
+                    value = TRUE
+  ) # input sample size
+  # sanity checks. should match with 1 (or 0 in some cases) cols. Failing these
+  # checks indicate a bug in the code (invalid assuptions of how to match the
+  # cols.)
+  assertive.properties::assert_is_of_length(yr_col, 1)
+  assertive.properties::assert_is_of_length(seas_col, 1)
+  assertive.properties::assert_is_of_length(flt_col, 1)
+  # b/c only Nsamp or SE should exist for a df
+  assertive.base::assert_is_identical_to_true(
+    (length(input_SE_col) == 0 & length(Nsamp_col) == 1) |
+      (length(input_SE_col) == 1 & length(Nsamp_col) == 0) |
+      (length(input_SE_col) == 0 & length(Nsamp_col) == 0)
+  )
+  # remove equilibrium catch -- do not remove equilibrium catch years in hist
+  # df <- df[df[[yr_col]] != -999, ]
+  
+  sex_col <- grep("Sex|Gender", colnames(df), # sex
+                  ignore.case = TRUE,
+                  value = TRUE)
+  part_col <- grep("part", colnames(df), # partition
+                   ignore.case = TRUE,
+                   value = TRUE)
+  Nsamp_col <- grep("Nsamp", colnames(df), #Nsamp
+                    ignore.case = TRUE,
+                    value = TRUE)
+  # age_err
+  ageerr_col <- grep("ageerr", colnames(df), #age err
+                     ignore.case = TRUE,
+                     value = TRUE)
+  Lbin_lo_col <- grep("Lbin_lo", colnames(df), # age err
+                      ignore.case = TRUE,
+                      value = TRUE)
+  Lbin_hi_col <- grep("Lbin_hi", colnames(df), #age err
+                      ignore.case = TRUE,
+                      value = TRUE)
+  #meanbodywt
+  type_col <- grep("Type", colnames(df), # type
+                   ignore.case = TRUE,
+                   value = TRUE) 
+  #meanbodywt
+  type_col <- grep("Type", colnames(df), # type
+                   ignore.case = TRUE,
+                   value = TRUE) 
+  #mean size at age
+  ageerr_col <- grep("Ageerr", colnames(df), # Ageerr
+                     ignore.case = TRUE,
+                     value = TRUE)
+  if(name=="MeanSize_at_Age_obs"){
+    n_col <- grep("N_", colnames(df), # N_
+                  ignore.case = TRUE,
+                  value = TRUE)
+    tmp_n <- as.data.frame(rowSums(type.convert(df[,n_col], as.is=TRUE)))
+    colnames(tmp_n)<-N_col<-"N_"
+    df<-cbind(df,tmp_n)}else{
+      N_col<-character(0)
+    }
+  
+  df<-df[,c(yr_col, seas_col, flt_col, type_col, input_SE_col, sex_col,part_col, ageerr_col, Lbin_lo_col, Lbin_hi_col,  Nsamp_col, N_col)] 
+  
+  #rename to match sample_struct
+  if(name=="catch") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
+  # if(name=="EM2OMcatch_bias") colnames(df) <- c("Yr", "Seas", "FltSvy", "bias")
+  if(name=="CPUE") colnames(df) <- c("Yr", "Seas", "FltSvy", "SE")
+  if(name=="discard_data") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
+  # if(name=="EM2OMdiscard_bias") colnames(df)<- c("Yr", "Seas", "FltSvy", "bias")
+  if(name=="lencomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp")
+  if(name=="agecomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp")
+  if(name=="meanbodywt") colnames(df)<- c("Yr", "Seas", "FltSvy", "Part", "Type", "Std_in")
+  if(name=="MeanSize_at_Age_obs") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_")
+  
+  
+  return(df) 
+}
 
 
 ## COPIED FROM SSMSE GITHUB ###
@@ -132,9 +240,18 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
 #For example, if EM has a positive bias (e.g., EM catch = 1 when true OM catch = 0.5), the EM2OM multiplier should be less than 1 (EM2OM = 0.5)
 
 
-BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-                   nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL, 
-                   seed = NULL, OM_out_dir, ...) { 
+EnvirEM <- function(EM_out_dir = NULL,
+                    init_loop = TRUE,
+                    OM_dat,
+                    verbose = FALSE,
+                    nyrs_assess,
+                    dat_yrs,
+                    sample_struct = NULL,
+                    sample_struct_hist = NULL,
+                    seed = NULL,
+                    OM_out_dir,
+                    ...) {
+  
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -160,7 +277,8 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     )
     # make sure the data file has the correct formatting (use existing data
     # file in the EM directory to make sure)??
-    # TODO: is this necessary, given we have sample structures?
+    # TODO: is this necessary, given we have sample structures? 
+    #Yes, now it is necessary because of biased sample struct hist happening within this. 
     new_EM_dat <- biasEM_change_dat(  ###--------------------------------- NEW FUNCTION FOR BIASEM #
       OM_datfile = new_datfile_name,
       EM_datfile = orig_datfile_name,
@@ -204,7 +322,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     }
     
     new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
-      OM_dat = OM_dat,
+      OM_dat = OM_dat,  # why is this OM?  
       EM_datfile = new_datfile_name,
       sample_struct = sample_struct_sub,
       EM_dir = EM_out_dir,
@@ -249,13 +367,14 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
+                                    nyrs_increment = nyrs_assess,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  # Need to update the year of forecast assignments where allocations exist
-  if (fcast[["N_allocation_groups"]] > 0) {
-    fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  }
+  # # Need to update the year of forecast assignments where allocations exist
+  # if (fcast[["N_allocation_groups"]] > 0) {
+  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
+  # }
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -315,6 +434,47 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     
   }# end fixed catches
   
+  
+  ## IF FixedByCatch==TRUE
+  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
+  # come back to this section if want to use different units
+  if(!is.null(sample_struct$FixedByCatch)){
+    
+    # tmp_ss<- sample_struct$FixedByCatch[sample_struct$FixedByCatch$year==dat_yrs,]
+    tmp_ss<- sample_struct$FixedByCatch[sample_struct$FixedByCatch$year %in% dat_yrs,] # create obj of fixed discardses
+    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
+    
+    if(nrow(tmp_ss)>0){
+      if(!is.null(new_OM_catch_list$catch)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
+      }#end if catch exists
+      
+      if(!is.null(new_OM_catch_list$catch_bio)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
+          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
+      }else{
+        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
+      
+      if(!is.null(new_OM_catch_list$catch_F)){
+        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
+        if(nrow(tmp_ss_catch)>0){
+          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
+          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
+        }
+      }#end if catch exists
+    }# end if fixed catches in this mgmt cycle. 
+    
+  }# end fixed catches
   
   # Address EM2OM Catch Bias
   sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
@@ -390,7 +550,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
 #' print(sample_struct)
 #' @param FixedCatches T/F defines whether you want to manually specify catches in the future (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of OM and historical units. 
 #' 
-create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE) { ### edited to include EM2OMcatch_bias
   assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
@@ -635,8 +795,13 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
     names(sample_struct$FixedCatch)[4] = "Catch"
     
     for(f in unique(sample_struct$FixedCatch$FltSvy)){
+      
       sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Catch = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch, nyrs)
-      sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
+      if(dat$fleetinfo$type[f] == 1){
+        sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
+      } else{
+        sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(99, nyrs)
+      }
     }
     sample_struct$FixedCatch
   } else{# end if FixedCatches==TRUE
@@ -661,7 +826,7 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
 
 #' Create the sample_struct list for historical data
 
-create_sample_struct_hist <- function(dat, rm_NAs = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_hist_envir <- function(dat, rm_NAs = FALSE) { ### edited to include EM2OMcatch_bias
   # assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
@@ -672,98 +837,6 @@ create_sample_struct_hist <- function(dat, rm_NAs = FALSE) { ### edited to inclu
     "lencomp", "agecomp", "meanbodywt", "MeanSize_at_Age_obs"
   )
   
-  sample_struct_hist_func<-function(name, dat) {
-    df <- dat[[name]]
-    if (is.null(df)) {
-      return(NA)
-    }
-    # get year, seas, fleet combo, ignoring -999 values.
-    yr_col <- grep("year|yr|Yr", colnames(df), ignore.case = TRUE, value = TRUE)
-    seas_col <- grep("seas|season|Seas", colnames(df), ignore.case = TRUE, value = TRUE)
-    flt_col <- grep("FltSvy|fleet|index|Flt", colnames(df),
-                    ignore.case = TRUE,
-                    value = TRUE
-    )
-    input_SE_col <- grep("_se|se_|Std_in", colnames(df),
-                         ignore.case = TRUE,
-                         value = TRUE
-    ) # catch sample size
-    Nsamp_col <- grep("Nsamp", colnames(df),
-                      ignore.case = TRUE,
-                      value = TRUE
-    ) # input sample size
-    # sanity checks. should match with 1 (or 0 in some cases) cols. Failing these
-    # checks indicate a bug in the code (invalid assuptions of how to match the
-    # cols.)
-    assertive.properties::assert_is_of_length(yr_col, 1)
-    assertive.properties::assert_is_of_length(seas_col, 1)
-    assertive.properties::assert_is_of_length(flt_col, 1)
-    # b/c only Nsamp or SE should exist for a df
-    assertive.base::assert_is_identical_to_true(
-      (length(input_SE_col) == 0 & length(Nsamp_col) == 1) |
-        (length(input_SE_col) == 1 & length(Nsamp_col) == 0) |
-        (length(input_SE_col) == 0 & length(Nsamp_col) == 0)
-    )
-    # remove equilibrium catch -- do not remove equilibrium catch years in hist
-    # df <- df[df[[yr_col]] != -999, ]
-    
-    sex_col <- grep("Sex|Gender", colnames(df), # sex
-                    ignore.case = TRUE,
-                    value = TRUE)
-    part_col <- grep("part", colnames(df), # partition
-                     ignore.case = TRUE,
-                     value = TRUE)
-    Nsamp_col <- grep("Nsamp", colnames(df), #Nsamp
-                      ignore.case = TRUE,
-                      value = TRUE)
-    # age_err
-    ageerr_col <- grep("ageerr", colnames(df), #age err
-                       ignore.case = TRUE,
-                       value = TRUE)
-    Lbin_lo_col <- grep("Lbin_lo", colnames(df), # age err
-                        ignore.case = TRUE,
-                        value = TRUE)
-    Lbin_hi_col <- grep("Lbin_hi", colnames(df), #age err
-                        ignore.case = TRUE,
-                        value = TRUE)
-    #meanbodywt
-    type_col <- grep("Type", colnames(df), # type
-                     ignore.case = TRUE,
-                     value = TRUE) 
-    #meanbodywt
-    type_col <- grep("Type", colnames(df), # type
-                     ignore.case = TRUE,
-                     value = TRUE) 
-    #mean size at age
-    ageerr_col <- grep("Ageerr", colnames(df), # Ageerr
-                       ignore.case = TRUE,
-                       value = TRUE)
-    if(name=="MeanSize_at_Age_obs"){
-      n_col <- grep("N_", colnames(df), # N_
-                    ignore.case = TRUE,
-                    value = TRUE)
-      tmp_n <- as.data.frame(rowSums(type.convert(df[,n_col], as.is=TRUE)))
-      colnames(tmp_n)<-N_col<-"N_"
-      df<-cbind(df,tmp_n)}else{
-        N_col<-character(0)
-      }
-    
-    df<-df[,c(yr_col, seas_col, flt_col, type_col, input_SE_col, sex_col,part_col, ageerr_col, Lbin_lo_col, Lbin_hi_col,  Nsamp_col, N_col)] 
-    
-    #rename to match sample_struct
-    if(name=="catch") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
-    # if(name=="EM2OMcatch_bias") colnames(df) <- c("Yr", "Seas", "FltSvy", "bias")
-    if(name=="CPUE") colnames(df) <- c("Yr", "Seas", "FltSvy", "SE")
-    if(name=="discard_data") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
-    # if(name=="EM2OMdiscard_bias") colnames(df)<- c("Yr", "Seas", "FltSvy", "bias")
-    if(name=="lencomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp")
-    if(name=="agecomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp")
-    if(name=="meanbodywt") colnames(df)<- c("Yr", "Seas", "FltSvy", "Part", "Type", "Std_in")
-    if(name=="MeanSize_at_Age_obs") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_")
-    
-    
-    return(df) 
-  }
   sample_struct <- lapply(list_name,
                           sample_struct_hist_func,
                           dat = dat
@@ -837,7 +910,7 @@ create_sample_struct_hist <- function(dat, rm_NAs = FALSE) { ### edited to inclu
 
 #' Create the sample_struct list for historical data
 
-create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE, FixedCatches = FALSE) { ### edited to include EM2OMcatch_bias
   # assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
@@ -848,97 +921,7 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
     "lencomp", "agecomp", "meanbodywt", "MeanSize_at_Age_obs"
   )
   
-  sample_struct_hist_func<-function(name, dat) {
-    df <- dat[[name]]
-    if (is.null(df)) {
-      return(NA)
-    }
-    # get year, seas, fleet combo, ignoring -999 values.
-    yr_col <- grep("year|yr|Yr", colnames(df), ignore.case = TRUE, value = TRUE)
-    seas_col <- grep("seas|season|Seas", colnames(df), ignore.case = TRUE, value = TRUE)
-    flt_col <- grep("FltSvy|fleet|index|Flt", colnames(df),
-                    ignore.case = TRUE,
-                    value = TRUE
-    )
-    input_SE_col <- grep("_se|se_|Std_in", colnames(df),
-                         ignore.case = TRUE,
-                         value = TRUE
-    ) # catch sample size
-    Nsamp_col <- grep("Nsamp", colnames(df),
-                      ignore.case = TRUE,
-                      value = TRUE
-    ) # input sample size
-    # sanity checks. should match with 1 (or 0 in some cases) cols. Failing these
-    # checks indicate a bug in the code (invalid assuptions of how to match the
-    # cols.)
-    assertive.properties::assert_is_of_length(yr_col, 1)
-    assertive.properties::assert_is_of_length(seas_col, 1)
-    assertive.properties::assert_is_of_length(flt_col, 1)
-    # b/c only Nsamp or SE should exist for a df
-    assertive.base::assert_is_identical_to_true(
-      (length(input_SE_col) == 0 & length(Nsamp_col) == 1) |
-        (length(input_SE_col) == 1 & length(Nsamp_col) == 0) |
-        (length(input_SE_col) == 0 & length(Nsamp_col) == 0)
-    )
-    # remove equilibrium catch
-    # df <- df[df[[yr_col]] != -999, ] -- DO NOT remove equilibrium years in hist
-    
-    sex_col <- grep("Sex|Gender", colnames(df), # sex
-                    ignore.case = TRUE,
-                    value = TRUE)
-    part_col <- grep("part", colnames(df), # partition
-                     ignore.case = TRUE,
-                     value = TRUE)
-    Nsamp_col <- grep("Nsamp", colnames(df), #Nsamp
-                      ignore.case = TRUE,
-                      value = TRUE)
-    # age_err
-    ageerr_col <- grep("ageerr", colnames(df), #age err
-                       ignore.case = TRUE,
-                       value = TRUE)
-    Lbin_lo_col <- grep("Lbin_lo", colnames(df), # age err
-                        ignore.case = TRUE,
-                        value = TRUE)
-    Lbin_hi_col <- grep("Lbin_hi", colnames(df), #age err
-                        ignore.case = TRUE,
-                        value = TRUE)
-    #meanbodywt
-    type_col <- grep("Type", colnames(df), # type
-                     ignore.case = TRUE,
-                     value = TRUE) 
-    #meanbodywt
-    type_col <- grep("Type", colnames(df), # type
-                     ignore.case = TRUE,
-                     value = TRUE) 
-    #mean size at age
-    ageerr_col <- grep("Ageerr", colnames(df), # Ageerr
-                       ignore.case = TRUE,
-                       value = TRUE)
-    if(name=="MeanSize_at_Age_obs"){
-      n_col <- grep("N_", colnames(df), # N_
-                    ignore.case = TRUE,
-                    value = TRUE)
-      tmp_n <- as.data.frame(rowSums(type.convert(df[,n_col], as.is=TRUE)))
-      colnames(tmp_n)<-N_col<-"N_"
-      df<-cbind(df,tmp_n)}else{
-        N_col<-character(0)
-      }
-    
-    df<-df[,c(yr_col, seas_col, flt_col, type_col, input_SE_col, sex_col,part_col, ageerr_col, Lbin_lo_col, Lbin_hi_col,  Nsamp_col, N_col)] 
-    
-    #rename to match sample_struct
-    if(name=="catch") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
-    # if(name=="EM2OMcatch_bias") colnames(df) <- c("Yr", "Seas", "FltSvy", "bias")
-    if(name=="CPUE") colnames(df) <- c("Yr", "Seas", "FltSvy", "SE")
-    if(name=="discard_data") colnames(df)<- c("Yr", "Seas", "FltSvy", "SE")
-    # if(name=="EM2OMdiscard_bias") colnames(df)<- c("Yr", "Seas", "FltSvy", "bias")
-    if(name=="lencomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp")
-    if(name=="agecomp") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp")
-    if(name=="meanbodywt") colnames(df)<- c("Yr", "Seas", "FltSvy", "Part", "Type", "Std_in")
-    if(name=="MeanSize_at_Age_obs") colnames(df)<- c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_")
-    
-    return(df) 
-  }
+
   sample_struct <- lapply(list_name,
                           sample_struct_hist_func,
                           dat = dat
@@ -968,20 +951,20 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
   names(sample_struct$EM2OMcatch_bias)[4] = "bias"
   sample_struct$EM2OMcatch_bias$bias= rep(1, length=nrow(sample_struct$catch))
   
-  # ## Add FixedCatches
-  # if(FixedCatches==TRUE){
-  #   sample_struct$FixedCatch <- sample_struct$catch
-  #   sample_struct$FixedCatch$Units <- NA
-  #   names(sample_struct$FixedCatch)[4] = "Catch"
-  # 
-  #   for(f in unique(sample_struct$FixedCatch$FltSvy)){
-  #     sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Catch = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch, nyrs)
-  #     sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
-  #   }
-  #   sample_struct$FixedCatch
-  # } else{# end if FixedCatches==TRUE
-  #   FixedCatches <- NULL
-  # }
+  ## Add FixedCatches
+  if(FixedCatches==TRUE){
+    sample_struct$FixedCatch <- sample_struct$catch
+    sample_struct$FixedCatch$Units <- NA
+    names(sample_struct$FixedCatch)[4] = "Catch"
+
+    for(f in unique(sample_struct$FixedCatch$FltSvy)){
+      sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Catch = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch, nyrs)
+      sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
+    }
+    sample_struct$FixedCatch
+  } else{# end if FixedCatches==TRUE
+    FixedCatches <- NULL
+  }
   
   ## ADD EM2OMdiscard_bias
   if(!is.null(ncol(sample_struct$discard_data))){
@@ -1016,8 +999,13 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
 #' \dontrun{
 #' # TODO: Add example
 #' }
-biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
-                              verbose = FALSE, sample_struct_hist=NULL) {
+biasEM_change_dat <- function(OM_datfile,
+                              EM_datfile,
+                              EM_dir,
+                              do_checks = TRUE,
+                              verbose = FALSE,
+                              sample_struct_hist = NULL) {
+  
   EM_dir <- normalizePath(EM_dir)
   
   # checks
@@ -1038,13 +1026,13 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
   )
   
   # Add bias-correction in historical period: 
-  if(!is.null(sample_struct_hist)){
+  if(!is.null(sample_struct_hist$EM2OMcatch_bias)){
     new_EM_dat$catch$catch<-new_EM_dat$catch$catch/sample_struct_hist$EM2OMcatch_bias$bias
     if(new_EM_dat$N_discard_fleets>0){
       new_EM_dat$discard_data$Discard<-new_EM_dat$discard_data$Discard / sample_struct_hist$EM2OMdiscard_bias$bias
     }
   }# end if sample_struct_hist exists
-  
+  # TODO: Add sample_struct_hist code here to alter the dat file.  
   
   # write out the modified files that can be used in future EM run
   SS_writedat(new_EM_dat, file.path(EM_dir, OM_datfile),
