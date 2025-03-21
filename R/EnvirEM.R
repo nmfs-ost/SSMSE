@@ -2,7 +2,7 @@
 ## the inclusion of environment driven mortality in the SSMSE 
 ## process.  
 
-add_new_dat_BIAS <- function (OM_dat,
+add_new_dat_envir <- function (OM_dat,
                               EM_datfile,
                               sample_struct,
                               EM_dir,
@@ -104,10 +104,13 @@ add_new_dat_BIAS <- function (OM_dat,
     extracted_dat$discard_data$Discard <- tmp_discard$Discard / tmp_discard$bias
   }
   
+  if(!is.null(sample_struct$FixedCatchEM)){
+    extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], sample_struct[["FixedCatchEM"]])
+  }
+  
   extracted_dat[["EM2OMcatch_bias"]] <- NULL
   extracted_dat[["FixedCatch"]] <- NULL
-  extracted_dat[["FixedByCatch"]] <- NULL
-  
+
   for (n in names(extracted_dat)) {
     new_EM_dat[[n]] <- rbind(new_EM_dat[[n]], extracted_dat[[n]])
   }
@@ -321,7 +324,7 @@ EnvirEM <- function(EM_out_dir = NULL,
       sample_struct_sub <- NULL
     }
     
-    new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
+    new_EM_dat <- add_new_dat_envir( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
       OM_dat = OM_dat,  # why is this OM?  
       EM_datfile = new_datfile_name,
       sample_struct = sample_struct_sub,
@@ -434,48 +437,6 @@ EnvirEM <- function(EM_out_dir = NULL,
     
   }# end fixed catches
   
-  
-  ## IF FixedByCatch==TRUE
-  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
-  # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedByCatch)){
-    
-    # tmp_ss<- sample_struct$FixedByCatch[sample_struct$FixedByCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedByCatch[sample_struct$FixedByCatch$year %in% dat_yrs,] # create obj of fixed discardses
-    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
-    
-    if(nrow(tmp_ss)>0){
-      if(!is.null(new_OM_catch_list$catch)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-      
-      if(!is.null(new_OM_catch_list$catch_bio)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }else{
-        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-      
-      if(!is.null(new_OM_catch_list$catch_F)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-    }# end if fixed catches in this mgmt cycle. 
-    
-  }# end fixed catches
-  
   # Address EM2OM Catch Bias
   sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
   sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
@@ -550,7 +511,7 @@ EnvirEM <- function(EM_out_dir = NULL,
 #' print(sample_struct)
 #' @param FixedCatches T/F defines whether you want to manually specify catches in the future (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of OM and historical units. 
 #' 
-create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE, FixedCatchesEM = FALSE) { ### edited to include EM2OMcatch_bias
   assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
@@ -807,6 +768,19 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
   } else{# end if FixedCatches==TRUE
     FixedCatches <- NULL
   }
+  
+  if(FixedCatchesEM == TRUE){
+    sample_struct$FixedCatchEM <- sample_struct$FixedCatch
+    names(sample_struct$FixedCatchEM)[5] = "catch_se"
+    
+    for(f in unique(sample_struct$FixedCatchEM$FltSvy)){
+      sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
+    }
+    sample_struct$FixedCatchEM
+  } else{# end if FixedCatches==TRUE
+    FixedCatchesEM <- NULL
+  }
+  
   
   ## ADD EM2OMdiscard_bias
   if(!is.null(ncol(sample_struct$discard_data))){

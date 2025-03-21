@@ -7,11 +7,11 @@
 convert_to_r4ss_names <- function(sample_struct,
                                   convert_key = data.frame(
                                     df_name = c(
-                                      rep("catch", 4), rep("EM2OMcatch_bias", 4), rep("FixedCatch", 5), # added fixed catch
+                                      rep("catch", 4), rep("EM2OMcatch_bias", 4), rep("FixedCatch", 5),# added fixed catch
                                       rep("CPUE", 4), 
                                       rep("discard_data", 4),rep("EM2OMdiscard_bias", 4), rep("lencomp", 6),
                                       rep("agecomp", 9), rep("meanbodywt", 6),
-                                      rep("MeanSize_at_Age_obs", 7)
+                                      rep("MeanSize_at_Age_obs", 7), rep("FixedCatchEM", 5)# added fixed catch in EM
                                     ),
                                     r4ss_name = c(
                                       #catch names
@@ -19,7 +19,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       #EM2OM bias names
                                       "year", "seas", "fleet", "bias", ## add for EM2OM catch bias
                                       #FixedCatch names
-                                      "year", "seas", "fleet", "catch","units", ## add for Fixed Catch bias
+                                      "year", "seas", "fleet", "catch", "units", ## add for Fixed Catch bias
                                       #CPUE names
                                       "year", "seas", "index", "se_log",
                                       #Discard names
@@ -36,10 +36,12 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # generalized size comp
                                       # meansize at age - note sample sizes are for each bin and sex, but
                                       # currently SSMSE only allows repeating the same sample sizes.
-                                      "Yr", "Seas", "FltSvy", "Gender", "Part", "AgeErr", "N_"
+                                      "Yr", "Seas", "FltSvy", "Gender", "Part", "AgeErr", "N_",
                                       # Tags releases
                                       # "Area", "Yr", "Season", "Gender", "Age", "Nrelease",
                                       # Morph comp
+                                      #FixedCatchEM names
+                                      "year", "seas", "fleet", "catch", "catch_se" ## add for Fixed Catch bias in EM
                                     ),
                                     sample_struct_name = c(
                                       #catch names
@@ -63,11 +65,13 @@ convert_to_r4ss_names <- function(sample_struct,
                                       "Yr", "Seas", "FltSvy", "Part", "Type", "Std_in",
                                       # generalized size comp - to add later
                                       # mean size at age
-                                      "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_"
+                                      "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_",
                                       # Tag releases
                                       # "Area", "Yr", "Seas", "Sex", "Age", "Nrelease",
                                       # Tags return - may not need?
                                       # Morph comp - to add later
+                                      #FixedCatchEM bias names
+                                      "Yr", "Seas", "FltSvy", "Catch", "catch_se" # added
                                     ), stringsAsFactors = FALSE
                                   )) {
   # note test-utils includes a check that the default assumed
@@ -613,7 +617,8 @@ get_full_sample_struct <- function(sample_struct,
           MeanSize_at_Age_obs = x[, c(
             "Yr", "Seas", "FltSvy", "Sex",
             "Part", "Ageerr", "N_"
-          )]
+          )],
+          FixedCatchEM = x[, c("Yr","Seas","FltSvy","Catch","catch_se")], # added
         )
       }
       x <- utils::type.convert(x, as.is = TRUE)
