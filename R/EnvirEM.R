@@ -411,6 +411,7 @@ EnvirEM <- function(EM_out_dir = NULL,
         if(nrow(tmp_ss_catch)>0){
           tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
           tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          tmp_merge <- tmp_merge[base::order(base::abs(tmp_merge$fleet),base::abs(tmp_merge$year),base::abs(tmp_merge$seas)),]
           new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
         }
       }#end if catch exists
@@ -420,6 +421,7 @@ EnvirEM <- function(EM_out_dir = NULL,
         if(nrow(tmp_ss_catch)>0){
           tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
           tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
+          tmp_merge <- tmp_merge[base::order(base::abs(tmp_merge$fleet),base::abs(tmp_merge$year),base::abs(tmp_merge$seas)),]
           new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
         }
       }else{
@@ -430,13 +432,13 @@ EnvirEM <- function(EM_out_dir = NULL,
         if(nrow(tmp_ss_catch)>0){
           tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
           tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
+          tmp_merge <- tmp_merge[base::order(base::abs(tmp_merge$fleet),base::abs(tmp_merge$year),base::abs(tmp_merge$seas)),]
           new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
         }
       }#end if catch exists
     }# end if fixed catches in this mgmt cycle. 
-    
   }# end fixed catches
-  
+
   # Address EM2OM Catch Bias
   sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
   sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
@@ -474,7 +476,6 @@ EnvirEM <- function(EM_out_dir = NULL,
   } else{
     new_OM_catch_list$catch_F <- NULL
   }
-  
   
   new_catch_list<-new_OM_catch_list
   new_catch_list

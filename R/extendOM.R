@@ -338,7 +338,6 @@ update_OM <- function(OM_dir,
       }
     }
   }
-  
   catch_intended <- catch_intended[catch_intended[, "catch"] > 0, , drop = FALSE]
   catch_intended <- catch_intended[catch_intended[, "F"] > 0, , drop = FALSE]
 
@@ -378,7 +377,6 @@ update_OM <- function(OM_dir,
     parlist = parlist, outfile = file.path(OM_dir, "ss.par"),
     overwrite = TRUE, verbose = FALSE
   )
-
   r4ss::SS_writedat(dat,
     outfile = file.path(OM_dir, start[["datfile"]]),
     overwrite = TRUE,

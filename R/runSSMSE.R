@@ -772,7 +772,6 @@ run_SSMSE_iter <- function(out_dir = NULL,
       "Finished running and sampling OM through year ", max(new_catch_list[["catch"]][, "year"]),
       "."
     )
-
     if (run_EM_last_yr == FALSE && isTRUE(yr == test_run_EM_yr)) {
       skip_EM_run <- TRUE
     } else {
@@ -813,9 +812,9 @@ run_SSMSE_iter <- function(out_dir = NULL,
         seed = (iter_seed[["iter"]][1] + 5678901 + yr)
       )
       message(
-        "Finished getting catch (years ", (yr + 1), " to ",
+        paste0("Finished getting catch (years ", (yr + 1), " to ",
         (yr + nyrs_assess), ") to feed into OM for iteration ", niter, "."
-      )
+      ))
     }
   }
   if (extra_yrs > 0) {
@@ -830,7 +829,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
       OM_dir = OM_out_dir,
       catch = subset_catch_list[["catch"]],
       harvest_rate = subset_catch_list[["catch_F"]],
-      discards = new_catch_list[["discards"]],
+      discards = subset_catch_list[["discards"]],
       catch_basis = NULL,
       F_limit = NULL,
       EM_pars = subset_catch_list[["EM_pars"]],
