@@ -12,6 +12,7 @@ RatioBiasEM(
   nyrs_assess,
   dat_yrs,
   sample_struct = NULL,
+  sample_struct_hist = NULL,
   seed = NULL,
   OM_out_dir,
   ...
@@ -46,6 +47,8 @@ used in \code{r4ss::SS_readdat()}. The \code{run_SSMSE_iter} function
 examples give an example of what this structure should be. Running the
 function \code{create_sample_struct()} will also produce a sample_struct
 object in the correct form. Can be NULL only when MS is not EM.}
+
+\item{sample_struct_hist}{historical sample structure object}
 
 \item{seed}{A random seed so that reproducible results are possible.}
 
