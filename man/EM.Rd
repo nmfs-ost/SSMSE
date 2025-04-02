@@ -12,6 +12,7 @@ EM(
   nyrs_assess,
   dat_yrs,
   sample_struct = NULL,
+  sample_struct_hist = NULL,
   seed = NULL,
   OM_out_dir,
   ...

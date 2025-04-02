@@ -8,9 +8,9 @@ get_RatioEM_catch_df(
   EM_dir,
   dat,
   dat_yrs,
-  changeup = 0.2,
-  changedown = 0.2,
-  c1 = 0.75,
+  changeup = 10,
+  changedown = 10,
+  c1 = 1,
   option = "default",
   ...
 )
@@ -28,5 +28,5 @@ Get the data frame of catch for the next iterations when using a Stock
 Synthesis Estimation model from the Report.sso file.
 }
 \author{
-Kathryn Doering
+Kathryn Doering modified by Cassidy Peterson
 }

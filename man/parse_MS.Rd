@@ -16,6 +16,7 @@ parse_MS(
   dat_yrs,
   future_om_list = NULL,
   sample_struct = NULL,
+  sample_struct_hist = NULL,
   interim_struct = NULL,
   seed = NULL
 )
@@ -71,6 +72,8 @@ used in \code{r4ss::SS_readdat()}. The \code{run_SSMSE_iter} function
 examples give an example of what this structure should be. Running the
 function \code{create_sample_struct()} will also produce a sample_struct
 object in the correct form. Can be NULL only when MS is not EM.}
+
+\item{sample_struct_hist}{historical sample structure object}
 
 \item{interim_struct}{An optional including how many years to average over,
 fleet weights, the scaling rate (Beta) of catch relative to the index change for each fleet,
