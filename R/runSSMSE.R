@@ -91,6 +91,7 @@ run_SSMSE <- function(scen_name_vec,
                       seed = NULL,
                       n_F_search_loops = 20,
                       tolerance_F_search = 0.001,
+                      file_removal = FALSE,
                       run_parallel = FALSE,
                       n_cores = NULL) {
   if (!is.null(custom_MS_source)) {
@@ -209,6 +210,7 @@ run_SSMSE <- function(scen_name_vec,
       run_EM_last_yr = run_EM_last_yr,
       n_F_search_loops = n_F_search_loops,
       tolerance_F_search = tolerance_F_search,
+      file_removal = file_removal,
       verbose = verbose,
       run_parallel = run_parallel,
       n_cores = n_cores
@@ -287,7 +289,8 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
                            run_parallel = FALSE,
                            n_cores = NULL,
                            n_F_search_loops = 20,
-                           tolerance_F_search = 0.001) {
+                           tolerance_F_search = 0.001,
+                           file_removal = FALSE) {
   # input checks
   assertive.types::assert_is_a_string(scen_name)
   assertive.properties::assert_is_atomic(iter)
@@ -362,6 +365,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
           interim_struct = interim_struct,
           n_F_search_loops = n_F_search_loops,
           tolerance_F_search = tolerance_F_search,
+          file_removal = file_removal,
           verbose = verbose
         )
       }
@@ -397,6 +401,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
         interim_struct = interim_struct,
         n_F_search_loops = n_F_search_loops,
         tolerance_F_search = tolerance_F_search,
+        file_removal = file_removal,
         verbose = verbose
       ), error = function(e) e)
     }
@@ -512,6 +517,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
                            interim_struct = NULL,
                            n_F_search_loops = 20,
                            tolerance_F_search = 0.001,
+                           file_removal = FALSE,
                            verbose = FALSE) {
   # input checks ----
   # checks for out_dir, OM_name, OM_in_dir, EM_name, EM_in_dir done in create_out_dirs
@@ -846,6 +852,30 @@ run_SSMSE_iter <- function(out_dir = NULL,
       sample_catch = sample_catch,
       seed = (iter_seed[["iter"]][1] + 7890123)
     )
+  }
+  if (file_removal == TRUE) {
+    if (runif(1) < 0.9) {
+      # Set the path to your iteration folder
+      iteration_folder <- dirname(new_EM_out_dir)
+      
+      # List all directories that start with "_EM_" in the iteration folder
+      em_dirs <- list.dirs(path = iteration_folder,
+                           full.names = TRUE,
+                           recursive = FALSE)
+      em_dirs <- em_dirs[grepl("_EM_", basename(em_dirs))]
+      
+      # Loop through each EM_ folder
+      for (dir in em_dirs) {
+        # List all files in the directory (non-recursive)
+        files <- list.files(path = dir, full.names = TRUE)
+        # Identify files to keep
+        keep_files <- file.path(dir, c("Report.sso", "Forecast-report.sso"))
+        # Determine files to delete
+        delete_files <- setdiff(files, keep_files)
+        # Delete the files
+        file.remove(delete_files)
+      }
+    }
   }
   message("Finished iteration ", niter, ".")
   invisible(TRUE)
