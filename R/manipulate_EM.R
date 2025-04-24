@@ -65,6 +65,13 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
   if (do_checks) {
     check_OM_dat(OM_dat, EM_dat)
   }
+  #names of OM and EM_dat need to be set to SSMSE standard, they change for different versions of r4ss
+  names(OM_dat$CPUE)[1:3]<-c("year", "seas", "index")
+  names(EM_dat$CPUE)[1:3]<-c("year", "seas", "index")
+  names(OM_dat$lencomp)[1:5]<-c("Yr", "Seas", "FltSvy", "Gender", "Part")
+  names(OM_dat$agecomp)[1:5]<-c("Yr", "Seas", "FltSvy", "Gender", "Part")
+  names(EM_dat$lencomp)[1:5]<-c("Yr", "Seas", "FltSvy", "Gender", "Part")
+  names(EM_dat$agecomp)[1:5]<-c("Yr", "Seas", "FltSvy", "Gender", "Part")
   dat <- list(OM_dat = OM_dat, EM_dat = EM_dat)
   CPUEs <- lapply(dat, function(x) {
     tmp <- combine_cols(x, "CPUE", c("year", "seas", "index"))
@@ -218,6 +225,13 @@ add_new_dat <- function(OM_dat,
   # checks in relation to OM_dat: check that years, fleets, etc. ar valid
 
   # extract data from OM_dat based on valid data structure
+  #change column names to be sure they work with any r4ss
+  names(OM_dat$CPUE)[1:3] <- c("year", "seas", "index")
+  names(OM_dat$lencomp)[1:5] <- c("Yr", "Seas", "FltSvy", "Gender", "Part")
+  names(OM_dat$agecomp)[1:8] <- c(
+    "Yr", "Seas", "FltSvy", "Gender", "Part", "Ageerr",
+    "Lbin_lo", "Lbin_hi"
+  )
   extracted_dat <-
     mapply(
       function(df, df_name, OM_dat) {

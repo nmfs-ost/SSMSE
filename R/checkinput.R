@@ -166,6 +166,14 @@ check_avail_dat <- function(EM_dat, OM_dat,
                             colnames = c("year", "seas", "index")) {
   EM_item <- EM_dat[[list_item]]
   OM_item <- OM_dat[[list_item]]
+  if (list_item=="CPUE"){
+    if(names(EM_item)[2]=="month"){names(EM_item)[2]<-colnames[2]}
+    if(names(OM_item)[2]=="month"){names(OM_item)[2]<-colnames[2]}
+  } 
+  if (list_item=="lencomp"|list_item=="agecomp"){
+    names(EM_item)[1:3]<-colnames[1:3]
+    names(OM_item)[1:3]<-colnames[1:3]
+  } 
   combo_EM <- combo_OM <- NULL
   for (n in colnames) {
     combo_EM <- c(paste0(combo_EM, EM_item[, n], "_"))

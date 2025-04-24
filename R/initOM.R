@@ -632,6 +632,7 @@ add_sample_struct <- function(sample_struct, dat) {
       tmp_CPUE[["obs"]] <- 1 # dummy observation
       tmp_CPUE <- tmp_CPUE[, c("year", "seas", "index", "obs", "se_log")]
       tmp_CPUE[["index"]] <- -abs(tmp_CPUE[["index"]])
+      names(dat[["CPUE"]])[2] <- names(tmp_CPUE)[2] 
       dat[["CPUE"]] <- rbind(dat[["CPUE"]], tmp_CPUE)
     }
   }
@@ -660,6 +661,7 @@ add_sample_struct <- function(sample_struct, dat) {
       colnames(tmp_df_dat) <- lencomp_dat_colnames
       tmp_lencomp <- cbind(tmp_lencomp, as.data.frame(tmp_df_dat))
       tmp_lencomp[["FltSvy"]] <- -abs(tmp_lencomp[["FltSvy"]]) # make sure negative
+      names(dat[["lencomp"]]) <- names(tmp_lencomp) 
       dat[["lencomp"]] <- rbind(dat[["lencomp"]], tmp_lencomp)
     }
   }
@@ -686,6 +688,7 @@ add_sample_struct <- function(sample_struct, dat) {
       colnames(tmp_df_dat) <- agecomp_dat_colnames
       tmp_agecomp <- cbind(tmp_agecomp, as.data.frame(tmp_df_dat))
       tmp_agecomp[["FltSvy"]] <- -abs(tmp_agecomp[["FltSvy"]]) # make sure negative
+      names(dat[["agecomp"]]) <- names(tmp_agecomp)
       dat[["agecomp"]] <- rbind(dat[["agecomp"]], tmp_agecomp)
     }
   }
