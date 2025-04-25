@@ -405,7 +405,10 @@ add_dev_changes <- function(fut_list, scen, iter, parlist, dat, vals_df, nyrs, c
         ndevs = nyrs,
         dist = fut_list[["pattern"]][2]
       )
-
+      if (i == "rec_devs") {
+        samp_vals <- samp_vals - mean(samp_vals) + mean
+      }
+      # add the sampled values to the vals_df
       vals_df[[i]] <- samp_vals
     }
   } else if (fut_list[["pattern"]][1] == "custom") {
