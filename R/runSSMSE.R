@@ -869,7 +869,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
         # List all files in the directory (non-recursive)
         files <- list.files(path = dir, full.names = TRUE)
         # Identify files to keep
-        keep_files <- file.path(dir, c("Report.sso", "Forecast-report.sso"))
+        keep_files <- file.path(dir, c("Report.sso", "Forecast-report.sso","ss_summary.sso", "admodel.cov", "wtatage.ss_new", "warning.sso", "posteriors.sso", "CompReport.sso", "derived_posteriors.sso", "data.ss_new", "data_echo.ss_new"))
         # Determine files to delete
         delete_files <- setdiff(files, keep_files)
         # Delete the files
