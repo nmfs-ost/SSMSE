@@ -24,4 +24,4 @@ on:
       - 'JOSS/**'
 jobs:
   call-workflow:
-    uses: nmfs-fish-tools/ghactions4r/.github/workflows/calc-coverage.yml@main
+    uses: nmfs-ost/ghactions4r/.github/workflows/calc-coverage.yml@main

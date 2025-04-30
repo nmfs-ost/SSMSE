@@ -18,4 +18,4 @@ name: call-r-cmd-check
 
 jobs:
   call-workflow:
-    uses: nmfs-fish-tools/ghactions4r/.github/workflows/r-cmd-check.yml@main
+    uses: nmfs-ost/ghactions4r/.github/workflows/r-cmd-check.yml@main
