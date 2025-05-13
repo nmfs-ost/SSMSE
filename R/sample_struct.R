@@ -28,20 +28,20 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # Morph comp
                                     ),
                                     sample_struct_name = c(
-                                      "year", "seas", "fleet", "catch_se", # catch
-                                      "year", "month", "index", "se_log", # cpue
-                                      "year", "month", "fleet", "sex", "part", "Nsamp", #lencomp
-                                      "year", "month", "fleet", "sex", "part", "ageerr", "Lbin_lo",
-                                      "Lbin_hi", "Nsamp", #agecomp
-                                      # mean size
-                                      "year", "month", "fleet", "part", "type", "stderr",
-                                      # generalized size comp
-                                      # meansize at age - note sample sizes are for each bin and sex, but
-                                      # currently SSMSE only allows repeating the same sample sizes.
-                                      "year", "month", "fleet", "sex", "part", "ageerr", "N_"
-                                      # Tags releases
-                                      # "Area", "Yr", "Season", "sex", "Age", "Nrelease",
-                                      # Morph comp
+                                      "Yr", "Seas", "FltSvy", "SE",
+                                      "Yr", "Seas", "FltSvy", "SE",
+                                      "Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp",
+                                      "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
+                                      "Lbin_lo", "Lbin_hi", "Nsamp",
+                                      # mean weight or length (depends on Type)
+                                      "Yr", "Seas", "FltSvy", "Part", "Type", "Std_in",
+                                      # generalized size comp - to add later
+                                      # mean size at age
+                                      "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_"
+                                      # Tag releases
+                                      # "Area", "Yr", "Seas", "Sex", "Age", "Nrelease",
+                                      # Tags return - may not need?
+                                      # Morph comp - to add later
                                     ), stringsAsFactors = FALSE
                                   )) {
   # note test-utils includes a check that the default assumed
