@@ -325,8 +325,8 @@ update_OM <- function(OM_dir,
     }
 
     for (i in grep("Env_", names(EM_pars))) {
-      dat[["envdat"]][is.element(dat[["envdat"]]["Yr"], EM_pars[["year"]]) &
-        is.element(dat[["envdat"]]["Variable"], as.numeric(strsplit(names(EM_pars)[i], "Env_")[[1]][2])), c("yr", "Value")] <- EM_pars[, c(1, i)]
+      dat[["envdat"]][is.element(dat[["envdat"]]["year"], EM_pars[["year"]]) &
+        is.element(dat[["envdat"]]["Variable"], as.numeric(strsplit(names(EM_pars)[i], "Env_")[[1]][2])), c("year", "Value")] <- EM_pars[, c(1, i)]
     }
 
     dev_names <- paste0(names(EM_pars), "_dev_seq")
@@ -397,7 +397,7 @@ update_OM <- function(OM_dir,
         units_of_catch = units_of_catch
       )
 
-      F_achieved <- F_list[["F_df"]][, c("Yr", "Seas", "Fleet", "F")]
+      F_achieved <- F_list[["F_df"]][, c("year", "Seas", "Fleet", "F")]
       colnames(F_achieved) <- c("year", "seas", "fleet", "F")
 
       for (i in 1:length(catch_intended[, 1])) {
@@ -407,11 +407,11 @@ update_OM <- function(OM_dir,
           intended_landings <- catch_intended[i, "catch"]
 
           if (catch_intended[i, "basis_2"] == 1) {
-            achieved_landings <- ret_catch[ret_catch[, "Yr"] == catch_intended[i, "year"] &
+            achieved_landings <- ret_catch[ret_catch[, "year"] == catch_intended[i, "year"] &
               ret_catch[, "Seas"] == catch_intended[i, "seas"] &
               ret_catch[, "Fleet"] == catch_intended[i, "fleet"], "retained_catch"]
           } else if (catch_intended[i, "basis_2"] == 2) {
-            achieved_landings <- dead_catch[dead_catch[, "Yr"] == catch_intended[i, "year"] &
+            achieved_landings <- dead_catch[dead_catch[, "year"] == catch_intended[i, "year"] &
               dead_catch[, "Seas"] == catch_intended[i, "seas"] &
               dead_catch[, "Fleet"] == catch_intended[i, "fleet"], "retained_catch"]
           } else {

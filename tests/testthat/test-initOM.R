@@ -42,13 +42,13 @@ test_that("create_OM can modify model", {
     new_dat[["CPUE"]][, c("year", "seas", "index")],
     unique(new_dat[["CPUE"]][, c("year", "seas", "index")])
   )
-  cols_lencomp <- c("Yr", "Seas", "FltSvy", "sex", "Part")
+  cols_lencomp <- c("year", "Seas", "FltSvy", "sex", "Part")
   expect_equal(
     new_dat[["lencomp"]][, cols_lencomp],
     unique(new_dat[["lencomp"]][, cols_lencomp])
   )
   cols_agecomp <- c(
-    "Yr", "Seas", "FltSvy", "sex", "Part", "Ageerr", "Lbin_lo",
+    "year", "Seas", "FltSvy", "sex", "Part", "Ageerr", "Lbin_lo",
     "Lbin_hi"
   )
   expect_equal(
@@ -78,10 +78,10 @@ test_that("rm_sample_struct_hist works", {
   ]
   lencomp_samp <- dat[["lencomp"]]
   # Note: only year 80 in present in the initial dataset
-  lencomp_samp <- lencomp_samp[lencomp_samp[["Yr"]] %in% c(70, 80, 90), 1:6]
+  lencomp_samp <- lencomp_samp[lencomp_samp[["year"]] %in% c(70, 80, 90), 1:6]
   agecomp_samp <- dat[["agecomp"]]
   # Note: only years 50 and 70 are present in the initial dataset
-  agecomp_samp <- agecomp_samp[agecomp_samp[["Yr"]] %in% c(50, 62, 70), 1:9]
+  agecomp_samp <- agecomp_samp[agecomp_samp[["year"]] %in% c(50, 62, 70), 1:9]
   # note this list uses the r4ss names instead of the user input names,
   # as this function will be run when the user input has already been
   # transformed to the r4ss names.

@@ -21,19 +21,19 @@
 #'   NULL,
 #'   list(
 #'     catch = data.frame(
-#'       Yr = 101:106,
+#'       year = 101:106,
 #'       Seas = 1,
 #'       FltSvy = 1,
 #'       SE = 0.05
 #'     ),
 #'     CPUE = data.frame(
-#'       Yr = c(102, 105),
+#'       year = c(102, 105),
 #'       Seas = 7,
 #'       FltSvy = 2,
 #'       SE = 0.01
 #'     ),
 #'     lencomp = data.frame(
-#'       Yr = c(102, 105), Seas = 1,
+#'       year = c(102, 105), Seas = 1,
 #'       FltSvy = 1, Sex = 0,
 #'       Part = 0, Nsamp = 100
 #'     ),
@@ -437,7 +437,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
 #' @param out_dir The directory to which to write output. IF NULL, will default
 #'   to the working directory.
 #' @param nyrs_lag number of years of lag in obtaining data. i.e. the number of years
-#'  post EM assessment end yr before advice can be implemented. defaults to 0.
+#'  post EM assessment end year before advice can be implemented. defaults to 0.
 #' @param niter The iteration number, which is also the name of the folder the
 #'  results will be written to.
 #' @template future_om_list
@@ -473,14 +473,14 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
 #'   nyrs = 6,
 #'   nyrs_assess = 3,
 #'   sample_struct = list(
-#'     catch = data.frame(Yr = 101:106, Seas = 1, FltSvy = 1, SE = 0.05),
-#'     CPUE = data.frame(Yr = c(102, 105), Seas = 7, FltSvy = 2, SE = 0.01),
+#'     catch = data.frame(year = 101:106, Seas = 1, FltSvy = 1, SE = 0.05),
+#'     CPUE = data.frame(year = c(102, 105), Seas = 7, FltSvy = 2, SE = 0.01),
 #'     lencomp = data.frame(
-#'       Yr = c(102, 105), Seas = 1, FltSvy = 1,
+#'       year = c(102, 105), Seas = 1, FltSvy = 1,
 #'       Sex = 0, Part = 0, Nsamp = 100
 #'     ),
 #'     agecomp = data.frame(
-#'       Yr = c(102, 105), Seas = 1, FltSvy = 2,
+#'       year = c(102, 105), Seas = 1, FltSvy = 2,
 #'       Sex = 0, Part = 0, Ageerr = 1,
 #'       Lbin_lo = -1, Lbin_hi = -1, Nsamp = 50
 #'     )
@@ -668,10 +668,10 @@ run_SSMSE_iter <- function(out_dir = NULL,
     test_run_EM_yr <- NULL
   }
   # Loop over the assessment years.
-  for (yr in assess_yrs) {
+  for (year in assess_yrs) {
     if (verbose) {
       message(
-        "Extending, running, and sampling from the OM though year ", yr,
+        "Extending, running, and sampling from the OM though year ", year,
         "."
       )
     }
@@ -688,7 +688,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
       verbose = verbose,
       n_F_search_loops = n_F_search_loops,
       tolerance_F_search = tolerance_F_search,
-      seed = (iter_seed[["iter"]][1] + 234567 + yr)
+      seed = (iter_seed[["iter"]][1] + 234567 + year)
     )
     # rerun OM (without estimation), get samples (or expected values)
     if (use_SS_boot == TRUE) {
@@ -697,20 +697,20 @@ run_SSMSE_iter <- function(out_dir = NULL,
           new_OM_dat <- run_OM(
             OM_dir = OM_out_dir, boot = FALSE, nboot = 1,
             sample_catch = sample_catch,
-            verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + yr)
+            verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + year)
           )
         } else {
           new_OM_dat <- run_OM(
             OM_dir = OM_out_dir, boot = use_SS_boot, nboot = 1,
             sample_catch = sample_catch,
-            verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + yr)
+            verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + year)
           )
         }
       } else {
         new_OM_dat <- run_OM(
           OM_dir = OM_out_dir, boot = use_SS_boot, nboot = 1,
           sample_catch = sample_catch,
-          verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + yr)
+          verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + year)
         )
       }
     } else {
@@ -723,7 +723,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
       "Finished running and sampling OM through year ", max(new_catch_list[["catch"]][, "year"]),
       "."
     )
-    if (run_EM_last_yr == FALSE && isTRUE(yr == test_run_EM_yr)) {
+    if (run_EM_last_yr == FALSE && isTRUE(year == test_run_EM_yr)) {
       skip_EM_run <- TRUE
     } else {
       skip_EM_run <- FALSE
@@ -731,7 +731,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     if (skip_EM_run == FALSE) {
       # if using an EM, want to save results to a new folder
       if (!is.null(EM_out_dir) & MS != "Interim") {
-        new_EM_out_dir <- paste0(EM_out_dir_basename, "_", yr)
+        new_EM_out_dir <- paste0(EM_out_dir_basename, "_", year)
         dir.create(new_EM_out_dir)
         success <- copy_model_files(
           EM_in_dir = EM_out_dir,
@@ -739,7 +739,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
         )
         EM_out_dir <- new_EM_out_dir
       }
-      # Only want data for the new years: (yr+nyrs_assess):yr
+      # Only want data for the new years: (year+nyrs_assess):year
       # create the new dataset to input into the EM
       # loop EM and get management quantities.
       if (!is.null(EM_out_dir_basename)) {
@@ -756,24 +756,24 @@ run_SSMSE_iter <- function(out_dir = NULL,
         init_loop = FALSE, verbose = verbose,
         nyrs_assess = nyrs_assess,
         OM_out_dir = OM_out_dir,
-        dat_yrs = (yr + 1):(yr + nyrs_assess),
+        dat_yrs = (year + 1):(year + nyrs_assess),
         sample_struct = sample_struct,
         interim_struct = interim_struct,
-        seed = (iter_seed[["iter"]][1] + 5678901 + yr)
+        seed = (iter_seed[["iter"]][1] + 5678901 + year)
       )
       message(
-        "Finished getting catch (years ", (yr + 1), " to ",
-        (yr + nyrs_assess), ") to feed into OM for iteration ", niter, "."
+        "Finished getting catch (years ", (year + 1), " to ",
+        (year + nyrs_assess), ") to feed into OM for iteration ", niter, "."
       )
     }
   }
   if (extra_yrs > 0) {
     message("Running the OM 1 final time, because last year extends past the last
     assessment.")
-    yr <- assess_yrs[length(assess_yrs)] + extra_yrs
+    year <- assess_yrs[length(assess_yrs)] + extra_yrs
     subset_catch_list <- lapply(new_catch_list,
-      function(x, yr) new_catch <- x[x[["year"]] <= yr, ],
-      yr = yr
+      function(x, year) new_catch <- x[x[["year"]] <= year, ],
+      year = year
     )
     update_OM(
       OM_dir = OM_out_dir,

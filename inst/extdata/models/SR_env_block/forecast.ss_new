@@ -26,7 +26,7 @@
 0.75 # Buffer:  enter Control rule target as fraction of Flimit (e.g. 0.75), negative value invokes list of [year, scalar] with filling from year to YrMax 
 3 #_N forecast loops (1=OFL only; 2=ABC; 3=get F from forecast ABC catch with allocations applied)
 3 #_First forecast loop with stochastic recruitment
-1 #_Forecast recruitment:  0= spawn_recr; 1=value*spawn_recr_fxn; 2=value*VirginRecr; 3=recent mean from yr range above (need to set phase to -1 in control to get constant recruitment in MCMC)
+1 #_Forecast recruitment:  0= spawn_recr; 1=value*spawn_recr_fxn; 2=value*VirginRecr; 3=recent mean from year range above (need to set phase to -1 in control to get constant recruitment in MCMC)
 1 # value is multiplier of SRR 
 0 #_Forecast loop control #5 (reserved for future bells&whistles) 
 2010  #FirstYear for caps and allocations (should be after years with fixed inputs) 

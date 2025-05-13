@@ -540,7 +540,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     compare_obj = sample_struct_hist,
     name_in_obj = "lencomp",
     colnames = c(
-      "Yr", "Seas", "FltSvy", "sex",
+      "year", "Seas", "FltSvy", "sex",
       "Part"
     )
   )
@@ -549,7 +549,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     compare_obj = sample_struct_hist,
     name_in_obj = "agecomp",
     colnames = c(
-      "Yr", "Seas", "FltSvy", "sex",
+      "year", "Seas", "FltSvy", "sex",
       "Part", "Ageerr", "Lbin_lo",
       "Lbin_hi"
     )
@@ -564,7 +564,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "MeanSize_at_Age_obs",
-    colnames = c("Yr", "Seas", "FltSvy", "sex", "Part", "AgeErr", "N_")
+    colnames = c("year", "Seas", "FltSvy", "sex", "Part", "AgeErr", "N_")
   )
   dat
 }
@@ -648,8 +648,8 @@ add_sample_struct <- function(sample_struct, dat) {
   }
   if (dat[["use_lencomp"]] == 1 & !is.null(sample_struct[["lencomp"]])) {
     tmp_lencomp <- sample_struct[["lencomp"]]
-    tmp_lencomp <- tmp_lencomp[tmp_lencomp[["Yr"]] >= subset_yr_start &
-      tmp_lencomp[["Yr"]] <= subset_yr_end, ]
+    tmp_lencomp <- tmp_lencomp[tmp_lencomp[["year"]] >= subset_yr_start &
+      tmp_lencomp[["year"]] <= subset_yr_end, ]
     if (nrow(tmp_lencomp) > 0) {
       # get col names
       lencomp_dat_colnames <- colnames(dat[["lencomp"]])[7:ncol(dat[["lencomp"]])]
@@ -674,8 +674,8 @@ add_sample_struct <- function(sample_struct, dat) {
   }
   if (!is.null(dat[["agecomp"]]) & !is.null(sample_struct[["agecomp"]])) {
     tmp_agecomp <- sample_struct[["agecomp"]]
-    tmp_agecomp <- tmp_agecomp[tmp_agecomp[["Yr"]] >= subset_yr_start &
-      tmp_agecomp[["Yr"]] <= subset_yr_end, ]
+    tmp_agecomp <- tmp_agecomp[tmp_agecomp[["year"]] >= subset_yr_start &
+      tmp_agecomp[["year"]] <= subset_yr_end, ]
     if (nrow(tmp_agecomp) > 0) {
       # get col names
       agecomp_dat_colnames <- colnames(dat[["agecomp"]])[10:ncol(dat[["agecomp"]])]
@@ -724,8 +724,8 @@ add_sample_struct <- function(sample_struct, dat) {
   }
   if (!is.null(dat[["MeanSize_at_Age_obs"]]) & !is.null(sample_struct[["MeanSize_at_Age_obs"]])) {
     tmp_MeanSize_at_Age_obs <- sample_struct[["MeanSize_at_Age_obs"]]
-    tmp_MeanSize_at_Age_obs <- tmp_MeanSize_at_Age_obs[tmp_MeanSize_at_Age_obs[["Yr"]] >= subset_yr_start &
-      tmp_MeanSize_at_Age_obs[["Yr"]] <= subset_yr_end, ]
+    tmp_MeanSize_at_Age_obs <- tmp_MeanSize_at_Age_obs[tmp_MeanSize_at_Age_obs[["year"]] >= subset_yr_start &
+      tmp_MeanSize_at_Age_obs[["year"]] <= subset_yr_end, ]
     if (nrow(tmp_MeanSize_at_Age_obs) > 0) {
       # get col names
       sample_colnames <- grep("^[fm]\\d+$", colnames(dat[["MeanSize_at_Age_obs"]]),
