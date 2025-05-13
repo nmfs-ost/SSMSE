@@ -30,13 +30,13 @@ test_that("get_EM_dat works", {
   })
   expect_equal(OM_dat[["CPUE"]][["obs"]][-rm_ind], new_dat[["CPUE"]][["obs"]])
   # check length comps changed
-  row_names <- c("year", "Seas", "FltSvy")
+  row_names <- c("year", "Seas", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["lencomp"]][x], new_dat[["lencomp"]][x])
   })
   expect_equal(OM_dat[["lencomp"]][["obs"]][-rm_ind], new_dat[["lencomp"]][["obs"]])
   # chack age comps changed
-  row_names <- c("year", "Seas", "FltSvy")
+  row_names <- c("year", "Seas", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["agecomp"]][x], new_dat[["agecomp"]][x])
   })
@@ -246,7 +246,7 @@ test_that("change_yrs_fcast works/errors with allocation as expected", {
   # mock a forecast file with allocation. assume has 3 fleets with catch.
   fore[["N_allocation_groups"]] <- 3
   fore[["fleet_assignment_to_allocation_group"]] <- data.frame(
-    Fleet = 1:3,
+    fleet = 1:3,
     Group = c(1, 1, 2)
   )
   fore[["allocation_among_groups"]] <-
@@ -291,7 +291,7 @@ test_that("change_yrs_fcast works/errors with allocation as expected", {
     fixed = TRUE
   )
   fore[["ForeCatch"]] <- data.frame(
-    Year = 101:102, Seas = 1, Fleet = 1:2,
+    Year = 101:102, Seas = 1, fleet = 1:2,
     Catch = c(200, 300)
   )
   expect_warning(new_fore <- change_yrs_fcast(fore,

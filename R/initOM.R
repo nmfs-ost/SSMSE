@@ -540,7 +540,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     compare_obj = sample_struct_hist,
     name_in_obj = "lencomp",
     colnames = c(
-      "year", "Seas", "FltSvy", "sex",
+      "year", "Seas", "fleet", "sex",
       "Part"
     )
   )
@@ -549,7 +549,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     compare_obj = sample_struct_hist,
     name_in_obj = "agecomp",
     colnames = c(
-      "year", "Seas", "FltSvy", "sex",
+      "year", "Seas", "fleet", "sex",
       "Part", "Ageerr", "Lbin_lo",
       "Lbin_hi"
     )
@@ -558,13 +558,13 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "meanbodywt",
-    colnames = c("Year", "Seas", "Fleet", "Partition", "Type", "Std_in")
+    colnames = c("Year", "Seas", "fleet", "Partition", "Type", "Std_in")
   )
   dat[["MeanSize_at_Age_obs"]] <- rm_vals(
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "MeanSize_at_Age_obs",
-    colnames = c("year", "Seas", "FltSvy", "sex", "Part", "AgeErr", "N_")
+    colnames = c("year", "Seas", "fleet", "sex", "Part", "AgeErr", "N_")
   )
   dat
 }
@@ -659,7 +659,7 @@ add_sample_struct <- function(sample_struct, dat) {
       )
       colnames(tmp_df_dat) <- lencomp_dat_colnames
       tmp_lencomp <- cbind(tmp_lencomp, as.data.frame(tmp_df_dat))
-      tmp_lencomp[["FltSvy"]] <- -abs(tmp_lencomp[["FltSvy"]]) # make sure negative
+      tmp_lencomp[["fleet"]] <- -abs(tmp_lencomp[["fleet"]]) # make sure negative
       dat[["lencomp"]] <- rbind(dat[["lencomp"]], tmp_lencomp)
     }
   }
@@ -685,7 +685,7 @@ add_sample_struct <- function(sample_struct, dat) {
       )
       colnames(tmp_df_dat) <- agecomp_dat_colnames
       tmp_agecomp <- cbind(tmp_agecomp, as.data.frame(tmp_df_dat))
-      tmp_agecomp[["FltSvy"]] <- -abs(tmp_agecomp[["FltSvy"]]) # make sure negative
+      tmp_agecomp[["fleet"]] <- -abs(tmp_agecomp[["fleet"]]) # make sure negative
       dat[["agecomp"]] <- rbind(dat[["agecomp"]], tmp_agecomp)
     }
   }
@@ -706,7 +706,7 @@ add_sample_struct <- function(sample_struct, dat) {
       # dummy observation negative to exclued from NLL? (or should the fleet be neg?)
       tmp_meanbodywt[["Value"]] <- -1
       tmp_meanbodywt <- tmp_meanbodywt[, c(
-        "Year", "Seas", "Fleet", "Partition",
+        "Year", "Seas", "fleet", "Partition",
         "Type", "Value", "Std_in"
       )]
       tmp_meanbodywt[["Value"]] <- -abs(tmp_meanbodywt[["Value"]])
@@ -763,7 +763,7 @@ add_sample_struct <- function(sample_struct, dat) {
         tmp_N_df
       )
       # TODO: need to make fleet negative??? no sure for this data type.
-      # tmp_agecomp[["FltSvy"]] <- -abs(tmp_agecomp[["FltSvy"]]) # make sure negative
+      # tmp_agecomp[["fleet"]] <- -abs(tmp_agecomp[["fleet"]]) # make sure negative
       dat[["MeanSize_at_Age_obs"]] <- rbind(
         dat[["MeanSize_at_Age_obs"]],
         tmp_MeanSize_at_Age_obs

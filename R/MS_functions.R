@@ -280,8 +280,8 @@ get_EM_catch_df <- function(EM_dir, dat) {
       mode = "list",
       length = nrow(dat[["discard_fleet_info"]])
     )
-    for (i in seq_along(dat[["discard_fleet_info"]][, "Fleet"])) {
-      tmp_flt <- dat[["discard_fleet_info"]][i, "Fleet"]
+    for (i in seq_along(dat[["discard_fleet_info"]][, "fleet"])) {
+      tmp_flt <- dat[["discard_fleet_info"]][i, "fleet"]
       # tmp_units_code can be 1, 2, or 3.
       tmp_units_code <- dat[["discard_fleet_info"]][i, "units"]
       # get the discard units
@@ -473,7 +473,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     # with no estimation. modify forecast ----
     # put in the forecasting catch and make sure using the correct number of years
     fore[["ForeCatch"]] <- df_catch[, c("year", "seas", "fleet", "catch")]
-    colnames(fore[["ForeCatch"]]) <- c("Year", "Seas", "Fleet", "Catch or F")
+    colnames(fore[["ForeCatch"]]) <- c("Year", "Seas", "fleet", "Catch or F")
     fore[["Nforecastyrs"]] <- max(fore[["ForeCatch"]][["Year"]]) - dat[["endyr"]]
     r4ss::SS_writeforecast(fore,
       dir = OM_dir, writeAll = TRUE, overwrite = TRUE,
@@ -515,7 +515,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
         times = NROW(dat[["fleetinfo"]][dat[["fleetinfo"]][["type"]] %in% c(1, 2), ])
       )
     )
-    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("year", "Seas", "Fleet", "retained_catch")]
+    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("year", "Seas", "fleet", "retained_catch")]
     colnames(catch_bio) <- c("year", "seas", "fleet", "catch")
   } else {
     # all should be 0. note for now there is no catch_se column.

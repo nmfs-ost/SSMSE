@@ -94,10 +94,10 @@ check_OM_dat <- function(OM_dat, EM_dat) {
         "and EM. Please make the length comp bins the same."
       )
     }
-    # check there is the same data for Years, Seas, FltSvy available
+    # check there is the same data for Years, Seas, fleet available
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "lencomp",
-      colnames = c("year", "Seas", "FltSvy")
+      colnames = c("year", "Seas", "fleet")
     )
     # there may be more rigorous checks to do (checking that sex and partion
     # is the same?
@@ -113,7 +113,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
   }
   check_avail_dat(
     EM_dat = EM_dat, OM_dat = OM_dat, list_item = "agecomp",
-    colnames = c("year", "Seas", "FltSvy")
+    colnames = c("year", "Seas", "fleet")
   )
   # check mean size
   if (EM_dat[["use_meanbodywt"]] == 1) {
@@ -125,7 +125,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "meanbodywt",
-      colnames = c("Year", "Seas", "Fleet", "Type")
+      colnames = c("Year", "Seas", "fleet", "Type")
     )
   }
   # check mean size at age
@@ -138,7 +138,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "MeanSize_at_Age_obs",
-      colnames = c("year", "Seas", "FltSvy", "AgeErr")
+      colnames = c("year", "Seas", "fleet", "AgeErr")
     )
     if (paste0(colnames(OM_dat[["MeanSize_at_Age_obs"]]), collapse = "") !=
       paste0(colnames(EM_dat[["MeanSize_at_Age_obs"]]), collapse = "")) {
