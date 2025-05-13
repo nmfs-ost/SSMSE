@@ -93,14 +93,14 @@ test_that("check_OM_dat works with mean size at age data", {
 test_that("check_sample_struct works", {
   # works with all inputs
   good_sample_struct <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.01),
-    CPUE = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.01),
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.01),
+    CPUE = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.01),
     lencomp = data.frame(
-      Yr = 2000:2002, Seas = 1, FltSvy = 1, Sex = 0,
+      year = 2000:2002, Seas = 1, FltSvy = 1, Sex = 0,
       Part = 0, Nsamp = 150
     ),
     agecomp = data.frame(
-      Yr = 2000:2002, Seas = 7, FltSvy = 2, Sex = 0,
+      year = 2000:2002, Seas = 7, FltSvy = 2, Sex = 0,
       Part = 0, Ageerr = 1, Lbin_lo = -1, Lbin_hi = -1, Nsamp = 100
     )
   )
@@ -108,15 +108,15 @@ test_that("check_sample_struct works", {
   expect_equal(length(out), length(good_sample_struct))
   # works with only 2 cols
   good_sample_struct_2_col <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.01),
-    CPUE = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2)
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.01),
+    CPUE = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2)
   )
   out_2 <- check_sample_struct(good_sample_struct_2_col)
   expect_equal(length(out_2), length(good_sample_struct_2_col))
   # works when cols in different order
   good_dat_diff_order <- list(
-    CPUE = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.01),
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.2)
+    CPUE = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.01),
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.2)
   )
   out_diff_order <- check_sample_struct(good_dat_diff_order)
   expect_equal(length(out_diff_order), length(good_dat_diff_order))
@@ -129,16 +129,16 @@ test_that("check_sample_struct works", {
   )
   # duplicate names
   dup_names <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.2),
-    CPUE  = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2),
-    CPUE  = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2)
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1, SE = 0.2),
+    CPUE  = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2),
+    CPUE  = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2, SE = 0.2)
   )
   expect_error(check_sample_struct(dup_names), "There are repeated names in sample_struct.",
     fixed = TRUE
   )
   # wrong name
   wrong_name <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1),
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1),
     CPUE_wrong = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2)
   )
   expect_error(check_sample_struct(wrong_name),
@@ -147,8 +147,8 @@ test_that("check_sample_struct works", {
   )
   # character strings included in a dataframe column
   chars <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = "wrong", FltSvy = 1),
-    CPUE = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2)
+    catch = data.frame(year = 2000:2002, Seas = "wrong", FltSvy = 1),
+    CPUE = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2)
   )
   expect_error(check_sample_struct(chars),
     "Some values in sample_struct are not integers or numeric. Please check
@@ -157,8 +157,8 @@ test_that("check_sample_struct works", {
   )
   # character strings included in a dataframe column
   NA_vals <- list(
-    catch = data.frame(Yr = 2000:2002, Seas = 1, FltSvy = 1, SE = NA),
-    CPUE = data.frame(Yr = 2000:2002, Seas = 7, FltSvy = 2)
+    catch = data.frame(year = 2000:2002, Seas = 1, FltSvy = 1, SE = NA),
+    CPUE = data.frame(year = 2000:2002, Seas = 7, FltSvy = 2)
   )
   expect_error(check_sample_struct(NA_vals),
     "Some values in sample_struct are NA.",

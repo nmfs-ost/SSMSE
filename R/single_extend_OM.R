@@ -26,7 +26,7 @@ add_OM_devs <- function(ctl, dat, parlist, timeseries, future_om_dat) {
     # Next check for environmental index projections and add them
     for (i in grep("Env_", names(future_om_dat))) {
       temp_env <- data.frame(
-        Yr = (dat[["endyr"]] + 1):(dat[["endyr"]] + length(future_om_dat[, i])),
+        year = (dat[["endyr"]] + 1):(dat[["endyr"]] + length(future_om_dat[, i])),
         Variable = rep(as.numeric(strsplit(names(future_om_dat)[i], "Env_")[[1]][2]), length(future_om_dat[, i])),
         Value = future_om_dat[, i]
       )
@@ -533,7 +533,7 @@ update_basevals_env <- function(base_vals, base_years, temp_env, current_par, ti
   if (temp_ctl[current_par, c("env_var&link")] > 0) {
     env_link <- floor((temp_ctl[current_par, c("env_var&link")] / 100))
     env_index <- floor(temp_ctl[current_par, c("env_var&link")] - 100 * env_link)
-    env_dat <- dat[["envdat"]][is.element(dat[["envdat"]][, "Yr"], base_years) & dat[["envdat"]][, "Variable"] == env_index, ]
+    env_dat <- dat[["envdat"]][is.element(dat[["envdat"]][, "year"], base_years) & dat[["envdat"]][, "Variable"] == env_index, ]
 
     if (env_link == 1) {
       base_vals <- base_vals * exp(temp_env[1, "ESTIM"] * env_dat[, "Value"])
@@ -554,20 +554,20 @@ update_basevals_env <- function(base_vals, base_years, temp_env, current_par, ti
     # run such as the specific timing during the year. More testing will be needed to see if these work perfectly.
     if (env_index == 1) {
       SSB_base <- timeseries[2, "SpawnBio"]
-      SSB_current <- timeseries[is.element(timeseries[, "Yr"], base_years), "SpawnBio"]
+      SSB_current <- timeseries[is.element(timeseries[, "year"], base_years), "SpawnBio"]
       env_dat <- log(SSB_current / SSB_base)
     } else if (env_index == 2) {
       env_dat <- parlist[["recdev_forecast"]][is.element(parlist[["recdev_forecast"]][, "year"], base_years), "recdev"]
     } else if (env_index == 3) {
       smrybio_base <- timeseries[2, "Bio_smry"]
-      smrybio_current <- timeseries[is.element(timeseries[, "Yr"], base_years), "Bio_smry"]
+      smrybio_current <- timeseries[is.element(timeseries[, "year"], base_years), "Bio_smry"]
       env_dat <- log(smrybio_current / smrybio_base)
     } else if (env_index == 4) {
       smrynum_cols <- grep("SmryNum", names(timeseries))
       if (length(smrynum_cols) > 1) {
         smrynum <- apply(timeseries[, smrynum_cols], MARGIN = 1, FUN = sum)
         smrynum_base <- smrynum[2]
-        smrynum_current <- smrynum[is.element(timeseries[, "Yr"], base_years)]
+        smrynum_current <- smrynum[is.element(timeseries[, "year"], base_years)]
       }
       env_dat <- log(smrynum_current / smrynum_base)
     }

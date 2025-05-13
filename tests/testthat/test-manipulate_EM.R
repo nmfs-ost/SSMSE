@@ -30,13 +30,13 @@ test_that("get_EM_dat works", {
   })
   expect_equal(OM_dat[["CPUE"]][["obs"]][-rm_ind], new_dat[["CPUE"]][["obs"]])
   # check length comps changed
-  row_names <- c("Yr", "Seas", "FltSvy")
+  row_names <- c("year", "Seas", "FltSvy")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["lencomp"]][x], new_dat[["lencomp"]][x])
   })
   expect_equal(OM_dat[["lencomp"]][["obs"]][-rm_ind], new_dat[["lencomp"]][["obs"]])
   # chack age comps changed
-  row_names <- c("Yr", "Seas", "FltSvy")
+  row_names <- c("year", "Seas", "FltSvy")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["agecomp"]][x], new_dat[["agecomp"]][x])
   })
@@ -134,7 +134,7 @@ test_that("add_new_dat works when meansize at age obs", {
   OM_dat[["meanbodywt"]] <- rbind(OM_dat[["meanbodywt"]], OM_dat[["meanbodywt"]])
   OM_dat[["meanbodywt"]][["Year"]] <- c(1995, 1995, 2000, 2000)
   OM_dat[["MeanSize_at_Age_obs"]] <- rbind(OM_dat[["MeanSize_at_Age_obs"]], OM_dat[["MeanSize_at_Age_obs"]])
-  OM_dat[["MeanSize_at_Age_obs"]][["Yr"]] <- c(
+  OM_dat[["MeanSize_at_Age_obs"]][["year"]] <- c(
     1971, 1995, 1995, 1995, 1971, 1995,
     1997, 1998, 1998, 1998, 1999, 2000
   )
@@ -142,7 +142,7 @@ test_that("add_new_dat works when meansize at age obs", {
   EM_dat_orig <- EM_dat # keep the original data
   EM_dat[["endyr"]] <- EM_dat[["endyr"]] - 5 # roll back 5 years
 
-  # get rid of data after the new end yr in EM_dat
+  # get rid of data after the new end year in EM_dat
   EM_dat[["catch"]] <- EM_dat[["catch"]][1:27, ]
   EM_dat[["CPUE"]] <- EM_dat[["CPUE"]][2:17, ]
   EM_dat[["meanbodywt"]] <- EM_dat[["meanbodywt"]][1:2, ]

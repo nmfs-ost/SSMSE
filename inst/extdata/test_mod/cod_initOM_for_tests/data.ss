@@ -39,7 +39,7 @@
 #e:  last year of range
 #f:  not used
 # a   b   c   d   e   f 
-#_Catch data: yr, seas, fleet, catch, catch_se
+#_Catch data: year, seas, fleet, catch, catch_se
 #_catch_se:  standard error of log(catch)
 #_NOTE:  catch data is ignored for survey fleets
 -999 1 1 0 0.01
@@ -515,7 +515,7 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-#Yr Variable Value
+#year Variable Value
 #
 0 # N sizefreq methods to read 
 #
@@ -523,10 +523,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
-# Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+# year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
 # feature not yet implemented
 #
 999
@@ -563,7 +563,7 @@
 #f:  not used
 # a   b   c   d   e   f 
 #_catch:_columns_are_year,season,fleet,catch,catch_se
-#_Catch data: yr, seas, fleet, catch, catch_se
+#_Catch data: year, seas, fleet, catch, catch_se
 -999 1 1 0 0.01
 1 1 1 0 0.005
 2 1 1 0 0.005
@@ -1038,7 +1038,7 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-#Yr Variable Value
+#year Variable Value
 #
 0 # N sizefreq methods to read 
 #
@@ -1046,10 +1046,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
-# Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+# year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
 # feature not yet implemented
 #
 999

@@ -97,7 +97,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     # check there is the same data for Years, Seas, FltSvy available
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "lencomp",
-      colnames = c("Yr", "Seas", "FltSvy")
+      colnames = c("year", "Seas", "FltSvy")
     )
     # there may be more rigorous checks to do (checking that sex and partion
     # is the same?
@@ -113,7 +113,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
   }
   check_avail_dat(
     EM_dat = EM_dat, OM_dat = OM_dat, list_item = "agecomp",
-    colnames = c("Yr", "Seas", "FltSvy")
+    colnames = c("year", "Seas", "FltSvy")
   )
   # check mean size
   if (EM_dat[["use_meanbodywt"]] == 1) {
@@ -138,7 +138,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "MeanSize_at_Age_obs",
-      colnames = c("Yr", "Seas", "FltSvy", "AgeErr")
+      colnames = c("year", "Seas", "FltSvy", "AgeErr")
     )
     if (paste0(colnames(OM_dat[["MeanSize_at_Age_obs"]]), collapse = "") !=
       paste0(colnames(EM_dat[["MeanSize_at_Age_obs"]]), collapse = "")) {
@@ -190,22 +190,22 @@ check_avail_dat <- function(EM_dat, OM_dat,
 #' @author Kathryn Doering
 check_sample_struct <- function(sample_struct,
                                 valid_names = list(
-                                  catch = c("Yr", "Seas", "FltSvy", "SE"),
-                                  CPUE = c("Yr", "Seas", "FltSvy", "SE"),
+                                  catch = c("year", "Seas", "FltSvy", "SE"),
+                                  CPUE = c("year", "Seas", "FltSvy", "SE"),
                                   lencomp = c(
-                                    "Yr", "Seas", "FltSvy", "Sex",
+                                    "year", "Seas", "FltSvy", "Sex",
                                     "Part", "Nsamp"
                                   ),
                                   agecomp = c(
-                                    "Yr", "Seas", "FltSvy", "Sex", "Part",
+                                    "year", "Seas", "FltSvy", "Sex", "Part",
                                     "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp"
                                   ),
                                   meanbodywt = c(
-                                    "Yr", "Seas", "FltSvy", "Part",
+                                    "year", "Seas", "FltSvy", "Part",
                                     "Type", "Std_in"
                                   ),
                                   MeanSize_at_Age_obs = c(
-                                    "Yr", "Seas",
+                                    "year", "Seas",
                                     "FltSvy", "Sex", "Part", "Ageerr", "N_"
                                   )
                                 )) {
