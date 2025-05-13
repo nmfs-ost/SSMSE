@@ -54,7 +54,7 @@
 #e:  last year of range
 #f:  not used
 # a   b   c   d   e   f 
-#_Catch data: year, seas, fleet, catch, catch_se
+#_Catch data: yr, seas, fleet, catch, catch_se
 #_catch_se:  standard error of log(catch)
 #_NOTE:  catch data is ignored for survey fleets
 -999 1 1 3000 0.2
@@ -3300,8 +3300,8 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-# -2 in year will subtract mean for that env_var; -1 will subtract mean and divide by stddev (e.g. Z-score)
-#year Variable Value
+# -2 in yr will subtract mean for that env_var; -1 will subtract mean and divide by stddev (e.g. Z-score)
+#Yr Variable Value
 #
 2 # N sizefreq methods to read 
  25 17 #Sizefreq N bins per method
@@ -3448,10 +3448,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
-# year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+# Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
 # feature not yet implemented
 #
 999

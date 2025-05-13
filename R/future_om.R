@@ -33,7 +33,7 @@ create_future_om_list <- function(example_type = c("model_change", "custom"),
     # add values for selectivity curve param. step change occuring in year 103
     future_om_list[[1]][["pars"]] <- "SizeSel_P_3_Fishery(1)" # had to figure this out from reading in the par file.
     future_om_list[[1]][["scen"]] <- c("replicate", "scen2")
-    future_om_list[[1]][["pattern"]] <- "model_change" # defaults to normal (with SD 0, mean at last year of mod val?)
+    future_om_list[[1]][["pattern"]] <- "model_change" # defaults to normal (with SD 0, mean at last yr of mod val?)
     future_om_list[[1]][["input"]] <- data.frame(
       first_yr_averaging = NA, # NA b/c not using historical values
       last_yr_averaging = NA, # NA b/c not using historical values
@@ -52,7 +52,7 @@ create_future_om_list <- function(example_type = c("model_change", "custom"),
       par = "impl_error",
       scen = rep(c("scen1", "scen2", "scen3"), times = rep(6 * 5, times = 3)),
       iter = rep(1:5, times = 3 * 6),
-      year = rep(rep(101:106, times = rep(5, times = 6)), times = 3),
+      yr = rep(rep(101:106, times = rep(5, times = 6)), times = 3),
       value = c(rep(1.05, times = 6 * 5), rep(1.10, times = 6 * 5 * 2))
     )
   }
@@ -117,7 +117,7 @@ check_future_om_list_str <- function(future_om_list) {
       )
     }
     if (x[["pattern"]][1] == "custom") {
-      expected_names <- c("par", "scen", "iter", "year", "value")
+      expected_names <- c("par", "scen", "iter", "yr", "value")
     }
     if (isTRUE(!all(names(x[["input"]]) == expected_names)) |
       isTRUE(length(names(x[["input"]] != length(expected_names))))) {
@@ -199,7 +199,7 @@ check_future_om_list_vals <- function(future_om_list, scen_list) {
               "Number of rows in future_om_list[[", elem_num, "]][['input']] ",
               "is not correct. Expecting ", total_rows_expect, ", but there ",
               "are ", NROW(x[["input"]]), " rows. Please specify a row for ",
-              "each year and iter."
+              "each yr and iter."
             )
           }
         } else {

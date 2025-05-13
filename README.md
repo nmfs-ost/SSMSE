@@ -335,10 +335,10 @@ input data file:
 datfile <- system.file("extdata", "models", "cod", "ss3.dat", package = "SSMSE")
 sample_struct_1_scen <- create_sample_struct(dat = datfile, nyrs = 6) # note warning
 ## Warning in FUN(X[[i]], ...): Pattern not found for lencomp: FltSvy 1, Seas 1.
-## Returning NA for year in this dataframe.
+## Returning NA for Yr in this dataframe.
 sample_struct_1_scen
 ## $catch
-##    year Seas FltSvy    SE
+##    Yr Seas FltSvy    SE
 ## 1 101    1      1 0.005
 ## 2 102    1      1 0.005
 ## 3 103    1      1 0.005
@@ -347,15 +347,15 @@ sample_struct_1_scen
 ## 6 106    1      1 0.005
 ## 
 ## $CPUE
-##    year Seas FltSvy  SE
+##    Yr Seas FltSvy  SE
 ## 1 105    7      2 0.2
 ## 
 ## $lencomp
-##   year Seas FltSvy Sex Part Nsamp
+##   Yr Seas FltSvy Sex Part Nsamp
 ## 1 NA    1      1   0    0   125
 ## 
 ## $agecomp
-##    year Seas FltSvy Sex Part Ageerr Lbin_lo Lbin_hi Nsamp
+##    Yr Seas FltSvy Sex Part Ageerr Lbin_lo Lbin_hi Nsamp
 ## 1 105    1      2   0    0      1      -1      -1   500
 ## 
 ## $meanbodywt
@@ -374,7 +374,7 @@ to 106), but an index of abundance (i.e., CPUE) and age composition
 sampling scheme for both scenarios, but it is possible to specify
 different sampling for each scenario. The user could modify this
 sampling strategy (for example, maybe age composition should also be
-sampled from FltSvy 2 in year 102; the user could add another line to the
+sampled from FltSvy 2 in Yr 102; the user could add another line to the
 dataframe in `sample_struct$agecomp`).
 
 Note that length comp (lencomp) includes an `NA` value for year. This is

@@ -106,7 +106,7 @@ sample_struct_1_scen <- create_sample_struct(dat = datfile, nyrs = 6) # note war
 sample_struct_1_scen
 ```
 
-By default, `create_sample_struct` identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from FltSvy 2 in year 102; the user could add another line to the dataframe in `sample_struct$agecomp`).
+By default, `create_sample_struct` identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from FltSvy 2 in Yr 102; the user could add another line to the dataframe in `sample_struct$agecomp`).
 
 Note that length comp (lencomp) includes an `NA` value for year. This is because
 no consistent pattern was identified, so the user must define their own input.
@@ -436,7 +436,7 @@ M_custom_dataframe <- data.frame(
   par = "NatM_p_1_Fem_GP_1", 
   scen = rep(scenarios$scen_name, times = rep(50*niters, 6)), 
   iter = rep(rep(seq(from = start_iters, to = start_iters + niters - 1), times = rep(50, niters)), times = 6), 
-  year = rep(101:150, times = 6*niters), 
+  yr = rep(101:150, times = 6*niters), 
   value = c(M_no_scen, M_low_scen, M_hi_scen,
             M_no_scen, M_low_scen, M_hi_scen))
 mod_change_M$pars <- "NatM_p_1_Fem_GP_1"
@@ -467,7 +467,7 @@ sample_struct <- SSMSE::create_sample_struct(dat = datfile_path, nyrs = 50)
 sample_struct$meanbodywt <- NULL
 sample_struct$MeanSize_at_Age_obs <- NULL
 # modify, because there were NAs
-sample_struct$lencomp <- data.frame(year = seq(105, 150, by = 5), 
+sample_struct$lencomp <- data.frame(Yr = seq(105, 150, by = 5), 
                                     Seas = sample_struct$lencomp$Seas,
                                     FltSvy = sample_struct$lencomp$FltSvy, 
                                     Sex = sample_struct$lencomp$Sex, 

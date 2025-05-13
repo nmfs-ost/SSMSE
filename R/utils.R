@@ -174,7 +174,7 @@ clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, MS = "EM",
     EM_dat <- NULL
     EM_ctl <- NULL
   }
-  # model start and end year should be the same for both
+  # model start and end yr should be the same for both
   styr <- OM_dat[["styr"]]
   endyr <- OM_dat[["endyr"]]
 
