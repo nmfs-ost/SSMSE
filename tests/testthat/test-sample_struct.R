@@ -45,7 +45,7 @@ test_that("assumptions about r4ss colnames are true.", {
       Seas = 7,
       fleet = c(1, 1, 2, 2),
       sex = 3,
-      Part = 0,
+      part = 0,
       AgeErr = 1
     )
   )
@@ -59,7 +59,7 @@ test_that("convert_to_r4ss_names works", {
     CPUE = data.frame(Yr = c(102, 105), Seas = 7, fleet = 2, SE = 0.05),
     lencomp = data.frame(
       Yr = c(102, 105), Seas = 1, fleet = 1,
-      Sex = 0, Part = 0, Nsamp = 125
+      Sex = 0, part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
       Yr = c(102, 105), Seas = 1, fleet = 2,
@@ -73,11 +73,11 @@ test_that("convert_to_r4ss_names works", {
   expect_equal(names(r4ss_sample_struct[["CPUE"]]), c("year", "seas", "index", "se_log"))
   expect_equal(names(r4ss_sample_struct[["lencomp"]]), c(
     "year", "Seas", "fleet",
-    "sex", "Part", "Nsamp"
+    "sex", "part", "Nsamp"
   ))
   expect_equal(names(r4ss_sample_struct[["agecomp"]]), c(
     "Yr", "Seas", "fleet",
-    "sex", "Part", "Ageerr",
+    "sex", "part", "Ageerr",
     "Lbin_lo", "Lbin_hi", "Nsamp"
   ))
 })

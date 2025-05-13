@@ -233,11 +233,11 @@ test_that("cod works when treated as a custom model and run_EM_last_yr = TRUE wo
       CPUE = data.frame(Yr = add_yrs, Seas = 7, fleet = 2),
       lencomp = data.frame(
         Yr = add_yrs, Seas = 1, fleet = 1,
-        Sex = 0, Part = 0
+        Sex = 0, part = 0
       ),
       agecomp = data.frame(
         Yr = add_yrs, Seas = 1, fleet = 2,
-        Sex = 0, Part = 0, Ageerr = 1,
+        Sex = 0, part = 0, Ageerr = 1,
         Lbin_lo = -1, Lbin_hi = -1
       )
     )
@@ -259,12 +259,12 @@ test_that("run_SSMSE runs with mean size at age and mean body length", {
     nyrs = 6
   )
   sample_struct[["CPUE"]] <- na.omit(sample_struct[["CPUE"]])
-  sample_struct[["lencomp"]][["Part"]] <- 0
-  sample_struct[["agecomp"]][["Part"]] <- 0
+  sample_struct[["lencomp"]][["part"]] <- 0
+  sample_struct[["agecomp"]][["part"]] <- 0
   sample_struct[["meanbodywt"]][["Yr"]] <- 2002
-  sample_struct[["meanbodywt"]][["Part"]] <- 1
+  sample_struct[["meanbodywt"]][["part"]] <- 1
   sample_struct[["MeanSize_at_Age_obs"]][["Yr"]] <- c(2002, 2004)
-  sample_struct[["MeanSize_at_Age_obs"]][["Part"]] <- 0
+  sample_struct[["MeanSize_at_Age_obs"]][["part"]] <- 0
 
   result <- run_SSMSE(
     scen_name_vec = "test_1",

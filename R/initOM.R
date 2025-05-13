@@ -541,7 +541,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     name_in_obj = "lencomp",
     colnames = c(
       "year", "Seas", "fleet", "sex",
-      "Part"
+      "part"
     )
   )
   dat[["agecomp"]] <- rm_vals(
@@ -550,7 +550,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     name_in_obj = "agecomp",
     colnames = c(
       "year", "Seas", "fleet", "sex",
-      "Part", "Ageerr", "Lbin_lo",
+      "part", "Ageerr", "Lbin_lo",
       "Lbin_hi"
     )
   )
@@ -564,7 +564,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "MeanSize_at_Age_obs",
-    colnames = c("year", "Seas", "fleet", "sex", "Part", "AgeErr", "N_")
+    colnames = c("year", "Seas", "fleet", "sex", "part", "AgeErr", "N_")
   )
   dat
 }
