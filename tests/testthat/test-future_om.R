@@ -641,8 +641,8 @@ test_that("Tests a model with env link using historical values", {
   expect_length(unique(devs_list[["dev_vals"]][["SR_LN(R0)"]]), 1)
   dat <- r4ss::SS_readdat(file.path(om_path, "data.ss_new"))
   dat <- dat[["envdat"]]
-  env_vals <- dat[dat[["Yr"]] >= tmp_list[[1]][["input"]][["first_yr_averaging"]] &
-    dat[["Yr"]] <= tmp_list[[1]][["input"]][["last_yr_averaging"]], "Value"]
+  env_vals <- dat[dat[["year"]] >= tmp_list[[1]][["input"]][["first_yr_averaging"]] &
+    dat[["year"]] <= tmp_list[[1]][["input"]][["last_yr_averaging"]], "Value"]
   env_parval <- 0.862777 # hard coded based on the model used.
   base_val <- mean(unique(devs_list[["base_vals"]][["SR_LN(R0)"]]) + env_parval * env_vals)
   expect_equivalent(unique(devs_list[["abs_vals"]][["SR_LN(R0)"]]), base_val * 1.1)
@@ -669,8 +669,8 @@ test_that("Tests a model with env link using historical values", {
     om_mod_path = om_path, nyrs = 10
   )
   expect_length(unique(devs_list[["dev_vals"]][["SR_LN(R0)"]]), 3)
-  env_vals <- dat[dat[["Yr"]] >= tmp_list[[2]][["input"]][["first_yr_averaging"]] &
-    dat[["Yr"]] <= tmp_list[[2]][["input"]][["last_yr_averaging"]], "Value"]
+  env_vals <- dat[dat[["year"]] >= tmp_list[[2]][["input"]][["first_yr_averaging"]] &
+    dat[["year"]] <= tmp_list[[2]][["input"]][["last_yr_averaging"]], "Value"]
   env_parval <- 0.862777 # hard coded based on the model used.
   base_val <- mean(unique(devs_list[["base_vals"]][["SR_LN(R0)"]]) + env_parval * env_vals)
   expect_equivalent(unique(devs_list[["abs_vals"]][["SR_LN(R0)"]][6:10]), base_val * 1.2)

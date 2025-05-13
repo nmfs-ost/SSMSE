@@ -293,7 +293,7 @@ plot_comp_sampling <- function(dir = getwd(), comp_type = c("agecomp", "lencomp"
     comp_dbase[["type_obs"]]
   )
   comp_dbase <- tidyr::spread(comp_dbase, .data[["model_type_obs"]], .data[["obs_value"]]) %>%
-    dplyr::mutate(Yr_lab = paste0("Yr: ", .data[["Yr"]])) %>%
+    dplyr::mutate(Yr_lab = paste0("year: ", .data[["year"]])) %>%
     dplyr::mutate(Seas_lab = paste0("Seas: ", .data[["Seas"]])) %>%
     dplyr::mutate(Sex_lab = paste0("Sex: ", .data[["Sex"]]))
   # Make the plot ----

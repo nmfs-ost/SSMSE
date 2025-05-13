@@ -157,7 +157,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
           future_pat <- future_pat[future_pat > dat[["endyr"]]]
           if (length(future_pat) > 0) {
             future_pat <- data.frame(
-              Yr = future_pat,
+              year = future_pat,
               Seas = tmp_seas,
               FltSvy = tmp_flt,
               stringsAsFactors = FALSE
@@ -166,11 +166,11 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
             message(
               "Pattern found for ", name, ": FltSvy ", tmp_flt,
               ", Seas ", tmp_seas, ", but no data to add for the ",
-              "timeframe specified. Returning NA for Yr in this ",
+              "timeframe specified. Returning NA for year in this ",
               "dataframe."
             )
             future_pat <- data.frame(
-              Yr = NA,
+              year = NA,
               Seas = tmp_seas,
               FltSvy = tmp_flt,
               stringsAsFactors = FALSE
@@ -180,10 +180,10 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
           # the pattern was not found
           warning(
             "Pattern not found for ", name, ": FltSvy ", tmp_flt,
-            ", Seas ", tmp_seas, ". Returning NA for Yr in this dataframe."
+            ", Seas ", tmp_seas, ". Returning NA for year in this dataframe."
           )
           future_pat <- data.frame(
-            Yr = NA,
+            year = NA,
             Seas = tmp_seas,
             FltSvy = tmp_flt,
             stringsAsFactors = FALSE
@@ -348,9 +348,9 @@ get_full_sample_struct <- function(sample_struct,
       # to store error msgs:
       error1 <- NULL
       error2 <- NULL
-      if (!"Yr" %in% colnames(x)) {
+      if (!"year" %in% colnames(x)) {
         stop(
-          "Column Yr missing from 1 or more data frames in sample_struct. Yr",
+          "Column year missing from 1 or more data frames in sample_struct. year",
           " must always be specified"
         )
       }
@@ -564,16 +564,16 @@ get_full_sample_struct <- function(sample_struct,
       } else {
         # reorder columns
         x <- switch(x_name,
-          catch = x[, c("Yr", "Seas", "FltSvy", "SE")],
-          CPUE = x[, c("Yr", "Seas", "FltSvy", "SE")],
-          lencomp = x[, c("Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp")],
+          catch = x[, c("year", "Seas", "FltSvy", "SE")],
+          CPUE = x[, c("year", "Seas", "FltSvy", "SE")],
+          lencomp = x[, c("year", "Seas", "FltSvy", "Sex", "Part", "Nsamp")],
           agecomp = x[, c(
-            "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
+            "year", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
             "Lbin_lo", "Lbin_hi", "Nsamp"
           )],
-          meanbodywt = x[, c("Yr", "Seas", "FltSvy", "Part", "Type", "Std_in")],
+          meanbodywt = x[, c("year", "Seas", "FltSvy", "Part", "Type", "Std_in")],
           MeanSize_at_Age_obs = x[, c(
-            "Yr", "Seas", "FltSvy", "Sex",
+            "year", "Seas", "FltSvy", "Sex",
             "Part", "Ageerr", "N_"
           )]
         )
@@ -585,7 +585,7 @@ get_full_sample_struct <- function(sample_struct,
     MoreArgs = list(dat = dat), USE.NAMES = TRUE, SIMPLIFY = FALSE
   )
   # reorder cols
-  tmp_colorder <- c("Yr", "Seas", "FltSvy", "SE")
+  tmp_colorder <- c("year", "Seas", "FltSvy", "SE")
   if (!is.null(full_samp_str[["catch"]])) {
     full_samp_str[["catch"]] <- full_samp_str[["catch"]][, tmp_colorder]
   }

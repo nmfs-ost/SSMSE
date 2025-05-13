@@ -72,7 +72,7 @@ test_that("convert_to_r4ss_names works", {
   expect_equal(names(r4ss_sample_struct[["catch"]]), c("year", "seas", "fleet", "catch_se"))
   expect_equal(names(r4ss_sample_struct[["CPUE"]]), c("year", "seas", "index", "se_log"))
   expect_equal(names(r4ss_sample_struct[["lencomp"]]), c(
-    "Yr", "Seas", "FltSvy",
+    "year", "Seas", "FltSvy",
     "sex", "Part", "Nsamp"
   ))
   expect_equal(names(r4ss_sample_struct[["agecomp"]]), c(
