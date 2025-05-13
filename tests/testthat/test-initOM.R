@@ -42,13 +42,13 @@ test_that("create_OM can modify model", {
     new_dat[["CPUE"]][, c("year", "seas", "index")],
     unique(new_dat[["CPUE"]][, c("year", "seas", "index")])
   )
-  cols_lencomp <- c("year", "Seas", "FltSvy", "sex", "Part")
+  cols_lencomp <- c("year", "Seas", "fleet", "sex", "Part")
   expect_equal(
     new_dat[["lencomp"]][, cols_lencomp],
     unique(new_dat[["lencomp"]][, cols_lencomp])
   )
   cols_agecomp <- c(
-    "year", "Seas", "FltSvy", "sex", "Part", "Ageerr", "Lbin_lo",
+    "year", "Seas", "fleet", "sex", "Part", "Ageerr", "Lbin_lo",
     "Lbin_hi"
   )
   expect_equal(

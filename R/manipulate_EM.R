@@ -78,7 +78,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     lcomps <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "lencomp",
-        c("year", "Seas", "FltSvy", "sex", "Part")
+        c("year", "Seas", "fleet", "sex", "Part")
       )
     })
     matches_l <- which(lcomps[[1]][, "combo"] %in% lcomps[[2]][, "combo"])
@@ -89,7 +89,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     acomps <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "agecomp",
-        c("year", "Seas", "FltSvy", "sex", "Part", "Lbin_lo", "Lbin_hi")
+        c("year", "Seas", "fleet", "sex", "Part", "Lbin_lo", "Lbin_hi")
       )
     })
     matches_a <- which(acomps[[1]][, "combo"] %in% acomps[[2]][, "combo"])
@@ -101,7 +101,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     meansize <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "meanbodywt",
-        c("Year", "Seas", "Fleet", "Partition", "Type", "Std_in")
+        c("Year", "Seas", "fleet", "Partition", "Type", "Std_in")
       )
     })
     matches_meansize <- which(meansize[[1]][, "combo"] %in% meansize[[2]][, "combo"])
@@ -111,7 +111,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     size_at_age <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "MeanSize_at_Age_obs",
-        c("year", "Seas", "FltSvy", "sex", "Part", "Ageerr")
+        c("year", "Seas", "fleet", "sex", "Part", "Ageerr")
       )
     })
     matches_size_at_age <- which(size_at_age[[1]][, "combo"] %in% size_at_age[[2]][, "combo"])
@@ -231,14 +231,14 @@ add_new_dat <- function(OM_dat,
         by_val <- switch(df_name,
           "catch" = c("year", "seas", "fleet"),
           "CPUE" = c("year", "seas", "index"),
-          "lencomp" = c("year", "Seas", "FltSvy", "sex", "Part"),
+          "lencomp" = c("year", "Seas", "fleet", "sex", "Part"),
           "agecomp" = c(
-            "year", "Seas", "FltSvy", "sex", "Part", "Ageerr",
+            "year", "Seas", "fleet", "sex", "Part", "Ageerr",
             "Lbin_lo", "Lbin_hi"
           ),
-          "meanbodywt" = c("Year", "Seas", "Fleet", "Partition", "Type"),
+          "meanbodywt" = c("Year", "Seas", "fleet", "Partition", "Type"),
           "MeanSize_at_Age_obs" = c(
-            "year", "Seas", "FltSvy", "sex", "Part",
+            "year", "Seas", "fleet", "sex", "Part",
             "AgeErr"
           )
         )
