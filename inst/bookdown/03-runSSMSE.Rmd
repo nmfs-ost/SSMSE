@@ -206,7 +206,7 @@ The inputs required for `pattern = custom` are similar to using `pattern = model
 * par: the parameter name or "all" if it should be applied to all parameters in the "pars" input
 * scen: which scenario the value should apply to, or "all" if "replicate" is used as the scenario input
 * iter: which number iteration the value should apply to. These are absolute iteration numbers.
-* year: the year the value applies to. These should be after the original end year of the OM.
+* yr: the year the value applies to. These should be after the original end year of the OM.
 * value: the value to apply to the model
 
 ### How is the operating modified to accomodate changes as specified in the future_OM_list?

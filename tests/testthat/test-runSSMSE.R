@@ -55,13 +55,13 @@ test_that("run_SSMSE runs with an EM, and works with summary funs", {
   expect_length(result, 1)
   # some more specific values, specific to the scenario above.
   dat <- SS_readdat(file.path(temp_path, "H-ctl", "1", "cod_EM_106", "data.ss_new"), verbose = FALSE)
-  added_catch <- dat[["catch"]][dat[["catch"]][["year"]] %in% sample_struct[["catch"]][["year"]], ]
-  old_catch <- dat[["catch"]][dat[["catch"]][["year"]] < min(sample_struct[["catch"]][["year"]]), ]
+  added_catch <- dat[["catch"]][dat[["catch"]][["year"]] %in% sample_struct[["catch"]][["Yr"]], ]
+  old_catch <- dat[["catch"]][dat[["catch"]][["year"]] < min(sample_struct[["catch"]][["Yr"]]), ]
   expect_true(all(added_catch[["catch_se"]] == unique(sample_struct[["catch"]][["SE"]])))
-  added_CPUE <- dat[["CPUE"]][dat[["CPUE"]][["year"]] >= min(sample_struct[["CPUE"]][["year"]]), ]
-  expect_true(all(sample_struct[["CPUE"]][["year"]] %in% unique(added_CPUE[["year"]])))
-  added_agecomp <- dat[["agecomp"]][dat[["agecomp"]][["year"]] %in% sample_struct[["agecomp"]][["year"]], ]
-  expect_true(all(sample_struct[["agecomp"]][["year"]] %in% unique(added_agecomp[["year"]])))
+  added_CPUE <- dat[["CPUE"]][dat[["CPUE"]][["year"]] >= min(sample_struct[["CPUE"]][["Yr"]]), ]
+  expect_true(all(sample_struct[["CPUE"]][["Yr"]] %in% unique(added_CPUE[["year"]])))
+  added_agecomp <- dat[["agecomp"]][dat[["agecomp"]][["Yr"]] %in% sample_struct[["agecomp"]][["Yr"]], ]
+  expect_true(all(sample_struct[["agecomp"]][["Yr"]] %in% unique(added_agecomp[["Yr"]])))
   # summarize 1 iteration of results
   summary_iter <- SSMSE_summary_iter(file.path(temp_path, "H-ctl", "1"))
   expect_true(length(summary_iter) == 3)
@@ -229,14 +229,14 @@ test_that("cod works when treated as a custom model and run_EM_last_yr = TRUE wo
     nyrs_assess = 3,
     iter_seed = list(global = 12345, scenario = 123456, iter = 1234567),
     sample_struct = list(
-      catch = data.frame(year = catch_add_yrs, Seas = 1, FltSvy = 1),
-      CPUE = data.frame(year = add_yrs, Seas = 7, FltSvy = 2),
+      catch = data.frame(Yr = catch_add_yrs, Seas = 1, FltSvy = 1),
+      CPUE = data.frame(Yr = add_yrs, Seas = 7, FltSvy = 2),
       lencomp = data.frame(
-        year = add_yrs, Seas = 1, FltSvy = 1,
+        Yr = add_yrs, Seas = 1, FltSvy = 1,
         Sex = 0, Part = 0
       ),
       agecomp = data.frame(
-        year = add_yrs, Seas = 1, FltSvy = 2,
+        Yr = add_yrs, Seas = 1, FltSvy = 2,
         Sex = 0, Part = 0, Ageerr = 1,
         Lbin_lo = -1, Lbin_hi = -1
       )
@@ -261,9 +261,9 @@ test_that("run_SSMSE runs with mean size at age and mean body length", {
   sample_struct[["CPUE"]] <- na.omit(sample_struct[["CPUE"]])
   sample_struct[["lencomp"]][["Part"]] <- 0
   sample_struct[["agecomp"]][["Part"]] <- 0
-  sample_struct[["meanbodywt"]][["year"]] <- 2002
+  sample_struct[["meanbodywt"]][["Yr"]] <- 2002
   sample_struct[["meanbodywt"]][["Part"]] <- 1
-  sample_struct[["MeanSize_at_Age_obs"]][["year"]] <- c(2002, 2004)
+  sample_struct[["MeanSize_at_Age_obs"]][["Yr"]] <- c(2002, 2004)
   sample_struct[["MeanSize_at_Age_obs"]][["Part"]] <- 0
 
   result <- run_SSMSE(

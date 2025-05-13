@@ -30,7 +30,7 @@ future_om_list[[1]][["input"]] <- data.frame(
 # add values for selectivity curve param. step change occuring in year 103
 future_om_list[[2]][["pars"]] <- "SizeSel_P_3_Fishery(1)" # had to figure this out from reading in the par file.
 future_om_list[[2]][["scen"]] <- c("replicate", "scen2")
-future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last year of mod val?)
+future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last yr of mod val?)
 future_om_list[[2]][["input"]] <- data.frame(
   first_yr_averaging = NA, # NA b/c not using historical values
   last_yr_averaging = NA, # NA b/c not using historical values
@@ -95,7 +95,7 @@ future_om_list_3[[1]][["input"]] <- data.frame(
   par = "VonBert_K_Fem_GP_1",
   scen = rep("all", times = 6 * 5),
   iter = rep(1:5, times = 6),
-  year = rep(101:106, times = rep(5, times = 6)),
+  yr = rep(101:106, times = rep(5, times = 6)),
   value = rep(0.2, times = 6 * 5)
 )
 
@@ -146,7 +146,7 @@ future_om_list_4[[2]][["input"]] <- data.frame(
   par = "impl_error",
   scen = rep(c("scen1", "scen2", "scen3"), times = rep(6 * 5, times = 3)),
   iter = rep(1:5, times = 3 * 6),
-  year = rep(rep(101:106, times = rep(5, times = 6)), times = 3),
+  yr = rep(rep(101:106, times = rep(5, times = 6)), times = 3),
   value = c(rep(1.05, times = 6 * 5), rep(1.10, times = 6 * 5 * 2)) # this specifies catch as 5% or 10% greater than the catch from the MS
 
   # NOTE: While testing the timeseries sim I got to thinking, should we offer an option for the user to specify the random distribution function?
@@ -377,7 +377,7 @@ test_that("Creating the devs df works with log normal dist", {
   # add values for selectivity curve param. step change occuring in year 103
   tmp_future_om_list[[2]][["pars"]] <- "NatM_p_1_Fem_GP_1" # had to figure this out from reading in the par file.
   tmp_future_om_list[[2]][["scen"]] <- c("replicate", "scen2")
-  tmp_future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last year of mod val?)
+  tmp_future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last yr of mod val?)
   tmp_future_om_list[[2]][["input"]] <- data.frame(
     first_yr_averaging = NA, # NA b/c not using historical values
     last_yr_averaging = NA, # NA b/c not using historical values
@@ -465,7 +465,7 @@ test_that("Creating the devs df works with time series options", {
   # add values for selectivity curve param. step change occuring in year 103
   tmp_future_om_list[[2]][["pars"]] <- "NatM_p_1_Fem_GP_1" # had to figure this out from reading in the par file.
   tmp_future_om_list[[2]][["scen"]] <- c("replicate", "scen2")
-  tmp_future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last year of mod val?)
+  tmp_future_om_list[[2]][["pattern"]] <- c("model_change", "normal") # defaults to normal (with SD 0, mean at last yr of mod val?)
   tmp_future_om_list[[2]][["input"]] <- data.frame(
     first_yr_averaging = NA, # NA b/c not using historical values
     last_yr_averaging = NA, # NA b/c not using historical values
@@ -641,8 +641,8 @@ test_that("Tests a model with env link using historical values", {
   expect_length(unique(devs_list[["dev_vals"]][["SR_LN(R0)"]]), 1)
   dat <- r4ss::SS_readdat(file.path(om_path, "data.ss_new"))
   dat <- dat[["envdat"]]
-  env_vals <- dat[dat[["year"]] >= tmp_list[[1]][["input"]][["first_yr_averaging"]] &
-    dat[["year"]] <= tmp_list[[1]][["input"]][["last_yr_averaging"]], "Value"]
+  env_vals <- dat[dat[["Yr"]] >= tmp_list[[1]][["input"]][["first_yr_averaging"]] &
+    dat[["Yr"]] <= tmp_list[[1]][["input"]][["last_yr_averaging"]], "Value"]
   env_parval <- 0.862777 # hard coded based on the model used.
   base_val <- mean(unique(devs_list[["base_vals"]][["SR_LN(R0)"]]) + env_parval * env_vals)
   expect_equivalent(unique(devs_list[["abs_vals"]][["SR_LN(R0)"]]), base_val * 1.1)
@@ -669,8 +669,8 @@ test_that("Tests a model with env link using historical values", {
     om_mod_path = om_path, nyrs = 10
   )
   expect_length(unique(devs_list[["dev_vals"]][["SR_LN(R0)"]]), 3)
-  env_vals <- dat[dat[["year"]] >= tmp_list[[2]][["input"]][["first_yr_averaging"]] &
-    dat[["year"]] <= tmp_list[[2]][["input"]][["last_yr_averaging"]], "Value"]
+  env_vals <- dat[dat[["Yr"]] >= tmp_list[[2]][["input"]][["first_yr_averaging"]] &
+    dat[["Yr"]] <= tmp_list[[2]][["input"]][["last_yr_averaging"]], "Value"]
   env_parval <- 0.862777 # hard coded based on the model used.
   base_val <- mean(unique(devs_list[["base_vals"]][["SR_LN(R0)"]]) + env_parval * env_vals)
   expect_equivalent(unique(devs_list[["abs_vals"]][["SR_LN(R0)"]][6:10]), base_val * 1.2)

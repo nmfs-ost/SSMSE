@@ -32,7 +32,7 @@
  3 0.625 1 2 0 Surv5  # 7
  3 0.875 1 2 0 Surv6  # 8
  3 0.5 1 2 0 Surv7  # 9
-#_Catch data: year, seas, fleet, catch, catch_se
+#_Catch data: yr, seas, fleet, catch, catch_se
 #_catch_se:  standard error of log(catch)
 #_NOTE:  catch data is ignored for survey fleets
 -999 1 1 0 0.01
@@ -408,7 +408,7 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-#year Variable Value
+#Yr Variable Value
 #
 0 # N sizefreq methods to read 
 #
@@ -416,10 +416,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
-# year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+# Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
 # feature not yet implemented
 #
 999
@@ -453,7 +453,7 @@
  3 0.875 1 2 0 Surv6  # 8
  3 0.5 1 2 0 Surv7  # 9
 #_catch:_columns_are_year,season,fleet,catch,catch_se
-#_Catch data: year, seas, fleet, catch, catch_se
+#_Catch data: yr, seas, fleet, catch, catch_se
 -999 1 1 0 0.01
 1960 1 1 0 0.01
 1961 1 1 0 0.01
@@ -828,7 +828,7 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-#year Variable Value
+#Yr Variable Value
 #
 0 # N sizefreq methods to read 
 #
@@ -836,10 +836,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
-# year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+# Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
 # feature not yet implemented
 #
 999
@@ -874,7 +874,7 @@
  3 0.5 1 2 0 Surv7  # 9
 #_catch_biomass(mtons):_columns_are_fisheries,year,season
 #_catch:_columns_are_year,season,fleet,catch,catch_se
-#_Catch data: year, seas, fleet, catch, catch_se
+#_Catch data: yr, seas, fleet, catch, catch_se
 -999 1 1 0 0.01
 1960 1 1 0 0.01
 1961 1 1 0 0.01
@@ -1248,7 +1248,7 @@
 0 #_Use_MeanSize-at-Age_obs (0/1)
 #
 0 #_N_environ_variables
-#year Variable Value
+#Yr Variable Value
 #
 0 # N sizefreq methods to read 
 #
@@ -1256,10 +1256,10 @@
 #
 0 #    morphcomp data(0/1) 
 #  Nobs, Nmorphs, mincomp
-#  year, seas, type, partition, Nsamp, datavector_by_Nmorphs
+#  yr, seas, type, partition, Nsamp, datavector_by_Nmorphs
 #
 0  #  Do dataread for selectivity priors(0/1)
- # year, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
+ # Yr, Seas, Fleet,  Age/Size,  Bin,  selex_prior,  prior_sd
  # feature not yet implemented
 #
 999

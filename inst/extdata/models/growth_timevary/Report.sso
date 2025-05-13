@@ -644,7 +644,7 @@ ln(SPB)_1984 15.0156 0.182422
 ln(SPB)_2009 14.1898 0.206642
 
 selparm(Age)_By_Year_after_adjustments report:9
-Fleet year  Change?  Parameters
+Fleet Yr  Change?  Parameters
 
 RECRUITMENT_DIST report:10
 Settle# settle_timing# G_pattern Area Settle_Month Seas Age Time_w/in_seas Frac/sex
@@ -722,7 +722,7 @@ Info: F_std_basis:._abs_F;_with_F=Exploit(bio)
 F_std averaged over N years: 0
 Info: Annual_F.shown.here.is.done.by.the.Z-M.method.for.nages/2=7
 #
-year Seas Seas_dur F_std annual_F annual_M  Fish1 Fish2
+Yr Seas Seas_dur F_std annual_F annual_M  Fish1 Fish2
 Catchunits: _ _ _ _ _  Bio  Bio 
 FleetType: _ _ _ _ _  Catch  Catch 
 FleetArea: _ _ _ _ _  1 1
@@ -782,7 +782,7 @@ FleetID: _ _ _ _ _  1 2
 2012 1 1 0.18182  0.22499 0.23 0.143268 0.0582134
 
 CATCH report:15
-Fleet Fleet_Name Area year Seas Time Obs Exp Mult Exp*Mult se F  Like sel_bio kill_bio ret_bio sel_num kill_num ret_num
+Fleet Fleet_Name Area Yr Seas Time Obs Exp Mult Exp*Mult se F  Like sel_bio kill_bio ret_bio sel_num kill_num ret_num
 1 Fish1 1 INIT 1 1959.5 0 0 1 0 0.01 0  NA 0 0 0 0 0 0
 1 Fish1 1 1960 1 1960.5 0 0 1 0 0.01 0  NA 0 0 0 0 0 0
 1 Fish1 1 1961 1 1961.5 0 0 1 0 0.01 0  NA 0 0 0 0 0 0
@@ -887,7 +887,7 @@ Fleet Fleet_Name Area year Seas Time Obs Exp Mult Exp*Mult se F  Like sel_bio ki
 2 Fish2 1 2009 1 2009.5 55620 55620 1 55620 0.01 0.0459407  NA 55620 55620 55620 108429 108429 108429
 
 TIME_SERIES report:16  BioSmry_age:_3  Pope's_approx
-Area year Era Seas Bio_all Bio_smry SpawnBio Recruit_0  SpawnBio_GP:1 SmryBio_SX:1_GP:1 SmryNum_SX:1_GP:1 sel(B):_1 dead(B):_1 retain(B):_1 sel(N):_1 dead(N):_1 retain(N):_1 obs_cat:_1 Hrate:_1 sel(B):_2 dead(B):_2 retain(B):_2 sel(N):_2 dead(N):_2 retain(N):_2 obs_cat:_2 Hrate:_2 SSB_vir_LH ABC_buffer
+Area Yr Era Seas Bio_all Bio_smry SpawnBio Recruit_0  SpawnBio_GP:1 SmryBio_SX:1_GP:1 SmryNum_SX:1_GP:1 sel(B):_1 dead(B):_1 retain(B):_1 sel(N):_1 dead(N):_1 retain(N):_1 obs_cat:_1 Hrate:_1 sel(B):_2 dead(B):_2 retain(B):_2 sel(N):_2 dead(N):_2 retain(N):_2 obs_cat:_2 Hrate:_2 SSB_vir_LH ABC_buffer
 1 1958 VIRG 1 4.82709e+06 4.32333e+06 4.11726e+06 2.8351e+06  4.11726e+06  4.32333e+06  6.92093e+06 0 0 0 0 0 0 0 0  0 0 0 0 0 0 0 0  4.11726e+06 NA
 1 1959 INIT 1 4.82709e+06 4.32333e+06 4.11726e+06 2.8351e+06  4.11726e+06  4.32333e+06  6.92093e+06  0 0 0 0 0 0 0 0  0 0 0 0 0 0 0 0 4.11726e+06 NA
 1 1960 TIME 1 4.82709e+06 4.32333e+06 4.11726e+06 2.8351e+06  4.11726e+06  4.32333e+06  6.92093e+06  0 0 0 0 0 0 0 0  0 0 0 0 0 0 0 0 4.11726e+06 NA
@@ -956,7 +956,7 @@ SPAWN_RECRUIT report:19  Function: 3  RecDev_method: 1   sum_recdev: -8.3442e-09
 ERA    N    RMSE  RMSE^2/sigmaR^2  mean_BiasAdj est_rho Durbin-Watson
 main  47 0 0 0 nan 0
 early 0 0 0 0
-year SpawnBio exp_recr with_regime bias_adjusted pred_recr dev biasadjuster era mature_bio mature_num raw_dev
+Yr SpawnBio exp_recr with_regime bias_adjusted pred_recr dev biasadjuster era mature_bio mature_num raw_dev
 S/Rcurve 4.11726e+06 2.8351e+06
 Virg 4.11726e+06  2.8351e+06 2.8351e+06 2.8351e+06 2.8351e+06 - 0 Virg 4.11726e+06 6.3499e+06 0.0 
 Init 4.11726e+06  2.8351e+06 2.8351e+06 2.8351e+06 2.8351e+06 - 0 Init 4.11726e+06 6.3499e+06 0
@@ -1138,7 +1138,7 @@ SSB/SSB_virgin    SSB    Recruitment
 1.2 4.94072e+06 2.86627e+06
 
 INDEX_2 report:22 annual
-Fleet Fleet_name Area year Seas Subseas Month Time Vuln_bio Obs Exp Calc_Q Eff_Q SE SE_input Dev Like Like+log(s) SuprPer Use
+Fleet Fleet_name Area Yr Seas Subseas Month Time Vuln_bio Obs Exp Calc_Q Eff_Q SE SE_input Dev Like Like+log(s) SuprPer Use
 3 Surv1 1  1977 1 2 7 1977.5 3.30218e+06 4.16541e+06 2.31971e+06 0.70248 0.70248 0.5 0.5 0.585371 0.685319 -0.00782802 _ 1
 3 Surv1 1  1980 1 2 7 1980.5 3.4056e+06 5.05342e+06 2.39237e+06 0.70248 0.70248 0.5 0.5 0.747782 1.11836 0.425209 _ 1
 3 Surv1 1  1983 1 2 7 1983.5 3.48783e+06 1.61891e+06 2.45013e+06 0.70248 0.70248 0.5 0.5 -0.414388 0.343435 -0.349712 _ 1
@@ -1186,7 +1186,7 @@ Fleet  Q_parm_assignments
 9 3 _ 0 _  0 0 Surv7
 
 FIT_AGE_COMPS report:28
-Fleet Fleet_Name Area year Seas Subseas Month Time Sexes Part Ageerr Lbin_lo Lbin_hi SuprPer Use Nsamp_in Nsamp_adj Nsamp_DM effN Like  All_obs_mean All_exp_mean All_delta All_exp_5% All_exp_95% All_DurWat
+Fleet Fleet_Name Area Yr Seas Subseas Month Time Sexes Part Ageerr Lbin_lo Lbin_hi SuprPer Use Nsamp_in Nsamp_adj Nsamp_DM effN Like  All_obs_mean All_exp_mean All_delta All_exp_5% All_exp_95% All_DurWat
 1 Fish1 1 1973 1 2 7 1973.5 0 0 1 12 62  _  _ 50 50 50  67.6308 7.84359  6.71203 6.16676 0.545275 2 12.9308 -0.0854883
 1 Fish1 1 1974 1 2 7 1974.5 0 0 2 12 62  _  _ 50 50 50  77.6327 6.28207  6.39645 6.14387 0.252576 2 12.8534 0.08058
 1 Fish1 1 1975 1 2 7 1975.5 0 0 3 12 62  _  _ 50 50 50  56.9966 5.46107  6.37673 6.1058 0.270921 2 12.7756 -0.661392
@@ -1292,7 +1292,7 @@ Asel_is_age_selectivity_alone
 Asel2_is_sizesel*size_at_age(ALK)
 Aret_is_age_retention
 COMBINED_ALK*selL*selA*wtlen*ret*discmort_in_makefishsel_yr: 2010 With_MeanSel_From: 1995 - 2001; Year_styr-3_(1957)_stores_average_used_for_benchmark
-Factor Fleet year Seas Sex Morph Label  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Factor Fleet Yr Seas Sex Morph Label  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 Asel 1 1957 1 1 1 1957_1Asel  1e-06 1e-06 0.468433 0.589089 0.710975 0.82351 0.915425 0.976603 0.999913 0.999996 0.998662 0.963109 0.879536 0.748085 0.569018 0.342695
 Asel 1 1960 1 1 1 1960_1Asel  1e-06 1e-06 0.466617 0.639007 0.805292 0.933909 0.996724 0.999995 0.999983 0.992145 0.96107 0.906436 0.828352 0.726974 0.602507 0.455199
 Asel 1 1980 1 1 1 1980_1Asel  1e-06 1e-06 0.466617 0.639007 0.805292 0.933909 0.996724 0.999995 0.999983 0.992145 0.96107 0.906436 0.828352 0.726974 0.602507 0.455199
@@ -2513,7 +2513,7 @@ dead_nums 2 2010 1 1 1 2010_2_dead_nums 1e-06 1e-06 0.166616 0.325436 0.541752 0
 dead*wt 2 2010 1 1 1 2010_2_dead*wt 2.05811e-08 1.13434e-07 0.0447274 0.129393 0.279502 0.46373 0.628844 0.72415 0.764416 0.794581 0.816804 0.832874 0.844268 0.852114 0.857255 0.865791
 
 NUMBERS_AT_AGE report:35
-Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph Yr Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 1 1 1 1 1958 1 1958 B VIRG  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
 1 1 1 1 1 1 1 1958 1 1958.5 M VIRG  2.52711e+06 2.00788e+06 1.59533e+06 1.26754e+06 1.0071e+06 800177 635768 505139 401350 318886 253366 201307 159946 127082 100971 390452
 1 1 1 1 1 1 1 1959 1 1959 B INIT  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
@@ -2626,7 +2626,7 @@ Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid E
 1 1 1 1 1 1 1 2012 1 2012.5 M FORE  2.31473e+06 1.8317e+06 1.39143e+06 998416 689773 463959 302522 200365 130002 82489.2 52561.9 34175.6 22618.5 15332.2 10948.1 30082.9
 
 BIOMASS_AT_AGE report:36
-Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph Yr Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 1 1 1 1 1958 1 1958 B VIRG  15885.6 122865 365017 474526 518217 510627 471291 416428 357087 299826 248002 202932 164758 133006 106925 419702
 1 1 1 1 1 1 1 1958 1 1958.5 M VIRG  52010.8 227761 428260 503973 519586 493794 444990 386817 327927 273116 224594 183004 148123 119308 95753.6 375065
 1 1 1 1 1 1 1 1959 1 1959 B INIT  15885.6 122865 365017 474526 518217 510627 471291 416428 357087 299826 248002 202932 164758 133006 106925 419702
@@ -2739,7 +2739,7 @@ Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid E
 1 1 1 1 1 1 1 2012 1 2012.5 M FORE  12969.9 99908.6 283780 333170 316374 256449 190172 137837 95331.5 63312.2 41684.4 27749.5 18680.9 12820.2 9236.65 25734.9
 
 F_AT_AGE report:39
-Area Fleet Sex Morph year Seas Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Fleet Sex Morph Yr Seas Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 1 1959 1 INIT  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 1 1 1 1 1960 1 TIME  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 1 1 1 1 1961 1 TIME  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -2850,7 +2850,7 @@ Area Fleet Sex Morph year Seas Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 2 1 1 2012 1 FORE  5.82134e-08 5.82134e-08 0.00969926 0.0189447 0.0315372 0.0448067 0.0545462 0.0582127 0.0582131 0.0582114 0.0581958 0.0581604 0.0581054 0.0580307 0.0579367 0.0578234
 
 CATCH_AT_AGE report:40
-Area Fleet Sex  XX XX Type Morph year Seas XX Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Fleet Sex  XX XX Type Morph Yr Seas XX Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 XX XX dead 1 1959 1 XX INIT  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 1 1 1 XX XX dead 1 1960 1 XX TIME  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 1 1 1 XX XX dead 1 1961 1 XX TIME  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -2961,7 +2961,7 @@ Area Fleet Sex  XX XX Type Morph year Seas XX Era 0 1 2 3 4 5 6 7 8 9 10 11 12 1
 1 2 1 XX XX dead 1 2012 1 XX FORE  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 
 DISCARD_AT_AGE report:41
-Area Fleet Sex  XX XX Type Morph year Seas XX Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Fleet Sex  XX XX Type Morph Yr Seas XX Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 
 BIOLOGY report:42
 1 62 15 1 N_Used_morphs;_lengths;_ages;_season;_by_season_in_endyr
@@ -3675,7 +3675,7 @@ SD  0.329242 0.329242 0.346917 0.368632 0.31625 0.42809 0.468362 0.517841 0.5786
 
 Dynamic_Bzero report:59
 Spawning_Biomass_Report_2 With_fishery
-year Area: 1 
+Yr Area: 1 
 xxxx GP: 1 
 1958 VIRG  4.11726e+06
 1959 INIT  4.11726e+06
@@ -3734,7 +3734,7 @@ xxxx GP: 1
 2012 FORE  1.71093e+06
 
 NUMBERS_AT_AGE_Annual_2 With_fishery
-Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Bio_Pattern Sex Yr  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1960  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
 1 1 1961  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
 1 1 1962  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
@@ -3790,7 +3790,7 @@ Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 2012  2.59683e+06 2.05493e+06 1.61407e+06 1.18671e+06 840505 573801 376544 249965 162066 102614 65133.8 42113.4 27669.1 18588.4 13133.9 35655.3
 
 Z_AT_AGE_Annual_2 With_fishery
-Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Bio_Pattern Sex Yr  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1960  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
 1 1 1961  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
 1 1 1962  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
@@ -3846,7 +3846,7 @@ Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 
 Dynamic_Bzero report:59
 Spawning_Biomass_Report_1 No_fishery_for_Z=M_and_dynamic_Bzero
-year Area: 1 
+Yr Area: 1 
 xxxx GP: 1 
 1958 VIRG  4.11726e+06
 1959 INIT  4.11726e+06
@@ -3905,7 +3905,7 @@ xxxx GP: 1
 2012 FORE  3.80883e+06
 
 NUMBERS_AT_AGE_Annual_1 No_fishery_for_Z=M_and_dynamic_Bzero
-Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Bio_Pattern Sex Yr  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1960  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
 1 1 1961  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
 1 1 1962  2.8351e+06 2.25258e+06 1.78975e+06 1.42202e+06 1.12984e+06 897698 713251 566702 450264 357750 284244 225841 179439 142570 113277 438038
@@ -3961,7 +3961,7 @@ Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 2012  2.8202e+06 2.23353e+06 1.76376e+06 1.40136e+06 1.11343e+06 884653 702882 558458 443705 352527 280077 222503 176739 140356 111530 432135
 
 Z_AT_AGE_Annual_1 No_fishery_for_Z=M_and_dynamic_Bzero
-Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Bio_Pattern Sex Yr  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1960  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
 1 1 1961  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
 1 1 1962  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 _ 
@@ -4019,7 +4019,7 @@ Bio_Pattern Sex year  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 
 Report_Z_by_area_morph_platoon
 _2 With_fishery
-Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph Yr Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 1 1 1 1 1958 1 1958 _  VIRG  TIME  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23
 1 1 1 1 1 1 1 1959 1 1959 _  INIT  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23
 1 1 1 1 1 1 1 1960 1 1960 _  TIME  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23
@@ -4076,7 +4076,7 @@ Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid E
 1 1 1 1 1 1 1 2011 1 2011 _  FORE  0 0.23 0.23 0.298007 0.34909 0.40273 0.435514 0.449816 0.45499 0.453359 0.448518 0.4399 0.427439 0.411301 0.391696 0
 1 1 1 1 1 1 1 2012 1 2012 _  FORE  0 0.23 0.23 0.298007 0.34909 0.40273 0.435514 0.449816 0.45499 0.453359 0.448518 0.4399 0.427439 0.411301 0.391696 0
 _1 No_fishery_for_Z=M
-Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph year Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Area Bio_Pattern Sex BirthSeas Settlement Platoon Morph Yr Seas Time Beg/Mid Era 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 1 1 1 1 1 1 1 1958 1 1958 _  VIRG  TIME  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23
 1 1 1 1 1 1 1 1959 1 1959 _  INIT  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23
 1 1 1 1 1 1 1 1960 1 1960 _  TIME  0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23

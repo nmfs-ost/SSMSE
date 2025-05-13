@@ -22,9 +22,9 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
 
   # Check if a range of years is specified if not select all years in the input composition data frame
   if (!is.null(years)) {
-    years <- years[is.element(years, unique(data_obs[["year"]]))]
+    years <- years[is.element(years, unique(data_obs[["Yr"]]))]
   } else {
-    years <- unique(data_obs[["year"]])
+    years <- unique(data_obs[["Yr"]])
   }
 
   # Check if select seasons are specified if not select all seasons in the input composition data frame
@@ -50,8 +50,8 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
 
   # Subset the input observed and selected data to retain only the year, season, gender, and fleet
   # elements specified above
-  data_obs <- data_obs[is.element(data_obs[["year"]], years) & is.element(data_obs[["FltSvy"]], fleets) & is.element(data_obs[["Seas"]], seasons) & is.element(data_obs[["sex"]], genders) & data_obs[["year"]] > 0, ]
-  data_exp <- data_exp[is.element(data_exp[["year"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["sex"]], genders) & data_exp[["year"]] > 0, ]
+  data_obs <- data_obs[is.element(data_obs[["Yr"]], years) & is.element(data_obs[["FltSvy"]], fleets) & is.element(data_obs[["Seas"]], seasons) & is.element(data_obs[["sex"]], genders) & data_obs[["Yr"]] > 0, ]
+  data_exp <- data_exp[is.element(data_exp[["Yr"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["sex"]], genders) & data_exp[["Yr"]] > 0, ]
 
   # If merge fleets was set as true change all fleets to 0 so that data will be aggregated across them all
   if (merge_fleets == TRUE) {
@@ -215,9 +215,9 @@ Sim_comp <- function(Comp_uncert, data_exp, bins, years = NULL, seasons = NULL, 
   # For each of years, seasons, genders, and fleets check if a fix simulation range has been set and
   # if not use the full range present in the expected data frame
   if (!is.null(years)) {
-    years <- years[is.element(years, unique(data_exp[["year"]]))]
+    years <- years[is.element(years, unique(data_exp[["Yr"]]))]
   } else {
-    years <- unique(data_exp[["year"]])
+    years <- unique(data_exp[["Yr"]])
   }
 
   if (!is.null(seasons)) {
@@ -240,7 +240,7 @@ Sim_comp <- function(Comp_uncert, data_exp, bins, years = NULL, seasons = NULL, 
 
   # Subset the expected data to only include the selected fleet, year, season, gender range and the replicate this as the
   # observed data object to be filled with new random observations
-  data_exp <- data_exp[is.element(data_exp[["year"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["sex"]], genders) & data_exp[["year"]] > 0, ]
+  data_exp <- data_exp[is.element(data_exp[["Yr"]], years) & is.element(data_exp[["FltSvy"]], fleets) & is.element(data_exp[["Seas"]], seasons) & is.element(data_exp[["sex"]], genders) & data_exp[["Yr"]] > 0, ]
   data_obs <- data_exp
 
   # offset assumes that the observed composition bins are represented buy the final columns of the data frame
