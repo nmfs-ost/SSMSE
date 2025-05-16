@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
 
 # SSMSE build status
 
-[![badge for the github action call-r-cmd-check](https://github.com/nmfs-fish-tools/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-fish-tools/SSMSE/actions/workflows/call-r-cmd-check.yml)
-[![codecoverage badge](https://codecov.io/gh/nmfs-fish-tools/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-fish-tools/SSMSE)
+[![badge for the github action call-r-cmd-check](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml)
+[![codecoverage badge](https://codecov.io/gh/nmfs-ost/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-ost/SSMSE)
 [![DOI badge](https://joss.theoj.org/papers/10.21105/joss.04937/status.svg)](https://doi.org/10.21105/joss.04937)
 [![Lifecycle badge indicating this repository is stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html) 
 
@@ -47,15 +47,15 @@ Doering et al., (2023). SSMSE: An R package for Management Strategy Evaluation w
 
 # Need Help?
 
-- Get questions answered in [discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions).
-- Submit bug reports and feature requests to [issues](https://github.com/nmfs-fish-tools/SSMSE/issues).
+- Get questions answered in [discussions](https://github.com/nmfs-ost/SSMSE/discussions).
+- Submit bug reports and feature requests to [issues](https://github.com/nmfs-ost/SSMSE/issues).
 - Alternatively, contact the develpers via email at nmfs.stock.synthesis@noaa.gov.
   
 # Installing the SSMSE R package
 
 To install SSMSE from github:
 ```{r Install-Github, eval = FALSE}
-remotes::install_github("nmfs-fish-tools/SSMSE")
+remotes::install_github("nmfs-ost/SSMSE")
 ```
 You can read the help files with
 
@@ -72,10 +72,10 @@ Here are some tips:
 - Make sure you are using the main branch versions of R packages `r4ss` and `ss3sim`. These can be installed separately using `remotes::install_github("r4ss/r4ss")` and `remotes::install_github("ss3sim/ss3sim")`.
 - If R asks "Would you like to download from sources that need compilation?", select "no", as the older compiled versions should work fine.
 - If R asks which packages you would like to update, select "none." Although it is good to update to keep packages current, install can sometimes be frustrating when updating many packages and skipping this step can eliminate issues in the short term.
-- If running into an error during install, try closing out all R sessions open (e.g., other R GUI or R studio windows), restarting the R session and trying `remotes::install_github("nmfs-fish-tools/SSMSE")` again.
-- If still running into an error during install, and it seems to be a problem installing a particular package, try restarting the R session, using `install.packages()` to download the package that caused the error, restarting the R session, and trying `remotes::install_github("nmfs-fish-tools/SSMSE")` again. This step may need to be done several times for different R packages.
+- If running into an error during install, try closing out all R sessions open (e.g., other R GUI or R studio windows), restarting the R session and trying `remotes::install_github("nmfs-ost/SSMSE")` again.
+- If still running into an error during install, and it seems to be a problem installing a particular package, try restarting the R session, using `install.packages()` to download the package that caused the error, restarting the R session, and trying `remotes::install_github("nmfs-ost/SSMSE")` again. This step may need to be done several times for different R packages.
 
-Still having trouble installing SSMSE? Please don't hesitate to [post in discussions about the issue](https://github.com/nmfs-fish-tools/SSMSE/discussions/categories/q-a).
+Still having trouble installing SSMSE? Please don't hesitate to [post in discussions about the issue](https://github.com/nmfs-ost/SSMSE/discussions/categories/q-a).
 
 # An SSMSE example
 
@@ -246,7 +246,7 @@ However, an assessment will be conducted every 3 years and thus 3 years of proje
 
 More information on using the forecast module in SS3 to forecast catches is available in the [Stock Synthesis users manual](https://vlab.noaa.gov/web/stock-synthesis/document-library/-/document_library/0LmuycloZeIt/view/4513132).
 
-Users can also specify their own [custom management procedures](https://nmfs-fish-tools.github.io/SSMSE/manual/custom-MS.html).
+Users can also specify their own [custom management procedures](https://nmfs-ost.github.io/SSMSE/manual/custom-MS.html).
 
 ## Run SSMSE
 
@@ -484,13 +484,13 @@ run_result_custom <- run_SSMSE(
 
 # How can I contribute to SSMSE?
 
-Currently, feedback on how using SSMSE is working or not would be most hopeful! Please open an issue if a problem is found. The developers can also be contacted through [github discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions) or by emailing nmfs.stock.synthesis@noaa.gov.
+Currently, feedback on how using SSMSE is working or not would be most hopeful! Please open an issue if a problem is found. The developers can also be contacted through [github discussions](https://github.com/nmfs-ost/SSMSE/discussions) or by emailing nmfs.stock.synthesis@noaa.gov.
   
  If you are interested in contributing, please read the [NMFS Fisheries Toolbox R Contribution Guide](https://github.com/nmfs-fish-tools/Resources/blob/master/CONTRIBUTING.md). This project and everyone participating in it is governed by the [NMFS Fisheries Toolbox Code of Conduct](https://github.com/nmfs-fish-tools/Resources/blob/master/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
   
 # Roadmap: Where is SSMSE headed next?
 
-SSMSE will be applied to a number of problems. If you are interested in using SSMSE, please don't hesitate to reach out to the developers via [github discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions) or by emailing nmfs.stock.synthesis@noaa.gov.
+SSMSE will be applied to a number of problems. If you are interested in using SSMSE, please don't hesitate to reach out to the developers via [github discussions](https://github.com/nmfs-ost/SSMSE/discussions) or by emailing nmfs.stock.synthesis@noaa.gov.
  
 <img src="https://raw.githubusercontent.com/nmfs-fish-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries Logo">
 

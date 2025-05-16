@@ -13,8 +13,8 @@ Description: An R package for performing Management Strategy Evaluation
     used in the MSE framework provided by SSMSE to evaluate the
     implications of management actions on a population given uncertainty.
 License: MIT + file LICENSE.md
-URL: https://github.com/nmfs-fish-tools/SSMSE
-BugReports: https://github.com/nmfs-fish-tools/SSMSE/issues
+URL: https://github.com/nmfs-ost/SSMSE
+BugReports: https://github.com/nmfs-ost/SSMSE/issues
 Depends: 
     R (>= 4.0)
 Imports:

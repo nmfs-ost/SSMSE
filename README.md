@@ -39,9 +39,9 @@ SSMSE: Management Strategy Evaluation for Stock Synthesis
 # SSMSE build status
 
 [![badge for the github action
-call-r-cmd-check](https://github.com/nmfs-fish-tools/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-fish-tools/SSMSE/actions/workflows/call-r-cmd-check.yml)
+call-r-cmd-check](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml)
 [![codecoverage
-badge](https://codecov.io/gh/nmfs-fish-tools/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-fish-tools/SSMSE)
+badge](https://codecov.io/gh/nmfs-ost/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-ost/SSMSE)
 [![DOI
 badge](https://joss.theoj.org/papers/10.21105/joss.04937/status.svg)](https://doi.org/10.21105/joss.04937)
 [![Lifecycle badge indicating this repository is
@@ -95,9 +95,9 @@ Software, 8(90), 4937, <https://doi.org/10.21105/joss.04937>
 # Need Help?
 
 - Get questions answered in
-  [discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions).
+  [discussions](https://github.com/nmfs-ost/SSMSE/discussions).
 - Submit bug reports and feature requests to
-  [issues](https://github.com/nmfs-fish-tools/SSMSE/issues).
+  [issues](https://github.com/nmfs-ost/SSMSE/issues).
 - Alternatively, contact the develpers via email at
   <nmfs.stock.synthesis@noaa.gov>.
 
@@ -106,7 +106,7 @@ Software, 8(90), 4937, <https://doi.org/10.21105/joss.04937>
 To install SSMSE from github:
 
 ``` r
-remotes::install_github("nmfs-fish-tools/SSMSE")
+remotes::install_github("nmfs-ost/SSMSE")
 ```
 
 You can read the help files with
@@ -140,17 +140,17 @@ Here are some tips:
 - If running into an error during install, try closing out all R
   sessions open (e.g., other R GUI or R studio windows), restarting the
   R session and trying
-  `remotes::install_github("nmfs-fish-tools/SSMSE")` again.
+  `remotes::install_github("nmfs-ost/SSMSE")` again.
 - If still running into an error during install, and it seems to be a
   problem installing a particular package, try restarting the R session,
   using `install.packages()` to download the package that caused the
   error, restarting the R session, and trying
-  `remotes::install_github("nmfs-fish-tools/SSMSE")` again. This step
+  `remotes::install_github("nmfs-ost/SSMSE")` again. This step
   may need to be done several times for different R packages.
 
 Still having trouble installing SSMSE? Please don’t hesitate to [post in
 discussions about the
-issue](https://github.com/nmfs-fish-tools/SSMSE/discussions/categories/q-a).
+issue](https://github.com/nmfs-ost/SSMSE/discussions/categories/q-a).
 
 # An SSMSE example
 
@@ -461,7 +461,7 @@ is available in the [Stock Synthesis users
 manual](https://vlab.noaa.gov/web/stock-synthesis/document-library/-/document_library/0LmuycloZeIt/view/4513132).
 
 Users can also specify their own [custom management
-procedures](https://nmfs-fish-tools.github.io/SSMSE/manual/custom-MS.html).
+procedures](https://nmfs-ost.github.io/SSMSE/manual/custom-MS.html).
 
 ## Run SSMSE
 
@@ -780,7 +780,7 @@ run_result_custom <- run_SSMSE(
 Currently, feedback on how using SSMSE is working or not would be most
 hopeful! Please open an issue if a problem is found. The developers can
 also be contacted through [github
-discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions) or by
+discussions](https://github.com/nmfs-ost/SSMSE/discussions) or by
 emailing <nmfs.stock.synthesis@noaa.gov>.
 
 If you are interested in contributing, please read the [NMFS Fisheries
@@ -796,7 +796,7 @@ By participating, you are expected to uphold this code.
 SSMSE will be applied to a number of problems. If you are interested in
 using SSMSE, please don’t hesitate to reach out to the developers via
 [github
-discussions](https://github.com/nmfs-fish-tools/SSMSE/discussions) or by
+discussions](https://github.com/nmfs-ost/SSMSE/discussions) or by
 emailing <nmfs.stock.synthesis@noaa.gov>.
 
 <img src="https://raw.githubusercontent.com/nmfs-fish-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries Logo">

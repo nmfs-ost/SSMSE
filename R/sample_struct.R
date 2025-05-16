@@ -74,7 +74,7 @@ convert_to_r4ss_names <- function(sample_struct,
 #'  catch (catch), relative indices (CPUE), length composition (lencomp),
 #' age composition (agecomp), mean body weight (meanbodywt), and mean size at
 #' age (MeanSize_at_Age_obs). Details for creating the sample structure list are
-#' available in the [sampling options section of the SSMSE user manual](https://nmfs-fish-tools.github.io/SSMSE/manual/SSMSE.html#sampling-options).
+#' available in the [sampling options section of the SSMSE user manual](https://nmfs-ost.github.io/SSMSE/manual/SSMSE.html#sampling-options).
 #'
 #' @param dat An r4ss list object read in using r4ss::SS_readdat() or the path
 #'  (relative or absolute) to an SS data file to read in.

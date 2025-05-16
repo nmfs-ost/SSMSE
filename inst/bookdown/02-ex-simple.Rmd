@@ -345,7 +345,7 @@ This code was used to examine how different natural mortality scenarios performe
 ```{r M-case-study, eval=FALSE}
 # load pkgs set options ----
 #devtools::install_github("r4ss/r4ss", ref = "155a521")
-#devtools::install_github("nmfs-fish-tools/SSMSE@v0.2.5")
+#devtools::install_github("nmfs-ost/SSMSE@v0.2.5")
 library(SSMSE)
 library(r4ss)
 
