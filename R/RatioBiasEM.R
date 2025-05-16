@@ -715,7 +715,7 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -942,7 +942,7 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -1169,7 +1169,7 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -1395,7 +1395,7 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -1626,7 +1626,7 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -1855,7 +1855,7 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
@@ -2209,7 +2209,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
                                     nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,NULL,nyrs_assess),
+                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
