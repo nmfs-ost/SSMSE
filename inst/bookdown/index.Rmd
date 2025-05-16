@@ -2,7 +2,7 @@
 title: "SSMSE user manual"
 author: Kathryn Doering and Nathan Vaughan
 date: "`r Sys.Date()`"
-url: 'https://nmfs-fish-tools.github.io/SSMSE/manual/'
+url: 'https://nmfs-ost.github.io/SSMSE/manual/'
 site: bookdown::bookdown_site
 lang: en
 output: bookdown::gitbook
@@ -10,7 +10,7 @@ documentclass: book
 bibliography: book.bib
 biblio-style: apalike
 link-citations: yes
-github-repo: nmfs-fish-tools/SSMSE
+github-repo: nmfs-ost/SSMSE
 description: "This is a user manual for the SSMSE package. It includes documentation and examples."
 ---
 
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(comment="")
 
 ![Logo for the SSMSE package](images/ssmse_icon_small.png)
 
-This is the user manual for SSMSE, an R package for Management Strategy Evaluation with Stock Synthesis Operating models. This document is still a work in progress! If you would like to suggest changes, the R markdown files used to generate the user manual are available in a [bookdown folder within the SSMSE repository](https://github.com/nmfs-fish-tools/SSMSE/tree/main/inst/bookdown). Please feel free to open an [issue](https://github.com/nmfs-fish-tools/SSMSE/issues) or [submit a pull request](https://github.com/nmfs-fish-tools/SSMSE/pulls) to suggest changes.
+This is the user manual for SSMSE, an R package for Management Strategy Evaluation with Stock Synthesis Operating models. This document is still a work in progress! If you would like to suggest changes, the R markdown files used to generate the user manual are available in a [bookdown folder within the SSMSE repository](https://github.com/nmfs-ost/SSMSE/tree/main/inst/bookdown). Please feel free to open an [issue](https://github.com/nmfs-ost/SSMSE/issues) or [submit a pull request](https://github.com/nmfs-ost/SSMSE/pulls) to suggest changes.
 
 
 ## R session information {-}

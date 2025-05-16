@@ -8,5 +8,5 @@ navbar:
   components:
     usermanual:
       text: User Manual
-      href: https://nmfs-fish-tools.github.io/SSMSE/manual
+      href: https://nmfs-ost.github.io/SSMSE/manual
       aria-label: User Manual

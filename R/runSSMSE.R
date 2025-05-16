@@ -2,7 +2,7 @@
 #'
 #' High level function to run a management strategy evaluation using Stock
 #' Synthesis as the Operating model(s). For more examples and information on how
-#' to use SSMSE, see the [SSMSE user manual](https://nmfs-fish-tools.github.io/SSMSE/manual/).
+#' to use SSMSE, see the [SSMSE user manual](https://nmfs-ost.github.io/SSMSE/manual/).
 #' @template run_SSMSE_scen_list
 #' @template seed_input
 #' @template future_om_list

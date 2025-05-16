@@ -13,7 +13,7 @@ Another simulation tool available is [ss3sim](https://github.com/ss3sim/ss3sim).
 - {ss3sim} has more helper functions which modify the operating model and estimation model, but ss3sim is less flexible in the initial Operating models and estimation methods/models that can be used compared to {SSMSE}.
 - {SSMSE} can use custom estimation methods; {ss3sim} must use a Stock Synthesis Estimation Model.
 
-Please post this question regarding the suitability of {SSMSE} for your study in [SSMSE discussions q+a](https://github.com/nmfs-fish-tools/SSMSE/discussions/categories/q-a).
+Please post this question regarding the suitability of {SSMSE} for your study in [SSMSE discussions q+a](https://github.com/nmfs-ost/SSMSE/discussions/categories/q-a).
 
 ## Functions in SSMSE {#funs}
 
