@@ -190,23 +190,20 @@ check_avail_dat <- function(EM_dat, OM_dat,
 #' @author Kathryn Doering
 check_sample_struct <- function(sample_struct,
                                 valid_names = list(
-                                  catch = c("year", "month", "FltSvy", "SE"),
-                                  CPUE = c("year", "month", "FltSvy", "SE"),
+                                  catch = c("Yr", "Seas", "FltSvy", "SE"),
+                                  CPUE = c("Yr", "Seas", "FltSvy", "SE"),
                                   lencomp = c(
-                                    "year", "month", "FltSvy", "Sex",
-                                    "Part", "Nsamp"
+                                    "Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp"
                                   ),
                                   agecomp = c(
-                                    "year", "month", "FltSvy", "Sex", "Part",
-                                    "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp"
+                                    "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
+                                      "Lbin_lo", "Lbin_hi", "Nsamp"
                                   ),
                                   meanbodywt = c(
-                                    "year", "month", "FltSvy", "Part",
-                                    "Type", "Std_in"
+                                    "Yr", "Seas", "FltSvy", "Part", "Type", "Std_in"
                                   ),
                                   MeanSize_at_Age_obs = c(
-                                    "year", "month",
-                                    "FltSvy", "Sex", "Part", "Ageerr", "N_"
+                                    "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_"
                                   )
                                 )) {
   # get rid of any NA components, first convert to NULLS
