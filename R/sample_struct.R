@@ -513,7 +513,7 @@ get_full_sample_struct <- function(sample_struct,
         if (!"Std_in" %in% colnames(x)) {
           for (i in unique(x[["FltSvy"]])) {
             x[["Std_in"]] <- NA
-            tmp_std_in <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "Std_in"])
+            tmp_std_in <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "stderr"])
             if (length(tmp_std_in) == 1) {
               x[x[["FltSvy"]] == i, "Std_in"] <- tmp_std_in
             } else {

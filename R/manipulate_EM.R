@@ -101,7 +101,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     meansize <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "meanbodywt",
-        c("Year", "Seas", "fleet", "Partition", "Type", "Std_in")
+        c("Year", "Seas", "fleet", "Partition", "Type", "stderr")
       )
     })
     matches_meansize <- which(meansize[[1]][, "combo"] %in% meansize[[2]][, "combo"])
@@ -259,9 +259,9 @@ add_new_dat <- function(OM_dat,
           new_dat[["Nsamp.x"]] <- NULL
           colnames(new_dat)[which(colnames(new_dat) == "Nsamp.y")] <- "Nsamp"
         }
-        if ("Std_in.y" %in% colnames(new_dat)) {
-          new_dat[["Std_in.x"]] <- NULL
-          colnames(new_dat)[which(colnames(new_dat) == "Std_in.y")] <- "Std_in"
+        if ("stderr.y" %in% colnames(new_dat)) {
+          new_dat[["stderr.x"]] <- NULL
+          colnames(new_dat)[which(colnames(new_dat) == "stderr.y")] <- "stderr"
         }
         if ("Ignore.y" %in% colnames(new_dat)) {
           new_dat[["Ignore.y"]] <- NULL

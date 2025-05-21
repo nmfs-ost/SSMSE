@@ -274,7 +274,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
     # 3, values are in numbers(thousands)
     se_dis <- get_input_value(dat[["discard_data"]],
       method = "most_common_value",
-      colname = "Std_in", group = "Flt"
+      colname = "stderr", group = "Flt"
     )
     dis_df_list <- vector(
       mode = "list",
@@ -301,7 +301,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
         dis_df_list[[i]] <- NULL
       } else {
         # check that an se was created for that fleet (a sanity check)
-        if (length(se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]) == 0) {
+        if (length(se_dis[se_dis[["Flt"]] == tmp_flt, "stderr"]) == 0) {
           stop(
             "A standard error value for fleet ", tmp_flt, "could not be ",
             "determined because there was no discard data for that fleet in ",
@@ -315,7 +315,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
           Seas = fcast_catch_df[["Seas"]],
           Flt = tmp_flt,
           Discard = tmp_discard_amount,
-          Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
+          stderr = se_dis[se_dis[["Flt"]] == tmp_flt, "stderr"]
         )
       }
     }

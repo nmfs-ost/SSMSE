@@ -558,7 +558,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "meanbodywt",
-    colnames = c("Year", "Seas", "fleet", "Partition", "Type", "Std_in")
+    colnames = c("Year", "Seas", "fleet", "Partition", "Type", "stderr")
   )
   dat[["MeanSize_at_Age_obs"]] <- rm_vals(
     return_obj = dat,
@@ -707,7 +707,7 @@ add_sample_struct <- function(sample_struct, dat) {
       tmp_meanbodywt[["Value"]] <- -1
       tmp_meanbodywt <- tmp_meanbodywt[, c(
         "Year", "Seas", "fleet", "Partition",
-        "Type", "Value", "Std_in"
+        "Type", "Value", "stderr"
       )]
       tmp_meanbodywt[["Value"]] <- -abs(tmp_meanbodywt[["Value"]])
       dat[["meanbodywt"]] <- rbind(dat[["meanbodywt"]], tmp_meanbodywt)
