@@ -37,7 +37,7 @@ test_that("assumptions about r4ss colnames are true.", {
       Seas = 7,
       fleet = c(1, 2, 1, 2),
       Partition = 1,
-      Type = 1,
+      type = 1,
       Std_in = 0.3
     ),
     MeanSize_at_Age_obs = data.frame(

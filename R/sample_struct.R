@@ -252,7 +252,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
         }
         if (name == "meanbodywt") {
           tmp_type <- unique(df[df[[seas_col]] == tmp_seas &
-            df[[flt_col]] == tmp_flt, "Type"])
+            df[[flt_col]] == tmp_flt, "type"])
           if (length(tmp_type) == 1) {
             future_pat[["Type"]] <- tmp_type
           } else {
@@ -501,7 +501,7 @@ get_full_sample_struct <- function(sample_struct,
         if (!"Type" %in% colnames(x)) {
           for (i in unique(x[["FltSvy"]])) {
             x[["Type"]] <- NA
-            tmp_type <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "Type"])
+            tmp_type <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "type"])
             if (length(tmp_type) == 1) {
               x[x[["FltSvy"]] == i, "Type"] <- tmp_type
             } else {
