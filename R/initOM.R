@@ -550,7 +550,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     name_in_obj = "agecomp",
     colnames = c(
       "year", "Seas", "fleet", "sex",
-      "part", "Ageerr", "Lbin_lo",
+      "part", "ageerr", "Lbin_lo",
       "Lbin_hi"
     )
   )

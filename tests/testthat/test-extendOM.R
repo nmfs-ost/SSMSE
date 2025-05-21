@@ -45,7 +45,7 @@ extend_vals <- list(
   ),
   agecomp = data.frame(
     year = 101:104, Seas = 1, FltSvy = 2,
-    sex = 0, part = 0, Ageerr = 1,
+    sex = 0, part = 0, ageerr = 1,
     Lbin_lo = -1, Lbin_hi = -1,
     Nsamp = c(25, 50, 100, 150)
   )

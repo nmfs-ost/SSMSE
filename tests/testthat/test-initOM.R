@@ -48,7 +48,7 @@ test_that("create_OM can modify model", {
     unique(new_dat[["lencomp"]][, cols_lencomp])
   )
   cols_agecomp <- c(
-    "year", "Seas", "fleet", "sex", "part", "Ageerr", "Lbin_lo",
+    "year", "Seas", "fleet", "sex", "part", "ageerr", "Lbin_lo",
     "Lbin_hi"
   )
   expect_equal(

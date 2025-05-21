@@ -111,7 +111,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     size_at_age <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "MeanSize_at_Age_obs",
-        c("year", "Seas", "fleet", "sex", "part", "Ageerr")
+        c("year", "Seas", "fleet", "sex", "part", "ageerr")
       )
     })
     matches_size_at_age <- which(size_at_age[[1]][, "combo"] %in% size_at_age[[2]][, "combo"])
@@ -233,7 +233,7 @@ add_new_dat <- function(OM_dat,
           "CPUE" = c("year", "seas", "index"),
           "lencomp" = c("year", "Seas", "fleet", "sex", "part"),
           "agecomp" = c(
-            "year", "Seas", "fleet", "sex", "part", "Ageerr",
+            "year", "Seas", "fleet", "sex", "part", "ageerr",
             "Lbin_lo", "Lbin_hi"
           ),
           "meanbodywt" = c("Year", "Seas", "fleet", "Partition", "Type"),

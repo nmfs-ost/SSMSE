@@ -29,7 +29,7 @@ test_that("assumptions about r4ss colnames are true.", {
     ),
     agecomp = data.frame(
       Yr = c(102, 105), Seas = 1, fleet = 2,
-      sex = 0, Part = 0, Ageerr = 1,
+      sex = 0, Part = 0, ageerr = 1,
       Lbin_lo = -1, Lbin_hi = -1, Nsamp = 500
     ),
     meanbodywt = data.frame(
@@ -77,7 +77,7 @@ test_that("convert_to_r4ss_names works", {
   ))
   expect_equal(names(r4ss_sample_struct[["agecomp"]]), c(
     "Yr", "Seas", "fleet",
-    "sex", "part", "Ageerr",
+    "sex", "part", "ageerr",
     "Lbin_lo", "Lbin_hi", "Nsamp"
   ))
 })

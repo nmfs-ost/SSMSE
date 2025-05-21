@@ -218,7 +218,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
           }
         }
         if (name %in% c("agecomp", "MeanSize_at_Age_obs")) {
-          # Ageerr
+          # ageerr
           ageerr_col <- grep("ageerr", colnames(df),
             ignore.case = TRUE,
             value = TRUE
@@ -462,7 +462,8 @@ get_full_sample_struct <- function(sample_struct,
         if (!"Ageerr" %in% colnames(x)) {
           x[["Ageerr"]] <- NA
           for (i in unique(x[["FltSvy"]])) {
-            tmp_err <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "Ageerr"])
+            ageerr_colname <- grep("ageerr", colnames(tmp_dat), value = TRUE, ignore.case = TRUE)
+            tmp_err <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, ageerr_colname])
             if (length(tmp_err) == 1) {
               x[x[["FltSvy"]] == i, "Ageerr"] <- tmp_err
             } else {
@@ -525,8 +526,9 @@ get_full_sample_struct <- function(sample_struct,
       if (x_name == "MeanSize_at_Age_obs") {
         if (!"Ageerr" %in% colnames(x)) {
           for (i in unique(x[["FltSvy"]])) {
+            ageerr_colname <- grep("ageerr", colnames(tmp_dat), value = TRUE, ignore.case = TRUE)
             x[["Ageerr"]] <- NA
-            tmp_ageerr <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, "AgeErr"])
+            tmp_ageerr <- unique(tmp_dat[tmp_dat[[flt_colname]] == i, ageerr_colname])
             if (length(tmp_ageerr) == 1) {
               x[x[["FltSvy"]] == i, "Ageerr"] <- tmp_ageerr
             } else {
