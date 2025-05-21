@@ -214,7 +214,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
     }
     df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["year"]],
+      year = fcast_catch_df[["Yr"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab],
@@ -223,7 +223,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
 
     bio_df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["year"]],
+      year = fcast_catch_df[["Yr"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab_bio],
@@ -232,7 +232,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
 
     F_df_list[[fl]] <- data.frame(
       area = fcast_catch_df[["Area"]],
-      year = fcast_catch_df[["year"]],
+      year = fcast_catch_df[["Yr"]],
       seas = fcast_catch_df[["Seas"]],
       fleet = flt_units[["survey_number"]][fl],
       catch = fcast_catch_df[, tmp_col_lab_F],
@@ -311,7 +311,7 @@ get_EM_catch_df <- function(EM_dir, dat) {
           )
         }
         dis_df_list[[i]] <- data.frame(
-          year = fcast_catch_df[["year"]],
+          year = fcast_catch_df[["Yr"]],
           Seas = fcast_catch_df[["Seas"]],
           Flt = tmp_flt,
           Discard = tmp_discard_amount,
@@ -515,7 +515,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
         times = NROW(dat[["fleetinfo"]][dat[["fleetinfo"]][["type"]] %in% c(1, 2), ])
       )
     )
-    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("year", "Seas", "fleet", "retained_catch")]
+    catch_bio <- catch_bio[catch_bio[["Era"]] == "FORE", c("Yr", "Seas", "fleet", "retained_catch")]
     colnames(catch_bio) <- c("year", "seas", "fleet", "catch")
   } else {
     # all should be 0. note for now there is no catch_se column.

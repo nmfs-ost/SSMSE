@@ -3,9 +3,9 @@ context("Test functions in calc_F script")
 nfleets <- 2
 test_timeseries <- data.frame(
   Area = 1,
-  year = rep(-1:4, 2),
-  Seas = rep(c(1, 2), times = c(6, 6)),
+  Yr = rep(-1:4, 2),
   Era = c("VIRG", "INIT", "TIME", "TIME", "TIME", "FORE"),
+  Seas = rep(c(1, 2), times = c(6, 6)),
   Bio_all = 3910080000,
   Bio_smry = 3908690000,
   SpawnBio = 3878510000,
@@ -136,7 +136,7 @@ test_that("get_retained_catch works", {
   expect_equivalent(ncol(ret_catch), 6)
   expect_equal(
     colnames(ret_catch),
-    c("year", "Era", "Seas", "Units", "fleet", "retained_catch")
+    c("Yr", "Era", "Seas", "Units", "fleet", "retained_catch")
   )
 })
 

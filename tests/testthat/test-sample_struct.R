@@ -24,29 +24,29 @@ test_that("assumptions about r4ss colnames are true.", {
     catch = data.frame(year = 101:106, seas = 1, fleet = 1, catch_se = 0.005),
     CPUE = data.frame(year = c(102, 105), month = 7, index = 2, se_log = 0.2),
     lencomp = data.frame(
-      Yr = c(102, 105), month = 1, fleet = 1,
-      sex = 0, Part = 0, Nsamp = 125
+      year = c(102, 105), month = 1, fleet = 1,
+      sex = 0, part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
-      Yr = c(102, 105), month = 1, fleet = 2,
-      sex = 0, Part = 0, ageerr = 1,
+      year = c(102, 105), month = 1, fleet = 2,
+      sex = 0, part = 0, ageerr = 1,
       Lbin_lo = -1, Lbin_hi = -1, Nsamp = 500
     ),
     meanbodywt = data.frame(
-      Year = c(1999, 1999, 2001, 2001),
+      year = c(1999, 1999, 2001, 2001),
       month = 7,
       fleet = c(1, 2, 1, 2),
       part = 1,
       type = 1,
-      Std_in = 0.3
+      stderr = 0.3
     ),
     MeanSize_at_Age_obs = data.frame(
-      Yr = c(1971, 1995),
+      year = c(1971, 1995),
       month = 7,
       fleet = c(1, 1, 2, 2),
       sex = 3,
       part = 0,
-      AgeErr = 1
+      ageerr = 1
     )
   )
   return <- check_sample_struct(sample_struct = assumed_str, valid_names = r4ss_names)
@@ -55,14 +55,14 @@ test_that("assumptions about r4ss colnames are true.", {
 
 test_that("convert_to_r4ss_names works", {
   test_sample_struct <- list(
-    catch = data.frame(Yr = 101:106, month = 1, fleet = 1, SE = 0.01),
-    CPUE = data.frame(Yr = c(102, 105), Seas = 7, fleet = 2, SE = 0.05),
+    catch = data.frame(Yr = 101:106, Seas = 1, FltSvy = 1, SE = 0.01),
+    CPUE = data.frame(Yr = c(102, 105), Seas = 7, FltSvy = 2, SE = 0.05),
     lencomp = data.frame(
-      Yr = c(102, 105), Seas = 1, fleet = 1,
-      Sex = 0, part = 0, Nsamp = 125
+      Yr = c(102, 105), Seas = 1, FltSvy = 1,
+      Sex = 0, Part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
-      Yr = c(102, 105), Seas = 1, fleet = 2,
+      Yr = c(102, 105), Seas = 1, FltSvy = 2,
       Sex = 0, Part = 0, Ageerr = 1,
       Lbin_lo = -1, Lbin_hi = -1, Nsamp = 500
     )
@@ -76,7 +76,7 @@ test_that("convert_to_r4ss_names works", {
     "sex", "part", "Nsamp"
   ))
   expect_equal(names(r4ss_sample_struct[["agecomp"]]), c(
-    "Yr", "month", "fleet",
+    "year", "month", "fleet",
     "sex", "part", "ageerr",
     "Lbin_lo", "Lbin_hi", "Nsamp"
   ))
@@ -90,11 +90,11 @@ test_that("create_sample_struct works", {
     "Pattern not found for lencomp"
   )
   expect_sample_struct <- list(
-    catch = data.frame(Yr = 101:120, Seas = 1, fleet = 1, SE = 0.005),
-    CPUE = data.frame(Yr = seq(105, 120, by = 5), Seas = 7, fleet = 2, SE = 0.2),
-    lencomp = data.frame(Yr = NA, Seas = 1, fleet = 1, Sex = 0, Part = 0, Nsamp = 125), # because irregular input
+    catch = data.frame(Yr = 101:120, Seas = 1, FltSvy = 1, SE = 0.005),
+    CPUE = data.frame(Yr = seq(105, 120, by = 5), Seas = 7, FltSvy = 2, SE = 0.2),
+    lencomp = data.frame(Yr = NA, Seas = 1, FltSvy = 1, Sex = 0, Part = 0, Nsamp = 125), # because irregular input
     agecomp = data.frame(
-      Yr = seq(105, 120, by = 5), Seas = 1, fleet = 2,
+      Yr = seq(105, 120, by = 5), Seas = 1, FltSvy = 2,
       Sex = 0, Part = 0, Ageerr = 1, Lbin_lo = -1,
       Lbin_hi = -1, Nsamp = 500
     ),
@@ -156,14 +156,14 @@ test_that("get_full_sample_struct works", {
   )
   # reference to compare against
   full_spl_str_ref <- list(
-    catch = data.frame(Yr = 101:110, Seas = 1, fleet = 1, SE = 0.005),
-    CPUE = data.frame(Yr = c(105, 110), Seas = 7, fleet = 2, SE = 0.2),
+    catch = data.frame(Yr = 101:110, Seas = 1, FltSvy = 1, SE = 0.005),
+    CPUE = data.frame(Yr = c(105, 110), Seas = 7, FltSvy= 2, SE = 0.2),
     lencomp = data.frame(
-      Yr = seq(102, 110, by = 2), Seas = 1, fleet = 1,
+      Yr = seq(102, 110, by = 2), Seas = 1, FltSvy = 1,
       Sex = 0, Part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
-      Yr = seq(102, 110, by = 4), Seas = 1, fleet = 2,
+      Yr = seq(102, 110, by = 4), Seas = 1, FltSvy = 2,
       Sex = 0, Part = 0, Ageerr = 1, Lbin_lo = -1,
       Lbin_hi = -1, Nsamp = 500
     )
@@ -236,7 +236,7 @@ test_that("sample_str works with other data types", {
   expect_equivalent(struct[["meanbodywt"]], data.frame(
     Yr = c(2003, 2005),
     Seas = 7,
-    fleet = c(1, 1, 2, 2),
+    FltSvy = c(1, 1, 2, 2),
     Part = 1,
     Type = 1,
     SE = 0.3

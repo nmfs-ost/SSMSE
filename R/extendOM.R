@@ -46,7 +46,6 @@ update_OM <- function(OM_dir,
                       n_F_search_loops = 20,
                       tolerance_F_search = 0.001) {
   # input checks
-
   if (is.null(catch) & is.null(harvest_rate)) {
     stop("You have to input either a catch or a harvest rate")
   }
@@ -300,7 +299,6 @@ update_OM <- function(OM_dir,
   }
 
 
-
   catch_intended <- catch_intended[catch_intended[, "catch"] > 0, , drop = FALSE]
   catch_intended <- catch_intended[catch_intended[, "F"] > 0, , drop = FALSE]
 
@@ -396,8 +394,7 @@ update_OM <- function(OM_dir,
         timeseries = outlist[["timeseries"]],
         units_of_catch = units_of_catch
       )
-
-      F_achieved <- F_list[["F_df"]][, c("year", "Seas", "fleet", "F")]
+      F_achieved <- F_list[["F_df"]][, c("Yr", "Seas", "fleet", "F")]
       colnames(F_achieved) <- c("year", "seas", "fleet", "F")
 
       for (i in 1:length(catch_intended[, 1])) {
@@ -407,11 +404,11 @@ update_OM <- function(OM_dir,
           intended_landings <- catch_intended[i, "catch"]
 
           if (catch_intended[i, "basis_2"] == 1) {
-            achieved_landings <- ret_catch[ret_catch[, "year"] == catch_intended[i, "year"] &
+            achieved_landings <- ret_catch[ret_catch[, "Yr"] == catch_intended[i, "year"] &
               ret_catch[, "Seas"] == catch_intended[i, "seas"] &
               ret_catch[, "fleet"] == catch_intended[i, "fleet"], "retained_catch"]
           } else if (catch_intended[i, "basis_2"] == 2) {
-            achieved_landings <- dead_catch[dead_catch[, "year"] == catch_intended[i, "year"] &
+            achieved_landings <- dead_catch[dead_catch[, "Yr"] == catch_intended[i, "year"] &
               dead_catch[, "Seas"] == catch_intended[i, "seas"] &
               dead_catch[, "fleet"] == catch_intended[i, "fleet"], "retained_catch"]
           } else {

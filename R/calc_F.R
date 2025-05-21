@@ -24,7 +24,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   nfleets <- length(F_col_ind)
   assertive.properties::assert_is_of_length(fleetnames, nfleets)
   # 1 area
-  other_col_ind <- which(colnames(timeseries) %in% c("year", "Era", "Seas"))
+  other_col_ind <- which(colnames(timeseries) %in% c("Yr", "Era", "Seas"))
   # Note: pivot_longer is a newer alternative, but it is not yet stable, so
   # the "retired" function gather was used
   # may also be able to use stats::reshape or aggregate here.
@@ -50,7 +50,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   ]
   # the following should work, but this sanity check added to avoid assigning
   # the wrong column names. May not work if order of df col changes.
-  if (all(colnames(F_rate) == c("year", "Seas", "fleet", "F"))) {
+  if (all(colnames(F_rate) == c("Yr", "Seas", "fleet", "F"))) {
     colnames(F_rate) <- c("year", "seas", "fleet", "F")
   } else {
     stop("Column names not in the correct order.")
@@ -98,7 +98,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   ]
   # the following should work, but this sanity check added to avoid assigning
   # the wrong column names. May not work if order of df col changes.
-  if (all(colnames(F_rate_fcast) == c("year", "Seas", "fleet", "F"))) {
+  if (all(colnames(F_rate_fcast) == c("Yr", "Seas", "fleet", "F"))) {
     colnames(F_rate_fcast) <- c("year", "seas", "fleet", "F")
   } else {
     stop("Column names not in the correct order.")
@@ -163,7 +163,7 @@ get_retained_catch <- function(timeseries, units_of_catch) {
   ]
 
   # switch from wide to long format.
-  retain_catch_df <- timeseries[, c("year", "Era", "Seas", retain_catch_colnames)]
+  retain_catch_df <- timeseries[, c("Yr", "Era", "Seas", retain_catch_colnames)]
   retain_catch_df <- tidyr::gather(retain_catch_df,
     key = "tmp_units_fleet",
     value = "retained_catch",
@@ -181,9 +181,9 @@ get_retained_catch <- function(timeseries, units_of_catch) {
   )
 
   retain_catch_df <- retain_catch_df %>%
-    dplyr::group_by(.data[["year"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
+    dplyr::group_by(.data[["Yr"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
     dplyr::summarise(retained_catch = sum(.data[["retained_catch"]])) %>%
-    dplyr::select(dplyr::all_of(c("year", "Era", "Seas", "Units", "fleet", "retained_catch")))
+    dplyr::select(dplyr::all_of(c("Yr", "Era", "Seas", "Units", "fleet", "retained_catch")))
   retain_catch_df <- as.data.frame(retain_catch_df) # want as df and not tibble
   # units are not as concise as they could be, but leave for now.
   retain_catch_df
@@ -223,7 +223,7 @@ get_dead_catch <- function(timeseries, units_of_catch) {
   ]
 
   # switch from wide to long format.
-  dead_catch_df <- timeseries[, c("year", "Era", "Seas", dead_catch_colnames)]
+  dead_catch_df <- timeseries[, c("Yr", "Era", "Seas", dead_catch_colnames)]
   dead_catch_df <- tidyr::gather(dead_catch_df,
     key = "tmp_units_fleet",
     value = "retained_catch",
@@ -240,10 +240,10 @@ get_dead_catch <- function(timeseries, units_of_catch) {
     sep = ":_", convert = TRUE
   )
   dead_catch_df <- dead_catch_df %>%
-    dplyr::group_by(.data[["year"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
+    dplyr::group_by(.data[["Yr"]], .data[["Era"]], .data[["Seas"]], .data[["Units"]], .data[["fleet"]]) %>%
     dplyr::summarise(retained_catch = sum(.data[["retained_catch"]])) %>%
     dplyr::select(dplyr::all_of(c(
-      "year", "Era", "Seas", "Units", "fleet",
+      "Yr", "Era", "Seas", "Units", "fleet",
       "retained_catch"
     )))
   dead_catch_df <- as.data.frame(dead_catch_df)

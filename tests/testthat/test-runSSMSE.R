@@ -7,7 +7,6 @@ wd <- getwd()
 on.exit(unlink(temp_path, recursive = TRUE), add = TRUE)
 extdat_path <- system.file("extdata", package = "SSMSE")
 
-
 test_that("run_SSMSE_iter runs with no EM", {
   skip_on_cran()
   new_temp_path <- file.path(temp_path, "no_EM")
@@ -60,8 +59,8 @@ test_that("run_SSMSE runs with an EM, and works with summary funs", {
   expect_true(all(added_catch[["catch_se"]] == unique(sample_struct[["catch"]][["SE"]])))
   added_CPUE <- dat[["CPUE"]][dat[["CPUE"]][["year"]] >= min(sample_struct[["CPUE"]][["Yr"]]), ]
   expect_true(all(sample_struct[["CPUE"]][["Yr"]] %in% unique(added_CPUE[["year"]])))
-  added_agecomp <- dat[["agecomp"]][dat[["agecomp"]][["Yr"]] %in% sample_struct[["agecomp"]][["Yr"]], ]
-  expect_true(all(sample_struct[["agecomp"]][["Yr"]] %in% unique(added_agecomp[["Yr"]])))
+  added_agecomp <- dat[["agecomp"]][dat[["agecomp"]][["year"]] %in% sample_struct[["agecomp"]][["Yr"]], ]
+  expect_true(all(sample_struct[["agecomp"]][["Yr"]] %in% unique(added_agecomp[["year"]])))
   # summarize 1 iteration of results
   summary_iter <- SSMSE_summary_iter(file.path(temp_path, "H-ctl", "1"))
   expect_true(length(summary_iter) == 3)
@@ -229,15 +228,15 @@ test_that("cod works when treated as a custom model and run_EM_last_yr = TRUE wo
     nyrs_assess = 3,
     iter_seed = list(global = 12345, scenario = 123456, iter = 1234567),
     sample_struct = list(
-      catch = data.frame(Yr = catch_add_yrs, Seas = 1, fleet = 1),
-      CPUE = data.frame(Yr = add_yrs, month = 7, fleet = 2),
+      catch = data.frame(Yr = catch_add_yrs, Seas = 1, FltSvy = 1),
+      CPUE = data.frame(Yr = add_yrs, Seas = 7, FltSvy = 2),
       lencomp = data.frame(
-        Yr = add_yrs, month = 1, fleet = 1,
-        Sex = 0, part = 0
+        Yr = add_yrs, Seas = 1, FltSvy = 1,
+        Sex = 0, Part = 0
       ),
       agecomp = data.frame(
-        Yr = add_yrs, month = 1, fleet = 2,
-        Sex = 0, part = 0, Ageerr = 1,
+        Yr = add_yrs, Seas = 1, FltSvy = 2,
+        Sex = 0, Part = 0, Ageerr = 1,
         Lbin_lo = -1, Lbin_hi = -1
       )
     )

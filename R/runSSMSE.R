@@ -675,7 +675,6 @@ run_SSMSE_iter <- function(out_dir = NULL,
         "."
       )
     }
-
     update_OM(
       OM_dir = OM_out_dir,
       catch = new_catch_list[["catch"]],
