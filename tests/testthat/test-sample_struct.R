@@ -36,7 +36,7 @@ test_that("assumptions about r4ss colnames are true.", {
       Year = c(1999, 1999, 2001, 2001),
       Seas = 7,
       fleet = c(1, 2, 1, 2),
-      Partition = 1,
+      part = 1,
       type = 1,
       Std_in = 0.3
     ),

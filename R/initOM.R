@@ -558,7 +558,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "meanbodywt",
-    colnames = c("Year", "Seas", "fleet", "Partition", "type", "stderr")
+    colnames = c("Year", "Seas", "fleet", "part", "type", "stderr")
   )
   dat[["MeanSize_at_Age_obs"]] <- rm_vals(
     return_obj = dat,
@@ -706,7 +706,7 @@ add_sample_struct <- function(sample_struct, dat) {
       # dummy observation negative to exclued from NLL? (or should the fleet be neg?)
       tmp_meanbodywt[["Value"]] <- -1
       tmp_meanbodywt <- tmp_meanbodywt[, c(
-        "Year", "Seas", "fleet", "Partition",
+        "Year", "Seas", "fleet", "part",
         "type", "Value", "stderr"
       )]
       tmp_meanbodywt[["Value"]] <- -abs(tmp_meanbodywt[["Value"]])

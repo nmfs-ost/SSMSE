@@ -101,7 +101,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     meansize <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "meanbodywt",
-        c("Year", "Seas", "fleet", "Partition", "type", "stderr")
+        c("Year", "Seas", "fleet", "part", "type", "stderr")
       )
     })
     matches_meansize <- which(meansize[[1]][, "combo"] %in% meansize[[2]][, "combo"])
@@ -236,7 +236,7 @@ add_new_dat <- function(OM_dat,
             "year", "Seas", "fleet", "sex", "part", "ageerr",
             "Lbin_lo", "Lbin_hi"
           ),
-          "meanbodywt" = c("Year", "Seas", "fleet", "Partition", "type"),
+          "meanbodywt" = c("Year", "Seas", "fleet", "part", "type"),
           "MeanSize_at_Age_obs" = c(
             "year", "Seas", "fleet", "sex", "part",
             "AgeErr"
