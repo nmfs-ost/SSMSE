@@ -67,7 +67,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
   }
   dat <- list(OM_dat = OM_dat, EM_dat = EM_dat)
   CPUEs <- lapply(dat, function(x) {
-    tmp <- combine_cols(x, "CPUE", c("year", "seas", "index"))
+    tmp <- combine_cols(x, "CPUE", c("year", "month", "index"))
   })
   # match 1 way: match each EM obs with an OM obs. extract only these OM obs.
   matches <- which(CPUEs[[1]][, "combo"] %in% CPUEs[[2]][, "combo"])
@@ -78,7 +78,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     lcomps <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "lencomp",
-        c("year", "Seas", "fleet", "sex", "part")
+        c("year", "month", "fleet", "sex", "part")
       )
     })
     matches_l <- which(lcomps[[1]][, "combo"] %in% lcomps[[2]][, "combo"])
@@ -89,7 +89,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     acomps <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "agecomp",
-        c("year", "Seas", "fleet", "sex", "part", "Lbin_lo", "Lbin_hi")
+        c("year", "month", "fleet", "sex", "part", "Lbin_lo", "Lbin_hi")
       )
     })
     matches_a <- which(acomps[[1]][, "combo"] %in% acomps[[2]][, "combo"])
@@ -101,7 +101,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     meansize <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "meanbodywt",
-        c("Year", "Seas", "fleet", "part", "type", "stderr")
+        c("Year", "month", "fleet", "part", "type", "stderr")
       )
     })
     matches_meansize <- which(meansize[[1]][, "combo"] %in% meansize[[2]][, "combo"])
@@ -111,7 +111,7 @@ get_EM_dat <- function(OM_dat, EM_dat, do_checks = TRUE) {
     size_at_age <- lapply(dat, function(x) {
       tmp <- combine_cols(
         x, "MeanSize_at_Age_obs",
-        c("year", "Seas", "fleet", "sex", "part", "ageerr")
+        c("year", "month", "fleet", "sex", "part", "ageerr")
       )
     })
     matches_size_at_age <- which(size_at_age[[1]][, "combo"] %in% size_at_age[[2]][, "combo"])
@@ -230,15 +230,15 @@ add_new_dat <- function(OM_dat,
         }
         by_val <- switch(df_name,
           "catch" = c("year", "seas", "fleet"),
-          "CPUE" = c("year", "seas", "index"),
-          "lencomp" = c("year", "Seas", "fleet", "sex", "part"),
+          "CPUE" = c("year", "month", "index"),
+          "lencomp" = c("year", "month", "fleet", "sex", "part"),
           "agecomp" = c(
-            "year", "Seas", "fleet", "sex", "part", "ageerr",
+            "year", "month", "fleet", "sex", "part", "ageerr",
             "Lbin_lo", "Lbin_hi"
           ),
-          "meanbodywt" = c("Year", "Seas", "fleet", "part", "type"),
+          "meanbodywt" = c("Year", "month", "fleet", "part", "type"),
           "MeanSize_at_Age_obs" = c(
-            "year", "Seas", "fleet", "sex", "part",
+            "year", "month", "fleet", "sex", "part",
             "AgeErr"
           )
         )

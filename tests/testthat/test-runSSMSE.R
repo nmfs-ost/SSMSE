@@ -230,13 +230,13 @@ test_that("cod works when treated as a custom model and run_EM_last_yr = TRUE wo
     iter_seed = list(global = 12345, scenario = 123456, iter = 1234567),
     sample_struct = list(
       catch = data.frame(Yr = catch_add_yrs, Seas = 1, fleet = 1),
-      CPUE = data.frame(Yr = add_yrs, Seas = 7, fleet = 2),
+      CPUE = data.frame(Yr = add_yrs, month = 7, fleet = 2),
       lencomp = data.frame(
-        Yr = add_yrs, Seas = 1, fleet = 1,
+        Yr = add_yrs, month = 1, fleet = 1,
         Sex = 0, part = 0
       ),
       agecomp = data.frame(
-        Yr = add_yrs, Seas = 1, fleet = 2,
+        Yr = add_yrs, month = 1, fleet = 2,
         Sex = 0, part = 0, Ageerr = 1,
         Lbin_lo = -1, Lbin_hi = -1
       )

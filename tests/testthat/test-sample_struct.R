@@ -22,19 +22,19 @@ test_that("assumptions about r4ss colnames are true.", {
   )
   assumed_str <- list(
     catch = data.frame(year = 101:106, seas = 1, fleet = 1, catch_se = 0.005),
-    CPUE = data.frame(year = c(102, 105), seas = 7, index = 2, se_log = 0.2),
+    CPUE = data.frame(year = c(102, 105), month = 7, index = 2, se_log = 0.2),
     lencomp = data.frame(
-      Yr = c(102, 105), Seas = 1, fleet = 1,
+      Yr = c(102, 105), month = 1, fleet = 1,
       sex = 0, Part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
-      Yr = c(102, 105), Seas = 1, fleet = 2,
+      Yr = c(102, 105), month = 1, fleet = 2,
       sex = 0, Part = 0, ageerr = 1,
       Lbin_lo = -1, Lbin_hi = -1, Nsamp = 500
     ),
     meanbodywt = data.frame(
       Year = c(1999, 1999, 2001, 2001),
-      Seas = 7,
+      month = 7,
       fleet = c(1, 2, 1, 2),
       part = 1,
       type = 1,
@@ -42,7 +42,7 @@ test_that("assumptions about r4ss colnames are true.", {
     ),
     MeanSize_at_Age_obs = data.frame(
       Yr = c(1971, 1995),
-      Seas = 7,
+      month = 7,
       fleet = c(1, 1, 2, 2),
       sex = 3,
       part = 0,
@@ -55,7 +55,7 @@ test_that("assumptions about r4ss colnames are true.", {
 
 test_that("convert_to_r4ss_names works", {
   test_sample_struct <- list(
-    catch = data.frame(Yr = 101:106, Seas = 1, fleet = 1, SE = 0.01),
+    catch = data.frame(Yr = 101:106, month = 1, fleet = 1, SE = 0.01),
     CPUE = data.frame(Yr = c(102, 105), Seas = 7, fleet = 2, SE = 0.05),
     lencomp = data.frame(
       Yr = c(102, 105), Seas = 1, fleet = 1,
@@ -70,13 +70,13 @@ test_that("convert_to_r4ss_names works", {
   r4ss_sample_struct <- convert_to_r4ss_names(test_sample_struct)
   expect_equal(names(r4ss_sample_struct), names(test_sample_struct))
   expect_equal(names(r4ss_sample_struct[["catch"]]), c("year", "seas", "fleet", "catch_se"))
-  expect_equal(names(r4ss_sample_struct[["CPUE"]]), c("year", "seas", "index", "se_log"))
+  expect_equal(names(r4ss_sample_struct[["CPUE"]]), c("year", "month", "index", "se_log"))
   expect_equal(names(r4ss_sample_struct[["lencomp"]]), c(
-    "year", "Seas", "fleet",
+    "year", "month", "fleet",
     "sex", "part", "Nsamp"
   ))
   expect_equal(names(r4ss_sample_struct[["agecomp"]]), c(
-    "Yr", "Seas", "fleet",
+    "Yr", "month", "fleet",
     "sex", "part", "ageerr",
     "Lbin_lo", "Lbin_hi", "Nsamp"
   ))

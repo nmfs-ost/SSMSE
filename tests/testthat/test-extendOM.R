@@ -35,16 +35,16 @@ new_yrs <- new_catch[["year"]]
 # create a dataframe here.
 extend_vals <- list(
   CPUE = data.frame(
-    year = c(101, 103, 105), seas = 7, index = 2,
+    year = c(101, 103, 105), month = 7, index = 2,
     se_log = c(0.1, 0.2, 0.3)
   ),
   lencomp = data.frame(
-    year = 101:103, Seas = 1, FltSvy = 1,
+    year = 101:103, month = 1, FltSvy = 1,
     sex = 0, part = 0,
     Nsamp = c(25, 50, 100)
   ),
   agecomp = data.frame(
-    year = 101:104, Seas = 1, FltSvy = 2,
+    year = 101:104, month = 1, FltSvy = 2,
     sex = 0, part = 0, ageerr = 1,
     Lbin_lo = -1, Lbin_hi = -1,
     Nsamp = c(25, 50, 100, 150)
@@ -74,7 +74,7 @@ extend_vals <- list(
 #   })
 #   # check CPUE # wrap first exp. in abs() b/c fleet negative in OM as a switch.
 #   expect_equivalent(
-#     abs(return_dat[["CPUE"]][101:102, c("year", "seas", "index", "se_log")]),
+#     abs(return_dat[["CPUE"]][101:102, c("year", "month", "index", "se_log")]),
 #     extend_vals[["CPUE"]][extend_vals[["CPUE"]][["year"]] <= return_dat[["endyr"]], ]
 #   )
 #   # check lencomp

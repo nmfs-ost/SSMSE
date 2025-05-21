@@ -533,14 +533,14 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "CPUE",
-    colnames = c("year", "seas", "index")
+    colnames = c("year", "month", "index")
   )
   dat[["lencomp"]] <- rm_vals(
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "lencomp",
     colnames = c(
-      "year", "Seas", "fleet", "sex",
+      "year", "month", "fleet", "sex",
       "part"
     )
   )
@@ -549,7 +549,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     compare_obj = sample_struct_hist,
     name_in_obj = "agecomp",
     colnames = c(
-      "year", "Seas", "fleet", "sex",
+      "year", "month", "fleet", "sex",
       "part", "ageerr", "Lbin_lo",
       "Lbin_hi"
     )
@@ -558,13 +558,13 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "meanbodywt",
-    colnames = c("Year", "Seas", "fleet", "part", "type", "stderr")
+    colnames = c("Year", "month", "fleet", "part", "type", "stderr")
   )
   dat[["MeanSize_at_Age_obs"]] <- rm_vals(
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "MeanSize_at_Age_obs",
-    colnames = c("year", "Seas", "fleet", "sex", "part", "AgeErr", "N_")
+    colnames = c("year", "month", "fleet", "sex", "part", "AgeErr", "N_")
   )
   dat
 }
@@ -630,7 +630,7 @@ add_sample_struct <- function(sample_struct, dat) {
       tmp_CPUE[["year"]] <= subset_yr_end, ]
     if (nrow(tmp_CPUE) > 0) {
       tmp_CPUE[["obs"]] <- 1 # dummy observation
-      tmp_CPUE <- tmp_CPUE[, c("year", "seas", "index", "obs", "se_log")]
+      tmp_CPUE <- tmp_CPUE[, c("year", "month", "index", "obs", "se_log")]
       tmp_CPUE[["index"]] <- -abs(tmp_CPUE[["index"]])
       dat[["CPUE"]] <- rbind(dat[["CPUE"]], tmp_CPUE)
     }
@@ -706,7 +706,7 @@ add_sample_struct <- function(sample_struct, dat) {
       # dummy observation negative to exclued from NLL? (or should the fleet be neg?)
       tmp_meanbodywt[["Value"]] <- -1
       tmp_meanbodywt <- tmp_meanbodywt[, c(
-        "Year", "Seas", "fleet", "part",
+        "Year", "month", "fleet", "part",
         "type", "Value", "stderr"
       )]
       tmp_meanbodywt[["Value"]] <- -abs(tmp_meanbodywt[["Value"]])

@@ -109,7 +109,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
       }
       # get year, seas, fleet combo, ignoring -999 values.
       yr_col <- grep("year|yr", colnames(df), ignore.case = TRUE, value = TRUE)
-      seas_col <- grep("seas|season", colnames(df), ignore.case = TRUE, value = TRUE)
+      seas_col <- grep("seas|season|month", colnames(df), ignore.case = TRUE, value = TRUE)
       flt_col <- grep("FltSvy|fleet|index", colnames(df),
         ignore.case = TRUE,
         value = TRUE

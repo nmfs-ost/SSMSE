@@ -294,7 +294,7 @@ plot_comp_sampling <- function(dir = getwd(), comp_type = c("agecomp", "lencomp"
   )
   comp_dbase <- tidyr::spread(comp_dbase, .data[["model_type_obs"]], .data[["obs_value"]]) %>%
     dplyr::mutate(Yr_lab = paste0("year: ", .data[["year"]])) %>%
-    dplyr::mutate(Seas_lab = paste0("Seas: ", .data[["Seas"]])) %>%
+    dplyr::mutate(month_lab = paste0("month: ", .data[["month"]])) %>%
     dplyr::mutate(Sex_lab = paste0("Sex: ", .data[["Sex"]]))
   # Make the plot ----
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -316,7 +316,7 @@ plot_comp_sampling <- function(dir = getwd(), comp_type = c("agecomp", "lencomp"
       geom_area(fill = "grey") +
       geom_point(aes(y = .data[["om_Obs"]]), color = "red", size = 2) +
       geom_point(aes(y = .data[["em_Obs"]], shape = .data[["iteration"]]), color = "black") +
-      facet_wrap(vars(.data[["Yr_lab"]], .data[["Seas_lab"]], .data[["Sex_lab"]])) +
+      facet_wrap(vars(.data[["Yr_lab"]], .data[["month_lab"]], .data[["Sex_lab"]])) +
       scale_shape_manual(
         values =
           rep(15, length(unique(comp_dbase[["iteration"]])))

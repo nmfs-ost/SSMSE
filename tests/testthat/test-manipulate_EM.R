@@ -24,19 +24,19 @@ test_that("get_EM_dat works", {
 
   EM_dat[["CPUE"]][["obs"]] <- 999 # to make it easier to identify if the values change
   new_dat <- get_EM_dat(OM_dat, EM_dat, do_checks = FALSE)
-  row_names <- c("year", "seas", "index")
+  row_names <- c("year", "month", "index")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["CPUE"]][x], new_dat[["CPUE"]][x])
   })
   expect_equal(OM_dat[["CPUE"]][["obs"]][-rm_ind], new_dat[["CPUE"]][["obs"]])
   # check length comps changed
-  row_names <- c("year", "Seas", "fleet")
+  row_names <- c("year", "month", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["lencomp"]][x], new_dat[["lencomp"]][x])
   })
   expect_equal(OM_dat[["lencomp"]][["obs"]][-rm_ind], new_dat[["lencomp"]][["obs"]])
   # chack age comps changed
-  row_names <- c("year", "Seas", "fleet")
+  row_names <- c("year", "month", "fleet")
   lapply(row_names, function(x) {
     expect_equal(EM_dat[["agecomp"]][x], new_dat[["agecomp"]][x])
   })
