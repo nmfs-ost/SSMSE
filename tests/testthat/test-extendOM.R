@@ -39,12 +39,12 @@ extend_vals <- list(
     se_log = c(0.1, 0.2, 0.3)
   ),
   lencomp = data.frame(
-    year = 101:103, month = 1, FltSvy = 1,
+    year = 101:103, month = 1, fleet = 1,
     sex = 0, part = 0,
     Nsamp = c(25, 50, 100)
   ),
   agecomp = data.frame(
-    year = 101:104, month = 1, FltSvy = 2,
+    year = 101:104, month = 1, fleet = 2,
     sex = 0, part = 0, ageerr = 1,
     Lbin_lo = -1, Lbin_hi = -1,
     Nsamp = c(25, 50, 100, 150)
@@ -222,8 +222,8 @@ test_that(" add_sample_struct works for adding data during model years and for f
     init_endyr, "year"]) == 4)
   no_neg_dat <- init_dat
   no_neg_dat[["CPUE"]] <- no_neg_dat[["CPUE"]][no_neg_dat[["CPUE"]][["index"]] > 0, ]
-  no_neg_dat[["lencomp"]] <- no_neg_dat[["lencomp"]][no_neg_dat[["lencomp"]][["FltSvy"]] > 0, ]
-  no_neg_dat[["agecomp"]] <- no_neg_dat[["agecomp"]][no_neg_dat[["agecomp"]][["FltSvy"]] > 0, ]
+  no_neg_dat[["lencomp"]] <- no_neg_dat[["lencomp"]][no_neg_dat[["lencomp"]][["fleet"]] > 0, ]
+  no_neg_dat[["agecomp"]] <- no_neg_dat[["agecomp"]][no_neg_dat[["agecomp"]][["fleet"]] > 0, ]
   hist_samples <- extend_vals
   hist_samples[["CPUE"]][["year"]] <- 31:33
   hist_samples[["lencomp"]][["year"]] <- 27:29
@@ -239,15 +239,15 @@ test_that(" add_sample_struct works for adding data during model years and for f
   )
   expect_true(
     length(hist_dat[["lencomp"]][
-      hist_dat[["lencomp"]][["FltSvy"]] < 0,
-      "FltSvy"
+      hist_dat[["lencomp"]][["fleet"]] < 0,
+      "fleet"
     ]) ==
       length(27:29)
   )
   expect_true(
     length(hist_dat[["agecomp"]][
-      hist_dat[["agecomp"]][["FltSvy"]] < 0,
-      "FltSvy"
+      hist_dat[["agecomp"]][["fleet"]] < 0,
+      "fleet"
     ]) ==
       length(31:34)
   )
