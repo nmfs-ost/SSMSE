@@ -24,7 +24,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   nfleets <- length(F_col_ind)
   assertive.properties::assert_is_of_length(fleetnames, nfleets)
   # 1 area
-  other_col_ind <- which(colnames(timeseries) %in% c("year", "Era", "Seas"))
+  other_col_ind <- which(colnames(timeseries) %in% c("Yr", "Era", "Seas"))
   # Note: pivot_longer is a newer alternative, but it is not yet stable, so
   # the "retired" function gather was used
   # may also be able to use stats::reshape or aggregate here.
@@ -50,7 +50,7 @@ get_F <- function(timeseries, fleetnames, fleetnames_all) {
   ]
   # the following should work, but this sanity check added to avoid assigning
   # the wrong column names. May not work if order of df col changes.
-  if (all(colnames(F_rate) == c("year", "Seas", "fleet", "F"))) {
+  if (all(colnames(F_rate) == c("Yr", "Seas", "fleet", "F"))) {
     colnames(F_rate) <- c("year", "seas", "fleet", "F")
   } else {
     stop("Column names not in the correct order.")

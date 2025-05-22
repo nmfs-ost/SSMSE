@@ -27,8 +27,8 @@ add_OM_devs <- function(ctl, dat, parlist, timeseries, future_om_dat) {
     for (i in grep("Env_", names(future_om_dat))) {
       temp_env <- data.frame(
         year = (dat[["endyr"]] + 1):(dat[["endyr"]] + length(future_om_dat[, i])),
-        Variable = rep(as.numeric(strsplit(names(future_om_dat)[i], "Env_")[[1]][2]), length(future_om_dat[, i])),
-        Value = future_om_dat[, i]
+        variable = rep(as.numeric(strsplit(names(future_om_dat)[i], "Env_")[[1]][2]), length(future_om_dat[, i])),
+        value = future_om_dat[, i]
       )
       dat[["envdat"]] <- rbind(dat[["envdat"]], temp_env)
     }
@@ -533,18 +533,18 @@ update_basevals_env <- function(base_vals, base_years, temp_env, current_par, ti
   if (temp_ctl[current_par, c("env_var&link")] > 0) {
     env_link <- floor((temp_ctl[current_par, c("env_var&link")] / 100))
     env_index <- floor(temp_ctl[current_par, c("env_var&link")] - 100 * env_link)
-    env_dat <- dat[["envdat"]][is.element(dat[["envdat"]][, "year"], base_years) & dat[["envdat"]][, "Variable"] == env_index, ]
+    env_dat <- dat[["envdat"]][is.element(dat[["envdat"]][, "year"], base_years) & dat[["envdat"]][, "variable"] == env_index, ]
 
     if (env_link == 1) {
-      base_vals <- base_vals * exp(temp_env[1, "ESTIM"] * env_dat[, "Value"])
+      base_vals <- base_vals * exp(temp_env[1, "ESTIM"] * env_dat[, "value"])
     } else if (env_link == 2) {
-      base_vals <- base_vals + temp_env[1, "ESTIM"] * env_dat[, "Value"]
+      base_vals <- base_vals + temp_env[1, "ESTIM"] * env_dat[, "value"]
     } else if (env_link == 3) {
       temp <- log((base_vals - base_bounds[1] + 1.0e-7) / (base_bounds[2] - base_vals + 1.0e-7))
-      temp <- temp + temp_env[1, "ESTIM"] * env_dat[, "Value"]
+      temp <- temp + temp_env[1, "ESTIM"] * env_dat[, "value"]
       base_vals <- base_bounds[1] + base_range / (1.0 + exp(-temp))
     } else if (env_link == 4) {
-      base_vals <- base_vals * 2.00000 / (1.00000 + exp(-temp_env[2, "ESTIM"] * (env_dat[, "Value"] - temp_env[1, "ESTIM"])))
+      base_vals <- base_vals * 2.00000 / (1.00000 + exp(-temp_env[2, "ESTIM"] * (env_dat[, "value"] - temp_env[1, "ESTIM"])))
     }
   } else if (temp_ctl[current_par, c("env_var&link")] < 0) {
     env_link <- floor(abs(temp_ctl[current_par, c("env_var&link")] / 100))

@@ -13,7 +13,6 @@ file.copy(file.path(extdat_path, "models", "cod"),
   temp_path,
   recursive = TRUE
 )
-
 test_that("create_OM can modify model", {
   skip_on_cran() # because runs ss.
   init_mod <- create_OM(
