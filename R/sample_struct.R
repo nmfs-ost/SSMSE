@@ -157,7 +157,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
           future_pat <- future_pat[future_pat > dat[["endyr"]]]
           if (length(future_pat) > 0) {
             future_pat <- data.frame(
-              year = future_pat,
+              Yr = future_pat,
               Seas = tmp_seas,
               FltSvy = tmp_flt,
               stringsAsFactors = FALSE
@@ -170,7 +170,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
               "dataframe."
             )
             future_pat <- data.frame(
-              year = NA,
+              Yr = NA,
               Seas = tmp_seas,
               FltSvy = tmp_flt,
               stringsAsFactors = FALSE
@@ -183,7 +183,7 @@ create_sample_struct <- function(dat, nyrs, rm_NAs = FALSE) {
             ", Seas ", tmp_seas, ". Returning NA for year in this dataframe."
           )
           future_pat <- data.frame(
-            year = NA,
+            Yr = NA,
             Seas = tmp_seas,
             FltSvy = tmp_flt,
             stringsAsFactors = FALSE
