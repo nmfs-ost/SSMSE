@@ -558,7 +558,7 @@ rm_sample_struct_hist <- function(sample_struct_hist, dat) {
     return_obj = dat,
     compare_obj = sample_struct_hist,
     name_in_obj = "meanbodywt",
-    colnames = c("Year", "month", "fleet", "part", "type", "stderr")
+    colnames = c("year", "month", "fleet", "part", "type", "stderr")
   )
   dat[["MeanSize_at_Age_obs"]] <- rm_vals(
     return_obj = dat,
@@ -700,13 +700,13 @@ add_sample_struct <- function(sample_struct, dat) {
   }
   if (!is.null(dat[["meanbodywt"]]) & !is.null(sample_struct[["meanbodywt"]])) {
     tmp_meanbodywt <- sample_struct[["meanbodywt"]]
-    tmp_meanbodywt <- tmp_meanbodywt[tmp_meanbodywt[["Year"]] >= subset_yr_start &
-      tmp_meanbodywt[["Year"]] <= subset_yr_end, ]
+    tmp_meanbodywt <- tmp_meanbodywt[tmp_meanbodywt[["year"]] >= subset_yr_start &
+      tmp_meanbodywt[["year"]] <= subset_yr_end, ]
     if (nrow(tmp_meanbodywt) > 0) {
       # dummy observation negative to exclued from NLL? (or should the fleet be neg?)
       tmp_meanbodywt[["Value"]] <- -1
       tmp_meanbodywt <- tmp_meanbodywt[, c(
-        "Year", "month", "fleet", "part",
+        "year", "month", "fleet", "part",
         "type", "Value", "stderr"
       )]
       tmp_meanbodywt[["Value"]] <- -abs(tmp_meanbodywt[["Value"]])
