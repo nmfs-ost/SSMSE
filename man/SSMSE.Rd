@@ -17,8 +17,8 @@ actions on a population given uncertainty.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/nmfs-fish-tools/SSMSE}
-  \item Report bugs at \url{https://github.com/nmfs-fish-tools/SSMSE/issues}
+  \item \url{https://github.com/nmfs-ost/SSMSE}
+  \item Report bugs at \url{https://github.com/nmfs-ost/SSMSE/issues}
 }
 
 }

@@ -11,7 +11,7 @@ Sim_comp(
   years = NULL,
   seasons = NULL,
   fleets = NULL,
-  genders = NULL
+  sexes = NULL
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ Sim_comp(
 
 \item{fleets}{A vector of the fleets to simulate data for. default is all fleets in data_exp  if NULL.}
 
-\item{genders}{A vector of the genders to simulate data for. default is all genders in data_exp  if NULL.}
+\item{sexes}{A vector of the sexes to simulate data for. default is all sexes in data_exp  if NULL.}
 }
 \value{
 A list object with uncertainty and bias characteristics to inform data simulation.

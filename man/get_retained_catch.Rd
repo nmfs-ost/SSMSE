@@ -13,7 +13,7 @@ get_retained_catch(timeseries, units_of_catch)
 names are the fleets (to provide an extra check)}
 }
 \value{
-a data frame with retained catch by Yr, Era, Seas, Fleet, and
+a data frame with retained catch by year, Era, Seas, fleet, and
 units (long format)
 }
 \description{
