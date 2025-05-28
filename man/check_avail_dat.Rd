@@ -9,7 +9,7 @@ check_avail_dat(
   EM_dat,
   OM_dat,
   list_item = "CPUE",
-  colnames = c("year", "seas", "index")
+  colnames = c("year", "month", "index")
 )
 }
 \arguments{

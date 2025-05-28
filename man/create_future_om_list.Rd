@@ -22,7 +22,7 @@ OM as the OM is extended forward in time. In particular, this function helps
 users create these objects. For now, just returns examples based on cod
 model that comes with SSMSE. To learn more about the options available for
 future_om_list object, see the
-\href{https://nmfs-fish-tools.github.io/SSMSE/manual/SSMSE.html#structurefutureom}{structure of future_om_list section of the SSMSE user manual}.
+\href{https://nmfs-ost.github.io/SSMSE/manual/SSMSE.html#structurefutureom}{structure of future_om_list section of the SSMSE user manual}.
 }
 \examples{
 example_future_om_list <-

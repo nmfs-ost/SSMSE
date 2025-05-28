@@ -11,8 +11,8 @@ calc_comp_var(
   fleets = NULL,
   years = NULL,
   seasons = NULL,
-  merge_genders = TRUE,
-  genders = NULL,
+  merge_sexes = TRUE,
+  sexes = NULL,
   merge_seasons = TRUE,
   merge_fleets = FALSE
 )
@@ -30,9 +30,9 @@ calc_comp_var(
 
 \item{seasons}{A vector of the seasons to include when calculating composition uncertainty (Default is all years if NULL)}
 
-\item{merge_genders}{TRUE/FALSE should genders be merged to calculate variance and biases (Defaults to TRUE)}
+\item{merge_sexes}{TRUE/FALSE should sexes be merged to calculate variance and biases (Defaults to TRUE)}
 
-\item{genders}{A vector of the genders to analyze composition uncertainty for (Default is all genders if NULL)}
+\item{sexes}{A vector of the sexes to analyze composition uncertainty for (Default is all sexes if NULL)}
 
 \item{merge_seasons}{TRUE/FALSE should seasons be merged to calculate variance and biases (Defaults to TRUE)}
 

@@ -28,7 +28,7 @@ with their names as called in the list object in parentheses are:
 catch (catch), relative indices (CPUE), length composition (lencomp),
 age composition (agecomp), mean body weight (meanbodywt), and mean size at
 age (MeanSize_at_Age_obs). Details for creating the sample structure list are
-available in the \href{https://nmfs-fish-tools.github.io/SSMSE/manual/SSMSE.html#sampling-options}{sampling options section of the SSMSE user manual}.
+available in the \href{https://nmfs-ost.github.io/SSMSE/manual/SSMSE.html#sampling-options}{sampling options section of the SSMSE user manual}.
 }
 \examples{
 OM_path <- system.file("extdata", "models", "cod", "ss3.dat", package = "SSMSE")
