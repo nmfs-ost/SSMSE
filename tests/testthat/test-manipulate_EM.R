@@ -132,7 +132,7 @@ test_that("add_new_dat works when meansize at age obs", {
     "Simple_with_Discard", "data.ss"
   ))
   OM_dat[["meanbodywt"]] <- rbind(OM_dat[["meanbodywt"]], OM_dat[["meanbodywt"]])
-  OM_dat[["meanbodywt"]][["Year"]] <- c(1995, 1995, 2000, 2000)
+  OM_dat[["meanbodywt"]][["year"]] <- c(1995, 1995, 2000, 2000)
   OM_dat[["MeanSize_at_Age_obs"]] <- rbind(OM_dat[["MeanSize_at_Age_obs"]], OM_dat[["MeanSize_at_Age_obs"]])
   OM_dat[["MeanSize_at_Age_obs"]][["year"]] <- c(
     1971, 1995, 1995, 1995, 1971, 1995,

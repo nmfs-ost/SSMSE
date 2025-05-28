@@ -139,7 +139,7 @@ test_that("create_sample_struct works", {
     create_sample_struct(OM_dat_path, nyrs = 1))
   expect_equivalent(
     sample_struct_no_dat[["CPUE"]],
-    data.frame(Yr = NA, Seas = 7, fleet = 2, SE = 0.2)
+    data.frame(Yr = NA, Seas = 7, FltSvy = 2, SE = 0.2)
   )
 })
 
@@ -181,16 +181,16 @@ test_that("get_full_sample_struct works with mean size, mean size at age", {
   )))
   spl_str <- list(
     catch = data.frame(Yr = 101:110),
-    CPUE = data.frame(Yr = c(105, 110), fleet = 2),
-    lencomp = data.frame(Yr = seq(102, 110, by = 2), fleet = 1, Part = 0),
-    agecomp = data.frame(Yr = seq(102, 110, by = 4), fleet = 2),
+    CPUE = data.frame(Yr = c(105, 110), FltSvy = 2),
+    lencomp = data.frame(Yr = seq(102, 110, by = 2), FltSvy = 1, Part = 0),
+    agecomp = data.frame(Yr = seq(102, 110, by = 4), FltSvy = 2),
     meanbodywt = data.frame(
       Yr = seq(102, 110, by = 4),
       Part = 1
     ),
     MeanSize_at_Age_obs = data.frame(
       Yr = seq(102, 110, by = 2),
-      fleet = 1, Part = 0, N_ = 20
+      FltSvy = 1, Part = 0, N_ = 20
     )
   )
   full_spl_str <- get_full_sample_struct(
@@ -199,24 +199,24 @@ test_that("get_full_sample_struct works with mean size, mean size at age", {
   )
   # reference to compare against
   full_spl_str_ref <- list(
-    catch = data.frame(Yr = 101:110, Seas = 1, fleet = 1, SE = 0.05),
-    CPUE = data.frame(Yr = c(105, 110), Seas = 7, fleet = 2, SE = 0.3),
+    catch = data.frame(Yr = 101:110, Seas = 1, FltSvy = 1, SE = 0.05),
+    CPUE = data.frame(Yr = c(105, 110), Seas = 7, FltSvy = 2, SE = 0.3),
     lencomp = data.frame(
-      Yr = seq(102, 110, by = 2), Seas = 7, fleet = 1,
+      Yr = seq(102, 110, by = 2), Seas = 7, FltSvy = 1,
       Sex = 3, Part = 0, Nsamp = 125
     ),
     agecomp = data.frame(
-      Yr = seq(102, 110, by = 4), Seas = 7, fleet = 2,
+      Yr = seq(102, 110, by = 4), Seas = 7, FltSvy = 2,
       Sex = 3, Part = 0, Ageerr = 2, Lbin_lo = 1,
       Lbin_hi = -1, Nsamp = 75
     ),
     meanbodywt = data.frame(
-      Yr = seq(102, 110, by = 4), Seas = 7, fleet = 1,
+      Yr = seq(102, 110, by = 4), Seas = 7, FltSvy = 1,
       Part = 1, Type = 1, Std_in = 0.3
     ),
     MeanSize_at_Age_obs = data.frame(
       Yr = seq(102, 110, by = 2), Seas = 7,
-      fleet = 1, Sex = 3, Part = 0, Ageerr = 1,
+      FltSvy = 1, Sex = 3, Part = 0, Ageerr = 1,
       N_ = 20
     )
   )
@@ -246,7 +246,7 @@ test_that("sample_str works with other data types", {
     data.frame(
       Yr = as.logical(NA),
       Seas = 7,
-      fleet = c(1, 2),
+      FltSvy = c(1, 2),
       Sex = 3,
       Part = 0,
       Ageerr = 1,

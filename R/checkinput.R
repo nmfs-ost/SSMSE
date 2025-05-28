@@ -125,7 +125,7 @@ check_OM_dat <- function(OM_dat, EM_dat) {
     }
     check_avail_dat(
       EM_dat = EM_dat, OM_dat = OM_dat, list_item = "meanbodywt",
-      colnames = c("Year", "month", "fleet", "type")
+      colnames = c("year", "month", "fleet", "type")
     )
   }
   # check mean size at age
