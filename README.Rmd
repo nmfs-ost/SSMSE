@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 # SSMSE build status
 
 [![badge for the github action call-r-cmd-check](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml)
-[![codecoverage badge](https://codecov.io/gh/nmfs-ost/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-ost/SSMSE)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/nmfs-ost/SSMSE/refs/heads/badges/coverage-badge.json)](https://github.com/nmfs-ost/SSMSE/tree/badges)
 [![DOI badge](https://joss.theoj.org/papers/10.21105/joss.04937/status.svg)](https://doi.org/10.21105/joss.04937)
 [![Lifecycle badge indicating this repository is stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html) 
 
