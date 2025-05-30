@@ -14,9 +14,9 @@ convert_to_r4ss_names <- function(sample_struct,
                                     r4ss_name = c(
                                       "year", "seas", "fleet", "catch_se", # catch
                                       "year", "month", "index", "se_log", # cpue
-                                      "year", "month", "fleet", "sex", "part", "Nsamp", #lencomp
+                                      "year", "month", "fleet", "sex", "part", "Nsamp", # lencomp
                                       "year", "month", "fleet", "sex", "part", "ageerr", "Lbin_lo",
-                                      "Lbin_hi", "Nsamp", #agecomp
+                                      "Lbin_hi", "Nsamp", # agecomp
                                       # mean size
                                       "year", "month", "fleet", "part", "type", "stderr",
                                       # generalized size comp

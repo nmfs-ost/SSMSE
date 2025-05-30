@@ -157,7 +157,7 @@ test_that("get_full_sample_struct works", {
   # reference to compare against
   full_spl_str_ref <- list(
     catch = data.frame(Yr = 101:110, Seas = 1, FltSvy = 1, SE = 0.005),
-    CPUE = data.frame(Yr = c(105, 110), Seas = 7, FltSvy= 2, SE = 0.2),
+    CPUE = data.frame(Yr = c(105, 110), Seas = 7, FltSvy = 2, SE = 0.2),
     lencomp = data.frame(
       Yr = seq(102, 110, by = 2), Seas = 1, FltSvy = 1,
       Sex = 0, Part = 0, Nsamp = 125
