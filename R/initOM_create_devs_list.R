@@ -457,7 +457,7 @@ calc_par_trend <- function(val_info,
         mean = mean(tmp_vals),
         sd = stats::sd(tmp_vals),
         cv = stats::sd(tmp_vals) / mean(tmp_vals),
-        ar_1_phi = stats::arima(tmp_vals, order = c(1, 0, 0))$coef[1]
+        ar_1_phi = stats::arima(tmp_vals, order = c(1, 0, 0))[["coef"]][1]
       )
     } else { # for all other parameters
       # check for tv devs
@@ -576,7 +576,7 @@ calc_par_trend <- function(val_info,
           mean = mean(vals),
           sd = stats::sd(vals),
           cv = stats::sd(vals) / mean(vals),
-          ar_1_phi = stats::arima(vals, order = c(1, 0, 0))$coef[1]
+          ar_1_phi = stats::arima(vals, order = c(1, 0, 0))[["coef"]][1]
         )
       } else {
         ref_parm_value <- ref_parm_value # just keep using the default if no TV

@@ -136,7 +136,7 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
         # expected value was 1e-5)
         buff <- 0.1
         for (k in 1:length(output_array[, 1])) {
-          output_array[k, 2] <- stats::ksmooth(x = dat_array[, 2], y = dat_array[, 5], kernel = "box", bandwidth = mult * output_array[k, 1] + buff, x.points = output_array[k, 1])$y
+          output_array[k, 2] <- stats::ksmooth(x = dat_array[, 2], y = dat_array[, 5], kernel = "box", bandwidth = mult * output_array[k, 1] + buff, x.points = output_array[k, 1])[["y"]]
         }
 
         # The second phase uses a normal distribution kernel to smooth out a lot of the jitter
@@ -151,14 +151,14 @@ calc_comp_var <- function(data_obs, data_exp, bins, fleets = NULL, years = NULL,
         # Here we calculate the kernel interpolation at the smooth range of the output array for
         # future use calculating simulated values
         for (k in 1:length(output_array[, 1])) {
-          output_array[k, 3] <- stats::ksmooth(x = output_array[, 1], y = output_array[, 2], kernel = "normal", bandwidth = mult * output_array[k, 1] + buff, x.points = output_array[k, 1])$y
+          output_array[k, 3] <- stats::ksmooth(x = output_array[, 1], y = output_array[, 2], kernel = "normal", bandwidth = mult * output_array[k, 1] + buff, x.points = output_array[k, 1])[["y"]]
         }
         # Here we calculate the kernel interpolation at all the points of the original data
         # this will be used for weighting the data to calculate mean biases of different sample bins
         # these biases should show artifacts of real sampling such as observers favoring round
         # multiples of 10 or some other bias.
         for (k in 1:length(dat_array[, 1])) {
-          dat_array[k, 7] <- stats::ksmooth(x = output_array[, 1], y = output_array[, 2], kernel = "normal", bandwidth = mult * dat_array[k, 2] + buff, x.points = dat_array[k, 2])$y
+          dat_array[k, 7] <- stats::ksmooth(x = output_array[, 1], y = output_array[, 2], kernel = "normal", bandwidth = mult * dat_array[k, 2] + buff, x.points = dat_array[k, 2])[["y"]]
         }
         output_array[, 2] <- output_array[, 3]
 

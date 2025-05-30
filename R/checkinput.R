@@ -197,7 +197,7 @@ check_sample_struct <- function(sample_struct,
                                   ),
                                   agecomp = c(
                                     "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
-                                      "Lbin_lo", "Lbin_hi", "Nsamp"
+                                    "Lbin_lo", "Lbin_hi", "Nsamp"
                                   ),
                                   meanbodywt = c(
                                     "Yr", "Seas", "FltSvy", "Part", "Type", "Std_in"
