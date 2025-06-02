@@ -24,7 +24,7 @@
 #'  retained biomass for all cases)
 #' @param F_limit data frame with columns year, fleet, season, limit that specifies a maximum F
 #'  allowed in the OM or a negative value to specify a multiple of the historic maximum F. Any year/season/fleet
-#'  not listed will assume a value of 1.5. Entering -99 for any of year, season, or fleet will
+#'  not listed will assume a value of 2.9. Entering -99 for any of year, season, or fleet will
 #'  apply the limit across all values of that variable (i.e. a single row with -99, -99, -99, -2 would implement
 #'  a cap of twice the historic maximum F for all cases)
 #' @param EM_pars a dataframe of parameter value updates to modify OM
@@ -96,7 +96,7 @@ update_OM <- function(OM_dir,
   catch_intended <- cbind(
     catch_intended, catch_intended[, "catch"], catch_intended[, "catch"],
     rep(1, length(catch_intended[, "catch"])), rep(1, length(catch_intended[, "catch"])),
-    rep(1, length(catch_intended[, "catch"])), rep(1.5, length(catch_intended[, "catch"])),
+    rep(1, length(catch_intended[, "catch"])), rep(2.9, length(catch_intended[, "catch"])),
     rep(2, length(catch_intended[, "catch"])), catch_intended[, "catch"],
     catch_intended[, "catch"], catch_intended[, "catch"], catch_intended[, "catch"]
   )
@@ -105,17 +105,17 @@ update_OM <- function(OM_dir,
     "Catch_ref", "basis", "basis_2", "scale", "F_lim",
     "last_adjust", "catch_targ", "F_targ", "catch_imp", "F_imp"
   )
-
+  
   for (i in seq_along(catch_intended[, "catch"])) {
     if (!is.null(F_limit)) {
       F_lim <- F_limit[(F_limit[, "year"] == catch_intended[i, "year"]) &
         (F_limit[, "seas"] == catch_intended[i, "seas"]) &
         (F_limit[, "fleet"] == catch_intended[i, "fleet"]), "limit"]
       if (length(F_lim) != 1) {
-        F_lim <- 1.5
+        F_lim <- 2.9
       }
     } else {
-      F_lim <- 1.5
+      F_lim <- 2.9
     }
     catch_intended[i, "F_lim"] <- F_lim
 
