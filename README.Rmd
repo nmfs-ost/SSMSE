@@ -63,7 +63,26 @@ You can read the help files with
 ?SSMSE
 ```
 
-Note that when SSMSE is installed, [Stock Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are included in the `SSMSE/bin/` folder downloaded to the user's local R library. Currently, the Stock Synthesis 3.30.18 is included. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with other versions of SS3.
+Note that when SSMSE is installed, [Stock Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are included in the `SSMSE/bin/` folder downloaded to the user's local R library. Currently, Stock Synthesis 3.30.18 is included and 3.30.21 has been tested. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with all versions of SSMSE.
+
+To swap out the binaries replace them in the installed version of SS3:
+```{r swap, eval = FALSE}
+# use the path_to_ss3 for the operating system you use.
+#for windows
+path_to_ss3 <- system.file("bin", "Windows64", "ss.exe", package="SSMSE")
+# for Mac
+# path_to_ss3 <- system.file("bin", "MacOS", "ss3", package = "SSMSE")
+# for mac arm64 architecture
+# path_to_ss3 <- system.file("bin", "MacOS_arm64", "ss3", package = "SSMSE")
+# for Linux
+#path_to_ss3 <- system.file("bin", "Linux64", "ss3", package = "SSMSE")
+
+# Overwrite the included SSMSE binary
+r4ss::get_ss3_exe(dir= path_to_ss3, version = "3.30.21")
+
+# For Linux and Mac, the permissions may need to be changed on the binary so that it is executable.
+```
+Note that if you swap the binaries yourself, you will still see a message when you load SSMSE that SSMSE is using Stock Synthesis version 3.30.18, even though this is not true. To verify which version of SS3 is being used, check on the header information in the files produced when running simulations.
 
 # Troubleshooting Installation
 
