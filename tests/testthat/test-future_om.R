@@ -156,7 +156,7 @@ future_om_list_4[[2]][["input"]] <- data.frame(
 
 # Time-varying parameter input dataframe
 # This object will be passed from a sampling function that calculates environmental linkage devs
-# to a file update function that modifies SS files to incorporate new timevarying impacts
+# to a file update function that modifies SS3 files to incorporate new timevarying impacts
 nyrs <- 100 # the total number of years to run MSE simulations for
 Time_varying_devs <- data.frame(
   rec_devs = stats::rnorm(nyrs), # The functions I'm using are just examples. just input a vector of values of length nyrs
@@ -639,7 +639,8 @@ test_that("Tests a model with env link using historical values", {
     om_mod_path = om_path, nyrs = 10
   )
   expect_length(unique(devs_list[["dev_vals"]][["SR_LN(R0)"]]), 1)
-  dat <- r4ss::SS_readdat(file.path(om_path, "data.ss_new"))
+  OM_dat_file <- list.files(om_path, pattern = "data.ss_new|data_echo.ss_new")
+  dat <- r4ss::SS_readdat(file.path(om_path, OM_dat_file))
   dat <- dat[["envdat"]]
   env_vals <- dat[dat[["year"]] >= tmp_list[[1]][["input"]][["first_yr_averaging"]] &
     dat[["year"]] <= tmp_list[[1]][["input"]][["last_yr_averaging"]], "value"]

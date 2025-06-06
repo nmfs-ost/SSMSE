@@ -1,4 +1,4 @@
-#' run an MSE using SS OMs
+#' run an MSE using SS3 OMs
 #'
 #' High level function to run a management strategy evaluation using Stock
 #' Synthesis as the Operating model(s). For more examples and information on how
@@ -95,7 +95,6 @@ run_SSMSE <- function(scen_name_vec,
   if (!is.null(custom_MS_source)) {
     source(custom_MS_source)
   }
-
   # input checks
   if (!all(MS_vec %in% c("EM", "no_catch", "Interim"))) {
     invalid_MS <- MS_vec[unlist(lapply(MS_vec, function(x) !exists(x)))]
@@ -223,7 +222,7 @@ run_SSMSE <- function(scen_name_vec,
   invisible(scen_list)
 }
 
-#' Run an MSE scenario using SS OM
+#' Run an MSE scenario using SS3 OM
 #'
 #' High level function to run 1 scenario (but potentially many iterations) for
 #' a management strategy evaluation using Stock Synthesis as the Operating Model
@@ -305,7 +304,6 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   if (!is.null(sample_struct)) assertive.types::assert_is_list(sample_struct)
   if (!is.null(sample_struct_hist)) assertive.types::assert_is_list(sample_struct_hist)
   assertive.types::assert_is_a_bool(verbose)
-
 
   # create the out_dir to store all files for all iter in the scenario.
   if (is.null(out_dir_scen)) {
@@ -426,7 +424,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   invisible(run_failed_df)
 }
 
-#' Run one iteration of an MSE using SS OM
+#' Run one iteration of an MSE using SS3 OM
 #'
 #' High level function to run 1 iteration of a scenario for a management
 #' strategy evaluation using Stock Synthesis as the Operating model.
@@ -436,8 +434,8 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
 #' @template OM_name
 #' @param out_dir The directory to which to write output. IF NULL, will default
 #'   to the working directory.
-#' @param nyrs_lag number of years of lag in obtaining data. i.e. the number of years
-#'  post EM assessment end yr before advice can be implemented. defaults to 0.
+#' @param nyrs_lag Number of years of lag in obtaining data (i.e., the number of years
+#'  post EM assessment end yr before advice can be implemented). Defaults to 0.
 #' @param niter The iteration number, which is also the name of the folder the
 #'  results will be written to.
 #' @template future_om_list
@@ -538,7 +536,6 @@ run_SSMSE_iter <- function(out_dir = NULL,
   }
 
   message("Starting iteration ", niter, ".")
-
   set.seed((iter_seed[["iter"]][1] + 123))
   # get and create directories, copy model files ----
   # assign or reassign OM_dir and OM_in_dir in case they weren't specified
@@ -573,7 +570,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
   )
 
   # convert sample_struct names ----
-  # get the full sampling structure for components that the user didnt specify.
+  # get the full sampling structure for components that the user didn't specify.
   # if meaning is ambiguous, then this will exit on error.
   if (!is.null(sample_struct)) {
     sample_struct <- get_full_sample_struct(
@@ -584,7 +581,6 @@ run_SSMSE_iter <- function(out_dir = NULL,
     sample_struct <- convert_to_r4ss_names(sample_struct)
     sample_struct_hist <- convert_to_r4ss_names(sample_struct_hist)
   }
-
   # Convert the user input parameter modifications into vectors of annual additive deviations
   future_om_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = OM_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
 
@@ -612,7 +608,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
   if (use_SS_boot == FALSE) {
     stop(
       "Currently, only sampling can be done using the bootstrapping ",
-      "capabilities within SS"
+      "capabilities within SS3"
     )
     # TODO: add sampling functions then run a future sampling function that would
     # make it into a dataset.

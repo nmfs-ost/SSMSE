@@ -72,7 +72,7 @@ create_OM <- function(OM_out_dir,
   # read in files to use ----
   dat <- r4ss::SS_readdat(
     file = file.path(OM_out_dir, start[["datfile"]]),
-    verbose = FALSE, section = 1
+    verbose = FALSE
   )
   forelist <- r4ss::SS_readforecast(
     file = file.path(OM_out_dir, "forecast.ss"),
@@ -333,8 +333,6 @@ create_OM <- function(OM_out_dir,
     if (!is.null(dat[["age_info"]])) dat[["age_info"]][["mintailcomp"]] <- -1
   }
 
-
-
   # write all files
   r4ss::SS_writectl(
     ctllist = ctl, outfile = file.path(OM_out_dir, start[["ctlfile"]]),
@@ -365,6 +363,9 @@ create_OM <- function(OM_out_dir,
       verbose = verbose,
       debug_par_run = TRUE
     )
+    if (file.exists(file.path(OM_out_dir,"data.ss_new")) && file.exists(file.path(OM_out_dir,"data_echo.ss_new"))) {
+        file.remove(file.path(OM_out_dir,"data.ss_new"))
+      }
     # TODO: maybe add the following check into the debug par run arg of run_ss_model?
     check_par <- readLines(file.path(OM_out_dir, "ss.par"))
     check_sum_val <- check_par[grep("checksum999", check_par) + 1]
@@ -379,17 +380,18 @@ create_OM <- function(OM_out_dir,
       stop(
         "The OM model created is not valid; it did not run and produce a\n",
         "control.ss_new file. Please try running the OM model created\n",
-        "with the create_OM function manually with SS to diagnose the\n",
+        "with the create_OM function manually with SS3 to diagnose the\n",
         "problem."
       )
     }
     # check model runs without producing nans in the data file
-    tmp_new_dat <- readLines(file.path(OM_out_dir, "data.ss_new"))
+    data_filepath <- list.files(file.path(OM_out_dir), pattern = "data.ss_new|data_echo.ss_new", full.names = TRUE)
+    tmp_new_dat <- readLines(data_filepath)
     nan_vals <- grep("nan", tmp_new_dat)
     if (length(nan_vals) > 0) {
       stop(
-        "NAN values present in the data.ss_new om file, suggesting an issue ",
-        "setting up the OM. See ", file.path(OM_out_dir, "data.ss_new")
+        "NAN values present in the ", basename(data_filepath)," om file, suggesting an issue ",
+        "setting up the OM. See ", data_filepath
       )
     }
 
@@ -471,7 +473,7 @@ run_OM <- function(OM_dir,
   if (is.null(seed)) {
     seed <- stats::runif(1, 1, 9999999)
   }
-
+  # browser()
   start <- r4ss::SS_readstarter(file.path(OM_dir, "starter.ss"),
     verbose = FALSE
   )
@@ -481,23 +483,39 @@ run_OM <- function(OM_dir,
     dir = OM_dir, verbose = FALSE, overwrite = TRUE
   )
 
-  # run SS and get the data set
+  # run SS3 and get the data set
   run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
     verbose = verbose,
     debug_par_run = debug_par_run
   )
-
-  dat <- r4ss::SS_readdat(file.path(OM_dir, "data.ss_new"),
-    section = max_section,
-    verbose = FALSE
-  )
+  if (file.exists(file.path(OM_dir,"data.ss_new")) && file.exists(file.path(OM_dir,"data_echo.ss_new"))) {
+        file.remove(file.path(OM_dir,"data.ss_new"))
+      }
+  data_filename <- list.files(file.path(OM_dir), pattern = "data.ss_new|data_echo.ss_new")
+  if(data_filename == "data.ss_new"){
+    dat <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
+      section = max_section, #bootstrap file in v3.30.21
+      verbose = FALSE
+    )
+  } else {
+    # for SS3 v3.30.21
+    dat <- r4ss::SS_readdat(file.path(OM_dir, "data_boot_001.ss"),
+      verbose = FALSE)
+  }
   # replace with the expected catch values if sample_catch is FALSE and using
   # bootstrap
   if (boot == TRUE & sample_catch == FALSE) {
-    exp_vals <- r4ss::SS_readdat(file.path(OM_dir, "data.ss_new"),
-      section = 2,
-      verbose = FALSE
-    )
+    if(data_filename == "data.ss_new"){
+      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
+        section = 2, #expected values data file in v3.30.21
+        verbose = FALSE
+      )
+    } else {
+      # for SS3 v3.30.21
+      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, "data_expval.ss"),
+        verbose = FALSE
+      )
+    }
     dat[["catch"]] <- exp_vals[["catch"]]
   }
   return(dat)
@@ -508,7 +526,7 @@ run_OM <- function(OM_dir,
 #' Determine what the default sampling scheme is for a given data file.
 #' Produces a list object with the sampling scheme, which can be modified, if
 #' desired.
-#' @param dat An SS data file
+#' @param dat An SS3 data file
 #' @param dat_types Types of data to include
 # get the initial sampling values
 get_init_samp_scheme <- function(dat,
