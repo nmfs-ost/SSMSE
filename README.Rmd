@@ -63,7 +63,14 @@ You can read the help files with
 ?SSMSE
 ```
 
-Note that when SSMSE is installed, [Stock Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are included in the `SSMSE/bin/` folder downloaded to the user's local R library. Currently, the Stock Synthesis 3.30.18 is included. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with other versions of SS3.
+Note that when SSMSE is installed, [Stock Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are included in the `SSMSE/bin/` folder downloaded to the user's local R library. Currently, Stock Synthesis 3.30.18 is included and 3.30.21 has been tested. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with all versions of SSMSE.
+
+To swap out the exes, use the following code:
+```{r swap, eval = FALSE}
+.libPaths() # to find where your R library is
+r4ss::get_ss3_exe(dir= my_path, version = "3.30.21")
+file.path("bin", folder_name, "ss3.exe" ) # Folder options are Linux64, MacOS, MacOS_arm64, Windows64
+```
 
 # Troubleshooting Installation
 
