@@ -3,17 +3,17 @@
 
 #' Run an operating or estimation model
 #'
-#' This function takes care of calling SS. Importantly, it parses whether the
+#' This function takes care of calling SS3. Importantly, it parses whether the
 #' user is on Unix or Windows and calls the binary correctly. This lower-level
 #' function is meant to be called by higher level functions. Modified from
 #' run_ss3model in \href{https://github.com/ss3sim/ss3sim}{ss3sim}.
 #'
 #'
 #' @param dir The full or relative path to the model directory
-#' @param admb_options Any options to pass to SS command. Should be
+#' @param admb_options Any options to pass to SS3 command. Should be
 #'  of the form '-option'. Note that no checks are done to ensure this is a
 #'  valid ADMB command
-#' @param ss_bin Name of the SS executable. Defaults to "ss"
+#' @param ss3_bin Name of the SS3 executable. Defaults to "ss3"
 #' @param ignore.stdout Passed to \code{system}. If \code{TRUE} then ADMB
 #'   output is not printed on screen. This will be slightly faster. Set to
 #'  \code{FALSE} to help with debugging.
@@ -39,7 +39,7 @@
 #' @author Sean C. Anderson, Kathryn Doering
 run_ss_model <- function(dir,
                          admb_options = "",
-                         ss_bin = "ss",
+                         ss3_bin = "ss3",
                          ignore.stdout = TRUE,
                          admb_pause = 0.05,
                          show.output.on.console = FALSE,
@@ -53,15 +53,20 @@ run_ss_model <- function(dir,
   wd_orig <- getwd()
   on.exit(setwd(wd_orig))
   os <- .Platform[["OS.type"]]
-  bin <- get_bin(ss_bin)
+  bin <- get_bin(ss3_bin)
   if (check_run == TRUE) {
-    ss_new_path <- file.path(dir, "data.ss_new")
-    if (file.exists(ss_new_path)) {
-      file.remove(ss_new_path)
+    # new data file named for ss3 v.3.30.18 and prior
+    if (file.exists(file.path(dir,"data.ss_new")) && file.exists(file.path(dir,"data_echo.ss_new"))) {
+        file.remove(file.path(dir,"data.ss_new"))
+      }
+    ss_new_path <- list.files(dir, pattern = "data.ss_new|data_echo.ss_new", full.names = TRUE)
+    if (length(ss_new_path) > 0) {
+      if (file.exists(ss_new_path)) {
+            file.remove(ss_new_path)
+          }
     }
   }
-
-  if (verbose) message("Running SS.")
+  if (verbose) message("Running SS3.")
   if (os == "unix") {
     system(
       paste0(
@@ -78,7 +83,7 @@ run_ss_model <- function(dir,
     )
   }
   if (check_run == TRUE) {
-    if (!file.exists(ss_new_path)) {
+    if (!file.exists(file.path(dir, "data.ss_new")) && !file.exists(file.path(dir, "data_echo.ss_new"))) {
       if (debug_par_run) {
         test_no_par(
           orig_mod_dir = dir,
@@ -87,12 +92,13 @@ run_ss_model <- function(dir,
         # note that this will exit on error.
       } else {
         stop(
-          "data.ss_new was not created during the model run, which suggests ",
-          "SS did not run correctly"
+          "New data file (data.ss_new if using SS3 v3.30.18 or data_echo.ss_new ",
+          "if using SS3 v3.30.21) was not created during the model run, which ",
+          "suggests SS3 did not run correctly."
         )
       }
     } else {
-      if (verbose) "data.ss_new created during model run."
+      if (verbose) "new data file (data.ss_new if using SS3 3.30.18 or data_echo.ss_new if using SS3 3.30.21) created during model run."
     }
   }
   Sys.sleep(admb_pause)
@@ -104,8 +110,8 @@ run_ss_model <- function(dir,
 #' Get the binary/executable location in the package SSMSE. This function
 #' is from \href{https://github.com/ss3sim/ss3sim}{ss3sim}.
 #'
-#' @param bin_name Name of SS3 binary, defaults to "ss"
-#' @return The path to an SS binary. If using the GitHub version of the
+#' @param bin_name Name of SS3 binary, defaults to "ss3"
+#' @return The path to an SS3 binary. If using the GitHub version of the
 #'   package, this will be an internal binary. Otherwise, this function
 #'   will search for a version of the binary in your path. See the
 #'   ss3sim vignette.
@@ -114,7 +120,7 @@ run_ss_model <- function(dir,
 #' \dontrun{
 #' get_bin()
 #' }
-get_bin <- function(bin_name = "ss") {
+get_bin <- function(bin_name = "ss3") {
   # code inspiration from glmmADMB package:
   if (.Platform[["OS.type"]] == "windows") {
     platform <- "Windows64"
@@ -161,7 +167,7 @@ get_bin <- function(bin_name = "ss") {
     bin <- Sys.which(bin_name)[[1]]
     if (bin == "") {
       stop(
-        "The expected SS executable, ", bin_name, ", was not found in your",
+        "The expected SS3 executable, ", bin_name, ", was not found in your",
         " path. See the ss3sim vignette and ?ss3sim::run_ss3model for ",
         "instructions."
       )

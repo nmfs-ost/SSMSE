@@ -37,7 +37,7 @@ test_that("run_SSMSE runs with interim assessment workflow", {
     OM_name_vec = "cod",
     EM_name_vec = "cod", # cod is included in package data
     MS_vec = "Interim", # The management strategy is specified in the EM
-    use_SS_boot_vec = TRUE, # use the SS bootstrap module for sampling
+    use_SS_boot_vec = TRUE, # use the SS3 bootstrap module for sampling
     nyrs_vec = nyrs, # Years to project OM forward
     nyrs_assess_vec = 1, # Years between interim assessments
     sample_struct_list = list(sample_struct), # How to sample data for running the EM.
@@ -45,14 +45,19 @@ test_that("run_SSMSE runs with interim assessment workflow", {
     seed = 12345
   ) # Set a fixed integer seed that allows replication
   expect_true(result[["base"]][["errored_iterations"]] == "No errored iterations")
-  expect_true(file.exists(file.path(
-    temp_path, "base", "1", "cod_OM",
-    "data.ss_new"
-  )))
-  expect_true(file.exists(file.path(
-    temp_path, "base", "1", "cod_EM_init",
-    "data.ss_new"
-  )))
+
+  cod_OM_files <- list.files(file.path(temp_path,"base","1","cod_OM"))
+  expect_true(any(c("data.ss_new","data_echo.ss_new") %in% cod_OM_files))
+  # expect_true(file.exists(file.path(
+  #   temp_path, "base", "1", "cod_OM",
+  #   "data.ss_new"
+  # )))
+  cod_EM_files <- list.files(file.path(temp_path, "base", "1", "cod_EM_init"))
+  expect_true(any(c("data.ss_new","data_echo.ss_new") %in% cod_EM_files))
+  # expect_true(file.exists(file.path(
+  #   temp_path, "base", "1", "cod_EM_init",
+  #   "data.ss_new"
+  # )))
   expect_length(result, 1)
   # could add some better tests to make sure this works.
 })
