@@ -24,7 +24,7 @@
 #'  retained biomass for all cases)
 #' @param F_limit data frame with columns year, fleet, season, limit that specifies a maximum F
 #'  allowed in the OM or a negative value to specify a multiple of the historic maximum F. Any year/season/fleet
-#'  not listed will assume a value of 2.9. Entering -99 for any of year, season, or fleet will
+#'  not listed will assume a value of maxF from the OM control file. Entering -99 for any of year, season, or fleet will
 #'  apply the limit across all values of that variable (i.e. a single row with -99, -99, -99, -2 would implement
 #'  a cap of twice the historic maximum F for all cases)
 #' @param EM_pars a dataframe of parameter value updates to modify OM
@@ -91,12 +91,25 @@ update_OM <- function(OM_dir,
     dir = OM_dir, verbose = FALSE, overwrite = TRUE
   )
 
+  
+  #If manual F limit entered update OM to make sure max is at least this large
+  if(!is.null(F_limit)){
+    if(max(F_limit[,"limit"])>ctl[["maxF"]]){
+      ctl[["maxF"]] <- max(F_limit[,"limit"])
+      r4ss::SS_writectl(ctl, outfile = file.path(OM_dir, start[["ctlfile"]]), 
+                        verbose = FALSE, overwrite = TRUE)
+    }
+  }
+  
+  #Set default F limit from control file
+  default_F_lim <- ctl[["maxF"]]
+  
   catch_intended <- rbind(catch, harvest_rate)
   catch_intended <- catch_intended[!duplicated(catch_intended[, 1:3]), ]
   catch_intended <- cbind(
     catch_intended, catch_intended[, "catch"], catch_intended[, "catch"],
     rep(1, length(catch_intended[, "catch"])), rep(1, length(catch_intended[, "catch"])),
-    rep(1, length(catch_intended[, "catch"])), rep(2.9, length(catch_intended[, "catch"])),
+    rep(1, length(catch_intended[, "catch"])), rep(default_F_lim, length(catch_intended[, "catch"])),
     rep(2, length(catch_intended[, "catch"])), catch_intended[, "catch"],
     catch_intended[, "catch"], catch_intended[, "catch"], catch_intended[, "catch"]
   )
@@ -112,10 +125,10 @@ update_OM <- function(OM_dir,
         (F_limit[, "seas"] == catch_intended[i, "seas"]) &
         (F_limit[, "fleet"] == catch_intended[i, "fleet"]), "limit"]
       if (length(F_lim) != 1) {
-        F_lim <- 2.9
+        F_lim <- default_F_lim
       }
     } else {
-      F_lim <- 2.9
+      F_lim <- default_F_lim
     }
     catch_intended[i, "F_lim"] <- F_lim
 
