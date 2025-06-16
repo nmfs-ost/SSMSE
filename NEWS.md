@@ -3,13 +3,13 @@
 # SSMSE 0.3.0
 
 ## Major changes
-
-- [Change column names per r4ss updates](https://github.com/nmfs-ost/SSMSE/issues/216). Back-compatible with existing user input, although output names are as in [r4ss version 1.50.0](https://github.com/r4ss/r4ss/releases/tag/v1.50.0). SSMSE is now dependent on r4ss 1.50.0 or greater.
+- Make SSMSE compatible with SS3 v 3.30.21. SSMSE still ships with 3.30.18 by default, but is tested with 3.30.21. [PR #224](https://github.com/nmfs-ost/SSMSE/pull/191)
+- [Change column names per r4ss updates](https://github.com/nmfs-ost/SSMSE/issues/216). Back-compatible with existing user input, although output names are as in[r4ss version 1.50.0](https://github.com/r4ss/r4ss/releases/tag/v1.50.0). SSMSE is now dependent on r4ss 1.50.0 or greater.
 - [Add Mac OS arm64 binary](https://github.com/nmfs-ost/SSMSE/issues/208).
-
 
 ## Minor improvements and bug fixes
 
+- Fix fragile test for ss3sim. [PR #203](https://github.com/nmfs-ost/SSMSE/pull/203).
 - [Refactor code](https://github.com/nmfs-ost/SSMSE/issues/192)
 - Fix small issues with package warnings and notes. [PR #191](https://github.com/nmfs-ost/SSMSE/pull/191), [PR #195](https://github.com/nmfs-ost/SSMSE/pull/195). Thanks to @kellijohnson-NOAA for working on this!
 - [Fix an issue with incorrect parameter devs default value](https://github.com/nmfs-ost/SSMSE/pull/187). Thanks @charliehinchliffe for identifying this issue and solution!
