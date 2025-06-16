@@ -40,8 +40,7 @@ SSMSE: Management Strategy Evaluation for Stock Synthesis
 
 [![badge for the github action
 call-r-cmd-check](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg)](https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml)
-[![codecoverage
-badge](https://codecov.io/gh/nmfs-ost/SSMSE/branch/master/graph/badge.svg)](https://codecov.io/gh/nmfs-ost/SSMSE)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/nmfs-ost/SSMSE/refs/heads/badges/coverage-badge.json)](https://github.com/nmfs-ost/SSMSE/tree/badges)
 [![DOI
 badge](https://joss.theoj.org/papers/10.21105/joss.04937/status.svg)](https://doi.org/10.21105/joss.04937)
 [![Lifecycle badge indicating this repository is
@@ -118,9 +117,35 @@ You can read the help files with
 Note that when SSMSE is installed, [Stock
 Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are
 included in the `SSMSE/bin/` folder downloaded to the user’s local R
-library. Currently, the Stock Synthesis 3.30.18 is included. Separate
-binaries are included for Windows, Mac and Linux. Users may swap out
-these binaries, but SSMSE is not tested with other versions of SS3.
+library. Currently, Stock Synthesis 3.30.18 is included and 3.30.21 has
+been tested. Separate binaries are included for Windows, Mac and Linux.
+Users may swap out these binaries, but SSMSE is not tested with all
+versions of SSMSE.
+
+To swap out the binaries replace them in the installed version of SS3:
+
+``` r
+# use the path_to_ss3 for the operating system you use.
+# for windows
+path_to_ss3 <- system.file("bin", "Windows64", "ss.exe", package = "SSMSE")
+# for Mac
+# path_to_ss3 <- system.file("bin", "MacOS", "ss3", package = "SSMSE")
+# for mac arm64 architecture
+# path_to_ss3 <- system.file("bin", "MacOS_arm64", "ss3", package = "SSMSE")
+# for Linux
+# path_to_ss3 <- system.file("bin", "Linux64", "ss3", package = "SSMSE")
+
+# Overwrite the included SSMSE binary
+r4ss::get_ss3_exe(dir = path_to_ss3, version = "3.30.21")
+
+# For Linux and Mac, the permissions may need to be changed on the binary so that it is executable.
+```
+
+Note that if you swap the binaries yourself, you will still see a
+message when you load SSMSE that SSMSE is using Stock Synthesis version
+3.30.18, even though this is not true. To verify which version of SS3 is
+being used, check on the header information in the files produced when
+running simulations.
 
 # Troubleshooting Installation
 
@@ -139,14 +164,14 @@ Here are some tips:
   step can eliminate issues in the short term.
 - If running into an error during install, try closing out all R
   sessions open (e.g., other R GUI or R studio windows), restarting the
-  R session and trying
-  `remotes::install_github("nmfs-ost/SSMSE")` again.
+  R session and trying `remotes::install_github("nmfs-ost/SSMSE")`
+  again.
 - If still running into an error during install, and it seems to be a
   problem installing a particular package, try restarting the R session,
   using `install.packages()` to download the package that caused the
   error, restarting the R session, and trying
-  `remotes::install_github("nmfs-ost/SSMSE")` again. This step
-  may need to be done several times for different R packages.
+  `remotes::install_github("nmfs-ost/SSMSE")` again. This step may need
+  to be done several times for different R packages.
 
 Still having trouble installing SSMSE? Please don’t hesitate to [post in
 discussions about the
@@ -184,7 +209,7 @@ run the example:
 
 ``` r
 library(SSMSE) # load the package
-## Welcome to SSMSE version 0.2.8 using Stock Synthesis 3.30.18.
+## Welcome to SSMSE version 0.4.0 using Stock Synthesis 3.30.18.
 library(r4ss) # install using remotes::install_github("r4ss/r4ss)
 ## 
 ## Attaching package: 'r4ss'
@@ -335,7 +360,7 @@ input data file:
 datfile <- system.file("extdata", "models", "cod", "ss3.dat", package = "SSMSE")
 sample_struct_1_scen <- create_sample_struct(dat = datfile, nyrs = 6) # note warning
 ## Warning in FUN(X[[i]], ...): Pattern not found for lencomp: FltSvy 1, Seas 1.
-## Returning NA for Yr in this dataframe.
+## Returning NA for year in this dataframe.
 sample_struct_1_scen
 ## $catch
 ##    Yr Seas FltSvy    SE
@@ -374,7 +399,7 @@ to 106), but an index of abundance (i.e., CPUE) and age composition
 sampling scheme for both scenarios, but it is possible to specify
 different sampling for each scenario. The user could modify this
 sampling strategy (for example, maybe age composition should also be
-sampled from FltSvy 2 in Yr 102; the user could add another line to the
+sampled from fleet 2 in year 102; the user could add another line to the
 dataframe in `sample_struct$agecomp`).
 
 Note that length comp (lencomp) includes an `NA` value for year. This is
@@ -702,7 +727,7 @@ ggplot(data = avg_SSB, aes(x = scenario, y = avg_SSB)) +
 
 ![](man/figures/README-plot_SSB_avg-1.png)<!-- -->
 
-From the above plot, we see differences in the average SSb between the 2
+From the above plot, we see differences in the average SSB between the 2
 scenarios.
 
 ## Example MSE Results
@@ -795,9 +820,8 @@ By participating, you are expected to uphold this code.
 
 SSMSE will be applied to a number of problems. If you are interested in
 using SSMSE, please don’t hesitate to reach out to the developers via
-[github
-discussions](https://github.com/nmfs-ost/SSMSE/discussions) or by
-emailing <nmfs.stock.synthesis@noaa.gov>.
+[github discussions](https://github.com/nmfs-ost/SSMSE/discussions) or
+by emailing <nmfs.stock.synthesis@noaa.gov>.
 
 <img src="https://raw.githubusercontent.com/nmfs-fish-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries Logo">
 
