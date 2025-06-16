@@ -38,7 +38,7 @@ test_that("test_no_par works as expected", {
     ),
     "New data file (data.ss_new if using SS3 v3.30.18 or data_echo.ss_new ",
     fixed = TRUE
-    )
+  )
   expect_error(
     test_no_par(
       orig_mod_dir = orig_mod_dir,

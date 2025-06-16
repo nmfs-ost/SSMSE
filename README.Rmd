@@ -68,17 +68,17 @@ Note that when SSMSE is installed, [Stock Synthesis](https://github.com/nmfs-ost
 To swap out the binaries replace them in the installed version of SS3:
 ```{r swap, eval = FALSE}
 # use the path_to_ss3 for the operating system you use.
-#for windows
-path_to_ss3 <- system.file("bin", "Windows64", "ss.exe", package="SSMSE")
+# for windows
+path_to_ss3 <- system.file("bin", "Windows64", "ss.exe", package = "SSMSE")
 # for Mac
 # path_to_ss3 <- system.file("bin", "MacOS", "ss3", package = "SSMSE")
 # for mac arm64 architecture
 # path_to_ss3 <- system.file("bin", "MacOS_arm64", "ss3", package = "SSMSE")
 # for Linux
-#path_to_ss3 <- system.file("bin", "Linux64", "ss3", package = "SSMSE")
+# path_to_ss3 <- system.file("bin", "Linux64", "ss3", package = "SSMSE")
 
 # Overwrite the included SSMSE binary
-r4ss::get_ss3_exe(dir= path_to_ss3, version = "3.30.21")
+r4ss::get_ss3_exe(dir = path_to_ss3, version = "3.30.21")
 
 # For Linux and Mac, the permissions may need to be changed on the binary so that it is executable.
 ```

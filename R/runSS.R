@@ -56,14 +56,14 @@ run_ss_model <- function(dir,
   bin <- get_bin(ss3_bin)
   if (check_run == TRUE) {
     # new data file named for ss3 v.3.30.18 and prior
-    if (file.exists(file.path(dir,"data.ss_new")) && file.exists(file.path(dir,"data_echo.ss_new"))) {
-        file.remove(file.path(dir,"data.ss_new"))
-      }
+    if (file.exists(file.path(dir, "data.ss_new")) && file.exists(file.path(dir, "data_echo.ss_new"))) {
+      file.remove(file.path(dir, "data.ss_new"))
+    }
     ss_new_path <- list.files(dir, pattern = "data.ss_new|data_echo.ss_new", full.names = TRUE)
     if (length(ss_new_path) > 0) {
       if (file.exists(ss_new_path)) {
-            file.remove(ss_new_path)
-          }
+        file.remove(ss_new_path)
+      }
     }
   }
   if (verbose) message("Running SS3.")
