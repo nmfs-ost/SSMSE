@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SSMSE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,14 +36,17 @@
 <h2 class="pkg-version" data-toc-text="0.3.0" id="ssmse-030">SSMSE 0.3.0<a class="anchor" aria-label="anchor" href="#ssmse-030"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-0-3-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-3-0"></a></h3>
-<ul><li>
-<a href="https://github.com/nmfs-ost/SSMSE/issues/216" class="external-link">Change column names per r4ss updates</a>. Back-compatible with existing user input, although output names are as in <a href="https://github.com/r4ss/r4ss/releases/tag/v1.50.0" class="external-link">r4ss version 1.50.0</a>. SSMSE is now dependent on r4ss 1.50.0 or greater.</li>
+<ul><li>Make SSMSE compatible with SS3 v 3.30.21. SSMSE still ships with 3.30.18 by default, but is tested with 3.30.21. <a href="https://github.com/nmfs-ost/SSMSE/pull/191" class="external-link">PR </a><a href="https://github.com/nmfs-ost/SSMSE/issues/224" class="external-link">#224</a>
+</li>
+<li>
+<a href="https://github.com/nmfs-ost/SSMSE/issues/216" class="external-link">Change column names per r4ss updates</a>. Back-compatible with existing user input, although output names are as in<a href="https://github.com/r4ss/r4ss/releases/tag/v1.50.0" class="external-link">r4ss version 1.50.0</a>. SSMSE is now dependent on r4ss 1.50.0 or greater.</li>
 <li>
 <a href="https://github.com/nmfs-ost/SSMSE/issues/208" class="external-link">Add Mac OS arm64 binary</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-and-bug-fixes-0-3-0">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-0-3-0"></a></h3>
-<ul><li><a href="https://github.com/nmfs-ost/SSMSE/issues/192" class="external-link">Refactor code</a></li>
+<ul><li>Fix fragile test for ss3sim. <a href="https://github.com/nmfs-ost/SSMSE/pull/203" class="external-link">PR </a><a href="https://github.com/nmfs-ost/SSMSE/issues/203" class="external-link">#203</a>.</li>
+<li><a href="https://github.com/nmfs-ost/SSMSE/issues/192" class="external-link">Refactor code</a></li>
 <li>Fix small issues with package warnings and notes. <a href="https://github.com/nmfs-ost/SSMSE/pull/191" class="external-link">PR </a><a href="https://github.com/nmfs-ost/SSMSE/issues/191" class="external-link">#191</a>, <a href="https://github.com/nmfs-ost/SSMSE/pull/195" class="external-link">PR </a><a href="https://github.com/nmfs-ost/SSMSE/issues/195" class="external-link">#195</a>. Thanks to <a href="https://github.com/kellijohnson-NOAA" class="external-link">@kellijohnson-NOAA</a> for working on this!</li>
 <li>
 <a href="https://github.com/nmfs-ost/SSMSE/pull/187" class="external-link">Fix an issue with incorrect parameter devs default value</a>. Thanks <a href="https://github.com/charliehinchliffe" class="external-link">@charliehinchliffe</a> for identifying this issue and solution!</li>
