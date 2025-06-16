@@ -84,7 +84,7 @@
 <div class="section level1">
 <h1 id="ssmse-build-status">SSMSE build status<a class="anchor" aria-label="anchor" href="#ssmse-build-status"></a>
 </h1>
-<p><a href="https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml" class="external-link"><img src="https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg" alt="badge for the github action call-r-cmd-check"></a> <a href="https://codecov.io/gh/nmfs-ost/SSMSE" class="external-link"><img src="https://codecov.io/gh/nmfs-ost/SSMSE/branch/master/graph/badge.svg" alt="codecoverage badge"></a> <a href="https://doi.org/10.21105/joss.04937" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.04937/status.svg" alt="DOI badge"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle badge indicating this repository is stable"></a></p>
+<p><a href="https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml" class="external-link"><img src="https://github.com/nmfs-ost/SSMSE/actions/workflows/call-r-cmd-check.yml/badge.svg" alt="badge for the github action call-r-cmd-check"></a> <a href="https://github.com/nmfs-ost/SSMSE/tree/badges" class="external-link"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/nmfs-ost/SSMSE/refs/heads/badges/coverage-badge.json" alt="coverage"></a> <a href="https://doi.org/10.21105/joss.04937" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.04937/status.svg" alt="DOI badge"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle badge indicating this repository is stable"></a></p>
 </div>
 <div class="section level1">
 <h1 id="current-support-level-for-ssmse">Current support level for SSMSE<a class="anchor" aria-label="anchor" href="#current-support-level-for-ssmse"></a>
@@ -124,7 +124,24 @@
 <p>You can read the help files with</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">SSMSE</span></span></code></pre></div>
-<p>Note that when SSMSE is installed, <a href="https://github.com/nmfs-ost/ss3-source-code" class="external-link">Stock Synthesis</a> binaries are included in the <code>SSMSE/bin/</code> folder downloaded to the user’s local R library. Currently, the Stock Synthesis 3.30.18 is included. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with other versions of SS3.</p>
+<p>Note that when SSMSE is installed, <a href="https://github.com/nmfs-ost/ss3-source-code" class="external-link">Stock Synthesis</a> binaries are included in the <code>SSMSE/bin/</code> folder downloaded to the user’s local R library. Currently, Stock Synthesis 3.30.18 is included and 3.30.21 has been tested. Separate binaries are included for Windows, Mac and Linux. Users may swap out these binaries, but SSMSE is not tested with all versions of SSMSE.</p>
+<p>To swap out the binaries replace them in the installed version of SS3:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># use the path_to_ss3 for the operating system you use.</span></span>
+<span><span class="co"># for windows</span></span>
+<span><span class="va">path_to_ss3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"bin"</span>, <span class="st">"Windows64"</span>, <span class="st">"ss.exe"</span>, package <span class="op">=</span> <span class="st">"SSMSE"</span><span class="op">)</span></span>
+<span><span class="co"># for Mac</span></span>
+<span><span class="co"># path_to_ss3 &lt;- system.file("bin", "MacOS", "ss3", package = "SSMSE")</span></span>
+<span><span class="co"># for mac arm64 architecture</span></span>
+<span><span class="co"># path_to_ss3 &lt;- system.file("bin", "MacOS_arm64", "ss3", package = "SSMSE")</span></span>
+<span><span class="co"># for Linux</span></span>
+<span><span class="co"># path_to_ss3 &lt;- system.file("bin", "Linux64", "ss3", package = "SSMSE")</span></span>
+<span></span>
+<span><span class="co"># Overwrite the included SSMSE binary</span></span>
+<span><span class="fu">r4ss</span><span class="fu">::</span><span class="fu"><a href="https://r4ss.github.io/r4ss/reference/get_ss3_exe.html" class="external-link">get_ss3_exe</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">path_to_ss3</span>, version <span class="op">=</span> <span class="st">"3.30.21"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For Linux and Mac, the permissions may need to be changed on the binary so that it is executable.</span></span></code></pre></div>
+<p>Note that if you swap the binaries yourself, you will still see a message when you load SSMSE that SSMSE is using Stock Synthesis version 3.30.18, even though this is not true. To verify which version of SS3 is being used, check on the header information in the files produced when running simulations.</p>
 </div>
 <div class="section level1">
 <h1 id="troubleshooting-installation">Troubleshooting Installation<a class="anchor" aria-label="anchor" href="#troubleshooting-installation"></a>
@@ -150,9 +167,9 @@
 <h2 id="setup-r-workspace-folders">Setup R workspace folders<a class="anchor" aria-label="anchor" href="#setup-r-workspace-folders"></a>
 </h2>
 <p>First, we will load the <code>SSMSE</code> package and create a folder in which to run the example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nmfs-ost/SSMSE" class="external-link">SSMSE</a></span><span class="op">)</span> <span class="co"># load the package</span></span>
-<span><span class="co">## Welcome to SSMSE version 0.2.8 using Stock Synthesis 3.30.18.</span></span>
+<span><span class="co">## Welcome to SSMSE version 0.4.0 using Stock Synthesis 3.30.18.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r4ss/r4ss" class="external-link">r4ss</a></span><span class="op">)</span> <span class="co"># install using remotes::install_github("r4ss/r4ss)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Attaching package: 'r4ss'</span></span>
@@ -164,7 +181,7 @@
 <span><span class="co">##     jitter</span></span>
 <span><span class="co"># library(foreach) #if using run_parallel = TRUE</span></span>
 <span><span class="co"># library(doParallel) #if using run_parallel = TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a folder for the output in the working directory.</span></span>
 <span><span class="va">run_SSMSE_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"run_SSMSE-ex"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">run_SSMSE_dir</span><span class="op">)</span></span></code></pre></div>
@@ -177,7 +194,7 @@
 </h3>
 <p>The cod model with h = 0.65 (as in scenario 1) is included as external package data in SSMSE. However, we will need to modify it to use as an operating model with h = 1 (as in scenario 2). Note in this case that refit_OM is false, so the model is not being refit, just run through without fitting. To condition the new model on the same data as the input model, refit_OM should be TRUE.</p>
 <p>First, we identify where the base cod model is stored, modify it such that the steepness parameter is 1, and save the modified cod OM for scenario 2 in a new folder in the <code>run_SSMSE_dir</code> directory.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cod_mod_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"models"</span>, <span class="st">"cod"</span>, package <span class="op">=</span> <span class="st">"SSMSE"</span><span class="op">)</span></span>
 <span><span class="co"># develop_OMs will save a model called "cod_SR_BH_steep_1" in the out_dir</span></span>
 <span><span class="co"># specified</span></span>
@@ -194,7 +211,7 @@
 </h2>
 <p>Recruitment deviations, implementation error, and changes in parameters in the projection period of the OM can be added through the <code>future_om_list</code> input to <code>run_SSMSE</code>.</p>
 <p>First, we’ll set up the list to add recruitment deviations in the projection period. The same recruitment deviation patterns are used across scenarios, but different patterns are use across iterations in the same scenario. We also want these deviations to have the same standard deviations as the historical deviations with 0 mean (the assumed default).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start from a list created by a helper function</span></span>
 <span><span class="va">template_mod_change</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_future_om_list.html">create_future_om_list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># add recruitment deviations</span></span>
@@ -228,7 +245,7 @@
 <span><span class="co">##   ts_param   method value</span></span>
 <span><span class="co">## 1       sd absolute    NA</span></span></code></pre></div>
 <p>Next, suppose we want to allow selectivity to vary annually for 1 selectivity parameter of the fishery throughout the projection period. The following specifies that the value for selectivity varies randomly around the base value with a sd of 0.2.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># put together the change for selectivity (random values around the orig val, with</span></span>
 <span><span class="co"># an sd of 0.2)</span></span>
 <span><span class="va">mod_change_sel</span> <span class="op">&lt;-</span> <span class="va">template_mod_change</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -257,7 +274,7 @@
 <span><span class="co">##   ts_param   method value</span></span>
 <span><span class="co">## 1       sd absolute   0.2</span></span></code></pre></div>
 <p>Finally, add these two changes together into an object to pass to <code>run_SSMSE</code></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">future_om_list_recdevs_sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="va">rec_dev_specify</span>,</span>
 <span>  <span class="va">mod_change_sel</span></span>
@@ -266,11 +283,11 @@
 <h3 id="add-observation-error-through-sampling-from-om">Add observation error through sampling from OM<a class="anchor" aria-label="anchor" href="#add-observation-error-through-sampling-from-om"></a>
 </h3>
 <p>The argument <code>sample_struct</code> specifies the structure for sampling from the OM (and passing to the EM). The function <code>create_sample_struct</code> can be used to construct a simple sampling structure consistent with an input data file:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">datfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"models"</span>, <span class="st">"cod"</span>, <span class="st">"ss3.dat"</span>, package <span class="op">=</span> <span class="st">"SSMSE"</span><span class="op">)</span></span>
 <span><span class="va">sample_struct_1_scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_sample_struct.html">create_sample_struct</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">datfile</span>, nyrs <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># note warning</span></span>
 <span><span class="co">## Warning in FUN(X[[i]], ...): Pattern not found for lencomp: FltSvy 1, Seas 1.</span></span>
-<span><span class="co">## Returning NA for Yr in this dataframe.</span></span>
+<span><span class="co">## Returning NA for year in this dataframe.</span></span>
 <span><span class="va">sample_struct_1_scen</span></span>
 <span><span class="co">## $catch</span></span>
 <span><span class="co">##    Yr Seas FltSvy    SE</span></span>
@@ -298,12 +315,12 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## $MeanSize_at_Age_obs</span></span>
 <span><span class="co">## [1] NA</span></span></code></pre></div>
-<p>By default, <code>create_sample_struct</code> identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from FltSvy 2 in Yr 102; the user could add another line to the dataframe in <code>sample_struct$agecomp</code>).</p>
+<p>By default, <code>create_sample_struct</code> identifies sampling patterns from the historical period of the OM and replicates those patterns in the projection period. In our cod example, the sample structure specifies that catch will be added to the estimation model every year (years 101 to 106), but an index of abundance (i.e., CPUE) and age composition (i.e., agecomp) will only be added in year 105. We will use the same sampling scheme for both scenarios, but it is possible to specify different sampling for each scenario. The user could modify this sampling strategy (for example, maybe age composition should also be sampled from fleet 2 in year 102; the user could add another line to the dataframe in <code>sample_struct$agecomp</code>).</p>
 <p>Note that length comp (lencomp) includes an <code>NA</code> value for year. This is because no consistent pattern was identified, so the user must define their own input. In this case, we will remove sampling length comps all together:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_struct_1_scen</span><span class="op">$</span><span class="va">lencomp</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="co"># don't use length sampling</span></span></code></pre></div>
 <p>The same sampling structure will be used for both scenarios, which we define in a list below:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_struct_list_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"h-ctl"</span> <span class="op">=</span> <span class="va">sample_struct_1_scen</span>, <span class="st">"h-1"</span> <span class="op">=</span> <span class="va">sample_struct_1_scen</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -317,7 +334,7 @@
 <li>Put this projected catch (without implementation error, in the case of this example) back into the OM. Extend the OM forward in time to get the true values for the population.</li>
 </ol>
 <p>Let’s take a look at step 2 in the management procedure, which is implemented using the forecasting module in SS3. We will examine the forecast file for the estimation model to better understand how catches will be forecasted from the assessment. We will use the same management procedure in both of these scenarios, although for a full MSE analysis, it is likely that multiple management procedures would be compared.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fore</span> <span class="op">&lt;-</span> <span class="fu">r4ss</span><span class="fu">::</span><span class="fu"><a href="https://r4ss.github.io/r4ss/reference/SS_readforecast.html" class="external-link">SS_readforecast</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"models"</span>, <span class="st">"cod"</span>, <span class="st">"forecast.ss"</span>, package <span class="op">=</span> <span class="st">"SSMSE"</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -327,17 +344,17 @@
 <span><span class="va">fore</span><span class="op">$</span><span class="va">Btarget</span></span>
 <span><span class="co">## [1] 0.4</span></span></code></pre></div>
 <p><code>fore$Forecast = 3</code> means our forecasts from the assessment will use fishing mortality (F) to attmpt to achieve a relative (to unfished) spawning stock biomass. Based on <code>fore$Btarget</code>, the relative biomass target is 40% of unfished spawning stock biomass. Note also that the control rule <code>fore$BforconstantF</code> and <code>fore$BfornoF</code> values are set low to make it unlikely that they will be used (these parameters are used for a ramp harvest control rule, which we do not want to use here):</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fore</span><span class="op">$</span><span class="va">BforconstantF</span></span>
 <span><span class="co">## [1] 0.03</span></span>
 <span><span class="va">fore</span><span class="op">$</span><span class="va">BfornoF</span></span>
 <span><span class="co">## [1] 0.01</span></span></code></pre></div>
 <p>Futhermore, <code>fore$Flimitfraction</code> is set to 1 so that the forecasted catch is set equal to the overfishing limit (for simplicity):</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fore</span><span class="op">$</span><span class="va">Flimitfraction</span></span>
 <span><span class="co">## [1] 1</span></span></code></pre></div>
 <p>Note that the number of forecast years is 1:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fore</span><span class="op">$</span><span class="va">Nforecastyrs</span></span>
 <span><span class="co">## [1] 1</span></span></code></pre></div>
 <p>However, an assessment will be conducted every 3 years and thus 3 years of projections is required. SSMSE will automatically modify this value in the estimation model to the appropriate number of forecasting years.</p>
@@ -348,7 +365,7 @@
 <h2 id="run-ssmse">Run SSMSE<a class="anchor" aria-label="anchor" href="#run-ssmse"></a>
 </h2>
 <p>Now, we create a directory to store our results, and use <code>run_SSMSE</code> to run the MSE analysis loop (note this will take some time to run, ~ 20 min):</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_res_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">run_SSMSE_dir</span>, <span class="st">"results"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">run_res_path</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_SSMSE.html">run_SSMSE</a></span><span class="op">(</span></span>
@@ -374,18 +391,18 @@
 <h2 id="run_ssmse-output">run_SSMSE output<a class="anchor" aria-label="anchor" href="#run_ssmse-output"></a>
 </h2>
 <p><code>run_SSMSE</code> will create new folders in the folders specified in <code>out_dir_scen_vec</code> (note that in this case, we are running both scenarios in the same folder). After is complete, there will be a folder for each scenario in <code>run_res_path</code> (since <code>out_dir_scen_vec = run_res_path</code> in this example):</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.dirs</a></span><span class="op">(</span><span class="va">run_res_path</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">## [1] "run_SSMSE-ex/results/h-1"   "run_SSMSE-ex/results/h-ctl"</span></span></code></pre></div>
 <p>Within each scenario is a folder for each scenario:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># See folders for scenario 1.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.dirs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">run_res_path</span>, <span class="st">"h-ctl"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">## [1] "run_SSMSE-ex/results/h-ctl/1" "run_SSMSE-ex/results/h-ctl/2"</span></span>
 <span><span class="co">## [3] "run_SSMSE-ex/results/h-ctl/3" "run_SSMSE-ex/results/h-ctl/4"</span></span>
 <span><span class="co">## [5] "run_SSMSE-ex/results/h-ctl/5"</span></span></code></pre></div>
 <p>And within each scenario folder, there are folders containing the SS3 models that were run by <code>run_SSMSE</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># see folders for the first iteration of scenario 1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.dirs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">run_res_path</span>, <span class="st">"h-ctl"</span>, <span class="st">"1"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">## [1] "run_SSMSE-ex/results/h-ctl/1/cod_EM_103" </span></span>
@@ -403,14 +420,14 @@
 <h2 id="summarize-results">Summarize results<a class="anchor" aria-label="anchor" href="#summarize-results"></a>
 </h2>
 <p>The function <code>SSMSE_summary_all</code> can be used to summarize the model results in a list of 3 dataframes, one for scalar outputs (named <code>scalar</code>), one for timeseries outputs (<code>ts</code>), one for derived quantities (<code>dq</code>). This function also creates summary csv files in the folder where the results are stored.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Summarize 1 iteration of output</span></span>
 <span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/SSMSE_summary_all.html">SSMSE_summary_all</a></span><span class="op">(</span><span class="va">run_res_path</span><span class="op">)</span></span>
 <span><span class="co">## Extracting results from 2 scenarios</span></span>
 <span><span class="co">## Starting h-1 with 5 iterations</span></span>
 <span><span class="co">## Starting h-ctl with 5 iterations</span></span></code></pre></div>
 <p>Plotting and data manipulation can then be done with these summaries. For example, SSB over time by model can be plotted. The models include the Operating Model (cod_OM), Estimation model (EM) for the historical period of years 0-100 (cod_EM_init), and the EM run with last year of data in year 103 (cod_EM_103). The operating models are shown in blue or black (depending on the scenario), and the estimation model runs are shown in orange, and the scenarios are shown on different subplots:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># use install.packages("ggplot2") to install package if needed</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span> <span class="co"># use install.packages("tidyr") to install package if needed</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> <span class="co"># use install.packages("dplyr") to install package if needed</span></span>
@@ -427,7 +444,7 @@
 <h2 id="simple-convergence-check">Simple Convergence Check<a class="anchor" aria-label="anchor" href="#simple-convergence-check"></a>
 </h2>
 <p>Check there are no params on bounds or SSB that is way too small or way too large</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_convergence</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">summary</span>, <span class="va">min_yr</span> <span class="op">=</span> <span class="fl">101</span>, <span class="va">max_yr</span> <span class="op">=</span> <span class="fl">120</span>, <span class="va">n_EMs</span> <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> <span class="co"># note: not the best way to do this</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">scalar</span><span class="op">$</span><span class="va">params_on_bound</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -466,7 +483,7 @@
 <h2 id="plot-spawning-stock-biomass-ssb">Plot Spawning Stock Biomass (SSB)<a class="anchor" aria-label="anchor" href="#plot-spawning-stock-biomass-ssb"></a>
 </h2>
 <p>This plot shows that SSB estimated does not match perfectly with the operating model. A similar plot could be made for any parameter of interest.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot SSB by year and model run</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">ts</span>, <span class="va">model_run</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cod_OM"</span>, <span class="st">"cod_SR_BH_steep_1_OM"</span>, <span class="st">"cod_EM_103"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -486,7 +503,7 @@
 <span><span class="co">## generated.</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_SSB-1.png"><!-- --></p>
 <p>Now, we calculate and plot the performance metric, which is average spawning stock biomass (SSB) from years 104 to 106.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get_SSB_avg calculates the SSB in each year for each</span></span>
 <span><span class="co"># iteration of the operating model, then takes the average over the years from</span></span>
 <span><span class="co"># min_yr, to max_year. It uses the summary object as input to do these</span></span>
@@ -524,7 +541,7 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_SSB_avg-1.png"><!-- --></p>
-<p>From the above plot, we see differences in the average SSb between the 2 scenarios.</p>
+<p>From the above plot, we see differences in the average SSB between the 2 scenarios.</p>
 </div>
 <div class="section level2">
 <h2 id="example-mse-results">Example MSE Results<a class="anchor" aria-label="anchor" href="#example-mse-results"></a>
@@ -535,7 +552,7 @@
 <h2 id="delete-the-files">Delete the files<a class="anchor" aria-label="anchor" href="#delete-the-files"></a>
 </h2>
 <p>If you wish to delete the files created from this example, you can use:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">run_SSMSE_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -543,7 +560,7 @@
 <h1 id="advanced-options-use-a-custom-management-strategyprocedure">Advanced options: use a custom management strategy/procedure<a class="anchor" aria-label="anchor" href="#advanced-options-use-a-custom-management-strategyprocedure"></a>
 </h1>
 <p>Users can outline a custom managment strategy as an R function to use. As long as the correct inputs and outputs are used, any estimation method and management procedure can be used. For example, here is a simple function that just sets future catches as half the sampled catches in a specified year:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">constant_catch_MS</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">OM_dat</span>, <span class="va">nyrs_assess</span>, <span class="va">catch_yr</span> <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>                              <span class="va">frac_catch</span> <span class="op">=</span> <span class="fl">0.5</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="co"># need to include ... to allow function to work</span></span>
 <span>  <span class="co"># set catch the same as the previous year (sampled catch).</span></span>
@@ -568,7 +585,7 @@
 <span><span class="op">}</span></span></code></pre></div>
 <p>The function should be created in a separate file. In this case, assume this function is available in a file custom_funs.R.</p>
 <p>This function can then be used in a call to <code>run_SSMSE</code>:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_result_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_SSMSE.html">run_SSMSE</a></span><span class="op">(</span></span>
 <span>  scen_name_vec <span class="op">=</span> <span class="st">"constant-catch"</span>, <span class="co"># name of the scenario</span></span>
 <span>  out_dir_scen_vec <span class="op">=</span> <span class="va">run_res_path</span>, <span class="co"># directory in which to run the scenario</span></span>
