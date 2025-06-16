@@ -675,9 +675,9 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
 
 
     data_filename <- list.files(file.path(EM_out_dir), pattern = "data.ss_new|data_expval.ss")
-    if(data_filename == "data.ss_new") {
+    if (data_filename == "data.ss_new") {
       exp_vals <- SS_readdat(file.path(EM_out_dir, data_filename),
-        section = 2, #expected values data file in v3.30.21
+        section = 2, # expected values data file in v3.30.21
         verbose = FALSE
       )
     } else {

@@ -363,9 +363,9 @@ create_OM <- function(OM_out_dir,
       verbose = verbose,
       debug_par_run = TRUE
     )
-    if (file.exists(file.path(OM_out_dir,"data.ss_new")) && file.exists(file.path(OM_out_dir,"data_echo.ss_new"))) {
-        file.remove(file.path(OM_out_dir,"data.ss_new"))
-      }
+    if (file.exists(file.path(OM_out_dir, "data.ss_new")) && file.exists(file.path(OM_out_dir, "data_echo.ss_new"))) {
+      file.remove(file.path(OM_out_dir, "data.ss_new"))
+    }
     # TODO: maybe add the following check into the debug par run arg of run_ss_model?
     check_par <- readLines(file.path(OM_out_dir, "ss.par"))
     check_sum_val <- check_par[grep("checksum999", check_par) + 1]
@@ -390,7 +390,7 @@ create_OM <- function(OM_out_dir,
     nan_vals <- grep("nan", tmp_new_dat)
     if (length(nan_vals) > 0) {
       stop(
-        "NAN values present in the ", basename(data_filepath)," om file, suggesting an issue ",
+        "NAN values present in the ", basename(data_filepath), " om file, suggesting an issue ",
         "setting up the OM. See ", data_filepath
       )
     }
@@ -488,26 +488,27 @@ run_OM <- function(OM_dir,
     verbose = verbose,
     debug_par_run = debug_par_run
   )
-  if (file.exists(file.path(OM_dir,"data.ss_new")) && file.exists(file.path(OM_dir,"data_echo.ss_new"))) {
-        file.remove(file.path(OM_dir,"data.ss_new"))
-      }
+  if (file.exists(file.path(OM_dir, "data.ss_new")) && file.exists(file.path(OM_dir, "data_echo.ss_new"))) {
+    file.remove(file.path(OM_dir, "data.ss_new"))
+  }
   data_filename <- list.files(file.path(OM_dir), pattern = "data.ss_new|data_echo.ss_new")
-  if(data_filename == "data.ss_new"){
+  if (data_filename == "data.ss_new") {
     dat <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
-      section = max_section, #bootstrap file in v3.30.21
+      section = max_section, # bootstrap file in v3.30.21
       verbose = FALSE
     )
   } else {
     # for SS3 v3.30.21
     dat <- r4ss::SS_readdat(file.path(OM_dir, "data_boot_001.ss"),
-      verbose = FALSE)
+      verbose = FALSE
+    )
   }
   # replace with the expected catch values if sample_catch is FALSE and using
   # bootstrap
   if (boot == TRUE & sample_catch == FALSE) {
-    if(data_filename == "data.ss_new"){
+    if (data_filename == "data.ss_new") {
       exp_vals <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
-        section = 2, #expected values data file in v3.30.21
+        section = 2, # expected values data file in v3.30.21
         verbose = FALSE
       )
     } else {

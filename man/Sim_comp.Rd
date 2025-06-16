@@ -21,11 +21,11 @@ Sim_comp(
 
 \item{bins}{A vector object including the composition bins}
 
-\item{years}{A vector of the years to simulate data. Default is all years in data_exp if NULL.}
+\item{years}{A vector of the years to simulate data for. default is all years in data_exp if NULL.}
 
-\item{seasons}{A vector of the seasons to simulate data. Default is all seasons in data_exp if NULL.}
+\item{seasons}{A vector of the seasons to simulate data for. default is all seasons in data_exp  if NULL.}
 
-\item{fleets}{A vector of the fleets to simulate data. Default is all fleets in data_exp if NULL.}
+\item{fleets}{A vector of the fleets to simulate data for. default is all fleets in data_exp  if NULL.}
 
 \item{sexes}{A vector of the sexes to simulate data for. default is all sexes in data_exp  if NULL.}
 }
