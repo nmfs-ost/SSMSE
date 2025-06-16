@@ -209,7 +209,7 @@ run the example:
 
 ``` r
 library(SSMSE) # load the package
-## Welcome to SSMSE version 0.4.0 using Stock Synthesis 3.30.18.
+## Welcome to SSMSE version 0.3.0 using Stock Synthesis 3.30.18.
 library(r4ss) # install using remotes::install_github("r4ss/r4ss)
 ## 
 ## Attaching package: 'r4ss'
