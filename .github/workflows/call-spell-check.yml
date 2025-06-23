@@ -1,0 +1,24 @@
+# run devtools::spell_check()
+name: call-spell-check
+# on specifies the build triggers. See more info at https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+on:
+# this workflow runs on pushing to main, pull requests to main, and manually.
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# no permissions are needed by the default github token for this workflow to 
+# run, so don't pass any.
+# https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token
+permissions: {}
+
+jobs:
+  call-workflow:
+    uses: nmfs-ost/ghactions4r/.github/workflows/spell-check.yml@main
+    with:
+      use_full_spell_check: true
+      full_check_report_level: warning
