@@ -5,10 +5,6 @@ on:
 # this workflow runs on pushing to main, pull requests to main, and manually.
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 # no permissions are needed by the default github token for this workflow to 
