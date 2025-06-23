@@ -4,7 +4,6 @@ name: call-spell-check
 on:
 # this workflow runs on pushing to main, pull requests to main, and manually.
   push:
-    branches:
   workflow_dispatch:
 
 # no permissions are needed by the default github token for this workflow to 
