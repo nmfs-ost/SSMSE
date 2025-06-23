@@ -390,8 +390,7 @@ EnvirEM <- function(EM_out_dir = NULL,
   
   # get the forecasted catch.
   new_EM_catch_list <- get_EM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat) 
-  
-  
+
   ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. May need to do this now
   # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
   new_OM_catch_list = new_EM_catch_list
@@ -433,6 +432,20 @@ EnvirEM <- function(EM_out_dir = NULL,
           tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
           tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
           tmp_merge <- tmp_merge[base::order(base::abs(tmp_merge$fleet),base::abs(tmp_merge$year),base::abs(tmp_merge$seas)),]
+          # replace the catch_se with the values from FixedCatchEM
+          # Create a key to match on
+          main_key <- paste(tmp_merge$year, tmp_merge$seas, tmp_merge$fleet, sep = "_")
+          update_key <- paste(sample_struct$FixedCatchEM$year, sample_struct$FixedCatchEM$seas, sample_struct$FixedCatchEM$fleet, sep = "_")
+          
+          # Get the row in df_update for each row in df_main
+          match_idx <- match(main_key, update_key)
+          
+          # Replace catch_se using ifelse inside bracket assignment
+          tmp_merge$catch_se <- ifelse(
+            !is.na(match_idx) & !is.na(sample_struct$FixedCatchEM$catch_se[match_idx]),
+            sample_struct$FixedCatchEM$catch_se[match_idx],
+            tmp_merge$catch_se
+          )
           new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
         }
       }#end if catch exists
