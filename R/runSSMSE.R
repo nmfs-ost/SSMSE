@@ -11,6 +11,7 @@
 #' @template parallel
 #' @template verbose
 #' @template F_search_loops
+#' @param extras_list A list of lists containing any extra data to be passed to EM/OM for each scenario
 #' @export
 #' @author Kathryn Doering & Nathan Vaughan
 #' @examples
@@ -87,6 +88,7 @@ run_SSMSE <- function(scen_name_vec,
                       sample_struct_hist_list = NULL,
                       sample_catch_vec = FALSE,
                       interim_struct_list = NULL,
+                      extras_list = NULL,
                       verbose = FALSE,
                       seed = NULL,
                       n_F_search_loops = 20,
@@ -138,7 +140,8 @@ run_SSMSE <- function(scen_name_vec,
     sample_struct_list = sample_struct_list,
     sample_struct_hist_list = sample_struct_hist_list,
     sample_catch_vec = sample_catch_vec,
-    interim_struct_list = interim_struct_list
+    interim_struct_list = interim_struct_list,
+    extras_list = extras_list
   )
   # check list and change if need to duplicate values.
   scen_list <- check_scen_list(scen_list, verbose = verbose)
@@ -206,6 +209,7 @@ run_SSMSE <- function(scen_name_vec,
       sample_struct_hist = tmp_scen[["sample_struct_hist"]],
       sample_catch = tmp_scen[["sample_catch"]],
       interim_struct = tmp_scen[["interim_struct"]],
+      extras = tmp_scen[["extras"]],
       run_EM_last_yr = run_EM_last_yr,
       n_F_search_loops = n_F_search_loops,
       tolerance_F_search = tolerance_F_search,
@@ -235,6 +239,7 @@ run_SSMSE <- function(scen_name_vec,
 #' @template OM_name
 #' @param iter The number of iterations for the scenario. A single integer
 #'  value.
+#' @param extras A list object containing any extra information to be passed to EM/OM
 #' @template future_om_list
 #' @param scen_seed List containing fixed seeds for this scenario and its iterations.
 #' @template MS
@@ -283,6 +288,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
                            sample_struct_hist = NULL,
                            sample_catch = FALSE,
                            interim_struct = NULL,
+                           extras = NULL,
                            verbose = FALSE,
                            run_parallel = FALSE,
                            n_cores = NULL,
@@ -360,6 +366,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
           sample_struct_hist = sample_struct_hist,
           sample_catch = sample_catch,
           interim_struct = interim_struct,
+          extras = extras,
           n_F_search_loops = n_F_search_loops,
           tolerance_F_search = tolerance_F_search,
           verbose = verbose
@@ -395,6 +402,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
         sample_struct_hist = sample_struct_hist,
         sample_catch = sample_catch,
         interim_struct = interim_struct,
+        extras = extras,
         n_F_search_loops = n_F_search_loops,
         tolerance_F_search = tolerance_F_search,
         verbose = verbose
@@ -441,6 +449,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
 #'  post EM assessment end yr before advice can be implemented. defaults to 0.
 #' @param niter The iteration number, which is also the name of the folder the
 #'  results will be written to.
+#' @param extras A list object containing any extra information to be passed to EM/OM
 #' @template future_om_list
 #' @template sample_struct
 #' @template sample_struct_hist
@@ -510,6 +519,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
                            sample_struct_hist = NULL,
                            sample_catch = FALSE,
                            interim_struct = NULL,
+                           extras = NULL,
                            n_F_search_loops = 20,
                            tolerance_F_search = 0.001,
                            verbose = FALSE) {
@@ -522,6 +532,13 @@ run_SSMSE_iter <- function(out_dir = NULL,
   assertive.types::assert_is_any_of(niter, c("integer", "numeric"))
   assertive.types::assert_is_any_of(nscen, c("integer", "numeric"))
 
+  # temp_sample_struct <- sample_struct
+  # sample_struct[["run_maxF"]] <- NULL
+  # sample_struct[["Fleet_group"]] <- NULL
+  # sample_struct[["Group_Allocations"]] <- NULL
+  # sample_struct[["Constant_fixed_catch"]] <- NULL
+  # sample_struct[["Annual_fixed_catch"]] <- NULL
+  # 
     if (!is.null(sample_struct)) {
     assertive.types::assert_is_list(sample_struct)
     sample_struct <- check_sample_struct(sample_struct)
@@ -589,7 +606,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     OM_dir = OM_out_dir, base_dat = Base_dat,
     verbose = verbose, seed = (iter_seed[["iter"]][1] + 12345)
   )
-  
+ 
   # convert sample_struct names ----
   # get the full sampling structure for components that the user didnt specify.
   # if meaning is ambiguous, then this will exit on error.
@@ -604,6 +621,12 @@ run_SSMSE_iter <- function(out_dir = NULL,
   if(!is.null(sample_struct_hist)){
     sample_struct_hist <- convert_to_r4ss_names(sample_struct_hist)
   }
+  # sample_struct[["run_maxF"]] <- temp_sample_struct[["run_maxF"]] 
+  # sample_struct[["Fleet_group"]] <- temp_sample_struct[["Fleet_group"]]
+  # sample_struct[["Group_Allocations"]] <- temp_sample_struct[["Group_Allocations"]]
+  # sample_struct[["Constant_fixed_catch"]] <- temp_sample_struct[["Constant_fixed_catch"]]
+  # sample_struct[["Annual_fixed_catch"]] <- temp_sample_struct[["Annual_fixed_catch"]]
+  # 
   # Convert the user input parameter modifications into vectors of annual additive deviations
   future_base_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = Base_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
   
@@ -613,6 +636,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     OM_out_dir = Base_out_dir, overwrite = TRUE,
     sample_struct_hist = sample_struct_hist,
     sample_struct = sample_struct,
+    extras = extras,
     verbose = verbose, writedat = TRUE, nyrs = nyrs,
     nyrs_assess = nyrs_assess, nscen = nscen,
     scen_name = scen_name, niter = niter,
@@ -629,6 +653,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     OM_out_dir = OM_out_dir, overwrite = TRUE,
     sample_struct_hist = sample_struct_hist,
     sample_struct = sample_struct,
+    extras = extras,
     verbose = verbose, writedat = TRUE, nyrs = nyrs,
     nyrs_assess = nyrs_assess, nscen = nscen,
     scen_name = scen_name, niter = niter,
@@ -686,7 +711,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
     dat_yrs = (init_mod[["dat"]][["endyr"]] - nyrs + 1):(init_mod[["dat"]][["endyr"]] - nyrs + nyrs_assess),
     seed = (iter_seed[["iter"]][1] + 123456),
     sample_struct = sample_struct, # add for bias
-    sample_struct_hist = sample_struct_hist  # add for bias
+    sample_struct_hist = sample_struct_hist,  # add for bias
+    extras = extras
   )
  
   message(
@@ -731,7 +757,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
       verbose = verbose,
       n_F_search_loops = n_F_search_loops,
       tolerance_F_search = tolerance_F_search,
-      seed = (iter_seed[["iter"]][1] + 234567 + yr)
+      seed = (iter_seed[["iter"]][1] + 234567 + yr),
+      extras = extras
     )
     
     message(
@@ -810,6 +837,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
         sample_struct = sample_struct,
         sample_struct_hist = sample_struct_hist,  # add for bias
         interim_struct = interim_struct,
+        extras = extras,
         seed = (iter_seed[["iter"]][1] + 5678901 + yr)
       )
       message(

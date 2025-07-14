@@ -19,6 +19,7 @@
 #'   assessment is conducted every 3 years, put 3 here. A single integer value.
 #' @param dat_yrs Which years should be added to the new model? Ignored if
 #'  init_loop is TRUE.
+#' @param extras A list object of extra information for EM/OM
 #' @template future_om_list
 #' @template sample_struct
 #' @param sample_struct_hist historical sample structure object
@@ -35,7 +36,7 @@ parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
                      init_loop = TRUE, OM_dat, OM_out_dir = NULL,
                      verbose = FALSE, nyrs_assess, dat_yrs, future_om_list = NULL,
                      sample_struct = NULL, sample_struct_hist = NULL, 
-                     interim_struct = NULL, seed = NULL) {
+                     interim_struct = NULL, extras = NULL, seed = NULL) {
   if (verbose) {
     message("Parsing the management strategy.")
   }
@@ -67,6 +68,7 @@ parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
     sample_struct = sample_struct,
     sample_struct_hist = sample_struct_hist,
     interim_struct = interim_struct,
+    extras = extras,
     seed = seed
   )
   

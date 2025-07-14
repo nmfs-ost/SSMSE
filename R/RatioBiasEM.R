@@ -732,6 +732,41 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
                                             changeup=0.2, changedown=0.2, c1=0.75)
@@ -959,6 +994,41 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
                                             changeup=10, changedown=10, c1=1)
@@ -1186,6 +1256,41 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
                                             changeup=10, changedown=10,c1=0.75)
@@ -1412,6 +1517,41 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
                                             changeup=0.2, changedown=0.2,c1=1)
@@ -1643,6 +1783,41 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   
   new_EM_catch_list <- get_PercentEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs, nyrs_assess,
@@ -1872,6 +2047,41 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
+  
   # get the forecasted catch.
   new_EM_catch_list <- get_PercentEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs, nyrs_assess,
                                               changeup=10, changedown=10, c1=1)
@@ -2225,7 +2435,42 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   # given all checks are good, run the EM
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
+  # This first run fits the model using the base model maxF
   run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  
+  #If the user inputs a running maxF use this to update F for projections 
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    orig_init <- start[["init_values_src"]] 
+    orig_estim <- start[["last_estimation_phase"]] 
+    start[["init_values_src"]] <- 1
+    start[["last_estimation_phase"]] <- 0
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+    
+    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+    
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+    
+    start[["init_values_src"]] <- orig_init
+    start[["last_estimation_phase"]] <- orig_estim
+    
+    SS_writestarter(start, file.path(EM_out_dir),
+                    verbose = FALSE,
+                    overwrite = TRUE
+    )
+  }
   
   # get the forecasted catch.
   new_EM_catch_list <- get_EM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat) 
@@ -2381,7 +2626,6 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
       )
     }
     
-    
   } else {
     
     if (!is.null(sample_struct)) {
@@ -2416,9 +2660,6 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   } # end else not first iteration
   
   # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
   start[["seed"]] <- seed
   SS_writestarter(start, file.path(EM_out_dir),
                   verbose = FALSE,
@@ -2431,6 +2672,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
                            readAll = TRUE,
                            verbose = FALSE
   )
+  temp_forecatch <- fcast[["ForeCatch"]]
   # check that it can be used in the EM. fleets shoul
   SSMSE:::check_EM_forecast(fcast,
                             n_flts_catch = length(which(new_EM_dat[["fleetinfo"]][, "type"] %in%
@@ -2438,7 +2680,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   )
   fcast <- SSMSE:::change_yrs_fcast(fcast,
                                     make_yrs_rel = (init_loop == TRUE),
-                                    nyrs_fore = nyrs_assess,
+                                    nyrs_fore = 100,
                                     nyrs_increment = ifelse(init_loop,0,nyrs_assess),
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
@@ -2447,6 +2689,32 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   # if (fcast[["N_allocation_groups"]] > 0) {
   #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
   # }
+  
+  new_forecast_years <- (new_EM_dat[["endyr"]]+1):(new_EM_dat[["endyr"]]+fcast[["Nforecastyrs"]])
+  
+  if(is.element("Year",names(temp_forecatch))){
+    temp_forecatch <- temp_forecatch[temp_forecatch[["Year"]]>new_EM_dat[["endyr"]],]
+    extra_year <- temp_forecatch[temp_forecatch[["Year"]]==max(temp_forecatch[["Year"]]),]
+    for(i in new_forecast_years[which(!is.element(new_forecast_years,unique(temp_forecatch[["Year"]])))]){
+      extra_year[["Year"]] <- i
+      temp_forecatch <- rbind(temp_forecatch,extra_year)
+    }
+  }else if(is.element("Yr",names(temp_forecatch))){
+    temp_forecatch <- temp_forecatch[temp_forecatch[["Yr"]]>new_EM_dat[["endyr"]],]
+    extra_year <- temp_forecatch[temp_forecatch[["Yr"]]==max(temp_forecatch[["Yr"]]),]
+    for(i in new_forecast_years[which(!is.element(new_forecast_years,unique(temp_forecatch[["Yr"]])))]){
+      extra_year[["Yr"]] <- i
+      temp_forecatch <- rbind(temp_forecatch,extra_year)
+    }
+  }
+  
+  #Here set the starting forecast F's to equal 
+  #Starting_Forecatch <- temp_forecatch
+  
+  Fleet_group <- extras[["Fleet_group"]]
+  Group_Allocations <- extras[["Group_Allocations"]]
+  Constant_fixed_catch <- extras[["Constant_fixed_catch"]]
+  Annual_fixed_catch <- extras[["Annual_fixed_catch"]]
   
   SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
@@ -2461,11 +2729,41 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   source("allocation_forecasting.R")
   # need copy of executable in folder to run - maybe can code around requiring this
   file.copy(from = file.path("ss.exe"), to = EM_out_dir,recursive=TRUE)
-  run.projections(assessment_dir=EM_out_dir,ABC_Fraction= NULL,
-                  Rebuild_yr = NULL, Calc_F0 = FALSE, F_max = FALSE,
-                  Depletion.Threshold = 0.0001, Annual.F.Threshold = 0.0001,
-                  Allocation.Threshold = 0.0001, Step.Threshold = 0.0001,
-                  Benchmark_complete = FALSE, Make_plots = FALSE)
+  
+  #If the user inputs a running maxF use this to update F for projections
+  if(!is.null(extras[["run_maxF"]])){
+    fit_maxF <- ctl[["maxF"]]
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+  }
+
+  #Run projection code with inputs for allocations, fixed fleets, and forecatch.
+  if(verbose==TRUE){
+  run.projections(Assessment_dir=EM_out_dir,
+                  Constant_fixed_catch = Constant_fixed_catch, #Input a data frame with column names ("Fleet","Catch or F","Basis")  
+                  Annual_fixed_catch = Annual_fixed_catch, #Input data frame for fixed catches in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis")
+                  #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
+                  Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
+                  Group_Allocations = Group_Allocations)
+  }else{
+    invisible(run.projections(Assessment_dir=EM_out_dir,
+                              Constant_fixed_catch = Constant_fixed_catch, #Input a data frame with column names ("Fleet","Catch or F","Basis")  
+                              Annual_fixed_catch = Annual_fixed_catch, #Input data frame for fixed catches in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis")
+                              #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
+                              Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
+                              Group_Allocations = Group_Allocations))
+  }
+  #If the user inputs a running maxF here we return maxF to the 
+  #original value for fitting in the next iteration
+  if(!is.null(extras[["run_maxF"]])){
+    ctl[["maxF"]] <- fit_maxF
+    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+                      overwrite = TRUE
+    )
+  }
+  
   #eventually remove excess files/folders: Working_dir, files in base folder?
   # get the forecasted catch.
   new_EM_catch_list <- get_EM_catch_df(EM_dir = paste0(EM_out_dir,"/OFL_target"), dat = new_EM_dat)   
@@ -2512,7 +2810,6 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
         }
       }#end if catch exists
     }# end if fixed catches in this mgmt cycle. 
-    
   }# end fixed catches
   
   

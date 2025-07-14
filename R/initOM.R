@@ -20,6 +20,7 @@
 #'  recruitment deviations, and implementation errors.
 #' @param verify_OM Should the model be run without estimation and some basic
 #'  checks done to verify that the OM can run? Defaults to TRUE.
+#' @param extras Extra values passes to modify OM creation setup
 #' @template sample_struct_hist
 #' @template sample_struct
 #' @template seed
@@ -39,6 +40,7 @@ create_OM <- function(OM_out_dir,
                       verify_OM = TRUE,
                       sample_struct_hist = NULL,
                       sample_struct = NULL,
+                      extras = NULL,
                       seed = NULL) {
   start <- r4ss::SS_readstarter(file.path(OM_out_dir, "starter.ss"),
     verbose = FALSE
@@ -291,7 +293,11 @@ create_OM <- function(OM_out_dir,
   ctl[["F_setup"]] <- c(0.05, 1, 0) # need to specify some starting value Fs, although not used in OM
   ctl[["F_iter"]] <- NULL # make sure list components used by other F methods are NULL:
   ctl[["F_setup2"]] <- NULL # make sure list components used by other F methods are NULL:
-
+  
+  if(!is.null(extras[["run_maxF"]])){
+    ctl[["maxF"]] <- extras[["run_maxF"]]
+  }
+  
   if (!is.list(future_om_dat)) {
     future_om_dat <- list()
   }

@@ -30,6 +30,7 @@
 #' @param EM_pars a dataframe of parameter value updates to modify OM
 #' @param write_dat Should the datafile be overwritten? Defaults to TRUE.
 #' @param impl_error The implementation error
+#' @param extras A list object of extra information for the OM
 #' @template seed
 #' @template verbose
 #' @template F_search_loops
@@ -46,6 +47,7 @@ update_OM <- function(OM_dir,
                       write_dat = TRUE,
                       impl_error = NULL,
                       verbose = FALSE,
+                      extras = NULL,
                       seed = NULL,
                       n_F_search_loops = 20,
                       tolerance_F_search = 0.001) {
