@@ -15,5 +15,5 @@ jobs:
   call-workflow:
     uses: nmfs-ost/ghactions4r/.github/workflows/spell-check.yml@GHA-spell-check
     with:
-      use_full_spell_check: true
-      full_check_report_level: warning
+      spell_check_additional_files: true
+      spell_check_report_level: warning
