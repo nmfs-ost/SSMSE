@@ -16,4 +16,4 @@ jobs:
     uses: nmfs-ost/ghactions4r/.github/workflows/spell-check.yml@GHA-spell-check
     with:
       spell_check_additional_files: true
-      spell_check_report_level: error
+      spell_check_report_level: "error"
