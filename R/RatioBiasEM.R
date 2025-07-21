@@ -583,6 +583,7 @@ get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, nyrs_assess,
 #'   be FALSE.
 #' @param OM_dat An valid SS data file read in using r4ss. In particular,
 #'   this should be sampled data.
+#' @param extras List to pass any extra inputs for custom EM
 #' @template verbose
 #' @param nyrs_assess The number of years between assessments. E.g., if an
 #'   assessment is conducted every 3 years, put 3 here. A single integer value.
@@ -599,7 +600,7 @@ get_PercentEM_catch_df<-function(EM_dir, dat, dat_yrs, nyrs_assess,
 
 RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                         nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                        seed = NULL, OM_out_dir, ...) { 
+                        seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -861,7 +862,7 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
 
 RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                         nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                        seed = NULL, OM_out_dir, ...) { 
+                        seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -1123,7 +1124,7 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
 
 RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                          nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                         seed = NULL, OM_out_dir, ...) { 
+                         seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -1384,7 +1385,7 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
 }
 RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                          nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                         seed = NULL, OM_out_dir, ...) { 
+                         seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -1649,7 +1650,7 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
 ## PercentChangeEM is as RatioEM but relative to last assess year 
 PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                             nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                            seed = NULL, OM_out_dir, ...) { 
+                            seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -1914,7 +1915,7 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
 
 PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                             nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                            seed = NULL, OM_out_dir, ...) { 
+                            seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -2179,7 +2180,7 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
 
 #### add_new_dat Function Line-By-Line ####
 add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_assess, 
-                             do_checks = TRUE, new_datfile_name = NULL, verbose = FALSE) 
+                             do_checks = TRUE, new_datfile_name = NULL, verbose = FALSE, extras = NULL) 
 {
   if (do_checks) {
     if (OM_dat[["type"]] != "Stock_Synthesis_data_file") {
@@ -2293,6 +2294,7 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
 #'   assessment is conducted every 3 years, put 3 here. A single integer value.
 #' @param dat_yrs Which years should be added to the new model? Ignored if
 #'  init_loop is TRUE.
+#' @param extras List to pass any extra inputs for custom EM
 #' @template OM_out_dir
 #' @template sample_struct
 #' @param sample_struct_hist historical sample structure object
@@ -2304,7 +2306,7 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
 
 BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                    nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL, 
-                   seed = NULL, OM_out_dir, ...) { 
+                   seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -2569,7 +2571,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
 
 BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                    nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL, 
-                   seed = NULL, OM_out_dir, ...) { 
+                   seed = NULL, OM_out_dir, extras = NULL, ...) { 
   SSMSE:::check_dir(EM_out_dir)
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
@@ -3512,6 +3514,7 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
 #'  EM_dir.
 #' @param EM_dir Absolute or relative path to the Estimation model directory.
 #' @param do_checks Should checks on the data be performed? Defaults to TRUE.
+#' @param extras List to pass any extra inputs for custom EM
 #' @template verbose
 #' @param sample_struct_hist historical sample structure object
 #' @author Kathryn Doering modified by Cassidy Peterson
@@ -3523,7 +3526,7 @@ create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited t
 #' # TODO: Add example
 #' }
 biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
-                       verbose = FALSE, sample_struct_hist=NULL) {
+                       verbose = FALSE, sample_struct_hist=NULL, extras = NULL) {
   EM_dir <- normalizePath(EM_dir)
   
   # checks
