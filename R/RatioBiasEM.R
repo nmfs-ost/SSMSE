@@ -687,7 +687,7 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -954,7 +954,7 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -1221,7 +1221,7 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -1487,7 +1487,7 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -1758,7 +1758,7 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -2027,7 +2027,7 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -2423,7 +2423,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
@@ -2692,7 +2692,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
         ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
       }
     }
