@@ -686,6 +686,11 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -948,6 +953,11 @@ RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -1210,6 +1220,11 @@ RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -1471,6 +1486,11 @@ RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = 
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -1737,6 +1757,11 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -2001,6 +2026,11 @@ PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbos
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -2392,6 +2422,11 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -2656,6 +2691,11 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
+        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
+      }
+    }
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
