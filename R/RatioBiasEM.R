@@ -2893,6 +2893,25 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     new_OM_catch_list$catch_F <- NULL
   }
   
+  # # Apply ImpError -- untested. 
+  # if(ImpError){
+  #   sample_struct$ImpError <- sample_struct$ImpError[base::order(base::abs(sample_struct$ImpError$fleet),base::abs(sample_struct$ImpError$year),base::abs(sample_struct$ImpError$seas)),]
+  #   sample_struct$ImpError <- sample_struct$ImpError[!duplicated(sample_struct$ImpError),]
+  #   
+  #   if(!is.null(new_OM_catch_list$catch)){
+  #     tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$ImpError), all.x=TRUE, all.y=FALSE)
+  #     tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
+  #     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$ImpError 
+  #   }
+  #   
+  #   
+  #   if(!is.null(new_OM_catch_list$catch_bio)){
+  #     tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$ImpError), all.x=TRUE)
+  #     tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
+  #     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$ImpError
+  #   }
+  # }
+  
   
   new_catch_list<-new_OM_catch_list
   #Subset to years in the OM because Nathan's code goes 100 years into future
@@ -2938,14 +2957,17 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
 #' print(sample_struct)
 #' @param FixedCatches T/F defines whether you want to manually specify catches in the future (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of OM and historical units. 
 #' 
-create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE
+                                        #, ImpError=FALSE
+                                        ) { ### edited to include EM2OMcatch_bias
   assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
   }
   
   list_name <- c(
-    "catch", "EM2OMcatch_bias", "FixedCatch", "CPUE", "discard_data", "EM2OMdiscard_bias", 
+    "catch", "EM2OMcatch_bias", "FixedCatch", #"ImpError", ######################## IMP ERROR
+    "CPUE", "discard_data", "EM2OMdiscard_bias", 
     "lencomp", "agecomp", "meanbodywt", "MeanSize_at_Age_obs"
   )
   sample_struct <- lapply(list_name,
@@ -3190,6 +3212,13 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
   } else{# end if FixedCatches==TRUE
     FixedCatches <- NULL
   }
+  
+  # ## add Imp Error #################################################### IMP ERROR
+  #  if(ImpError == TRUE){
+  #    sample_struct$ImpError <- sample_struct$catch
+  #    names(sample_struct$ImpError)[4] = "ImpErr"
+  #    sample_struct$ImpError$ImpErr<-1
+  #  }
   
   ## ADD EM2OMdiscard_bias
   if(!is.null(ncol(sample_struct$discard_data))){
