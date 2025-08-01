@@ -2770,7 +2770,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   # import and run Nathan's code
   source("allocation_forecasting.R")
   # need copy of executable in folder to run - maybe can code around requiring this
-  file.copy(from = file.path("ss.exe"), to = EM_out_dir,recursive=TRUE)
+  # file.copy(from = file.path("ss.exe"), to = EM_out_dir,recursive=TRUE)
   
   #If the user inputs a running maxF use this to update F for projections
   if(!is.null(extras[["run_maxF"]])){
@@ -2788,14 +2788,16 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
                   Annual_fixed_catch = Annual_fixed_catch, #Input data frame for fixed catches in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis")
                   #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
                   Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
-                  Group_Allocations = Group_Allocations)
+                  Group_Allocations = Group_Allocations,
+                  Run_in_MSE = TRUE, Verbose = verbose)
   }else{
     invisible(run.projections(Assessment_dir=EM_out_dir,
                               Constant_fixed_catch = Constant_fixed_catch, #Input a data frame with column names ("Fleet","Catch or F","Basis")  
                               Annual_fixed_catch = Annual_fixed_catch, #Input data frame for fixed catches in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis")
                               #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
                               Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
-                              Group_Allocations = Group_Allocations))
+                              Group_Allocations = Group_Allocations,
+                              Run_in_MSE = TRUE, Verbose = verbose))
   }
   #If the user inputs a running maxF here we return maxF to the 
   #original value for fitting in the next iteration
