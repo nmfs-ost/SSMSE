@@ -2341,14 +2341,14 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
   # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
+  start <- r4ss::SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
 
   if (init_loop) {
     
     # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
+    r4ss::SS_writedat(OM_dat,
                 file.path(EM_out_dir, new_datfile_name),
                 overwrite = TRUE,
                 verbose = FALSE
@@ -2356,7 +2356,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     orig_datfile_name <- start[["datfile"]] # save the original data file name.
     start[["datfile"]] <- new_datfile_name
     start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
+    r4ss::SS_writestarter(start, file.path(EM_out_dir),
                     verbose = FALSE,
                     overwrite = TRUE
     )
@@ -2371,7 +2371,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
       verbose = verbose,
       sample_struct_hist = sample_struct_hist
     )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+    ctl <- r4ss::SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
                       datlist = new_EM_dat
     )
     if (ctl[["EmpiricalWAA"]] == 1) {
@@ -2418,7 +2418,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     
     #Increment main recruitment phase end year by number of assessment years
     #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+    ctl <- r4ss::SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
@@ -2433,18 +2433,18 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   } # end else not first iteration
   
   # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
+  start <- r4ss::SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
   start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
+  r4ss::SS_writestarter(start, file.path(EM_out_dir),
                   verbose = FALSE,
                   overwrite = TRUE
   )
   # manipulate the forecasting file.
   # make sure enough yrs can be forecasted.
   
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
+  fcast <- r4ss::SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
                            readAll = TRUE,
                            verbose = FALSE
   )
@@ -2611,14 +2611,14 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   # TODO: change this name to make it less ambiguous
   new_datfile_name <- "init_dat.ss"
   # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
+  start <- r4ss::SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
   
   if (init_loop) {
     
     # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
+    r4ss::SS_writedat(OM_dat,
                 file.path(EM_out_dir, new_datfile_name),
                 overwrite = TRUE,
                 verbose = FALSE
@@ -2626,7 +2626,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     orig_datfile_name <- start[["datfile"]] # save the original data file name.
     start[["datfile"]] <- new_datfile_name
     start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
+    r4ss::SS_writestarter(start, file.path(EM_out_dir),
                     verbose = FALSE,
                     overwrite = TRUE
     )
@@ -2641,7 +2641,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
       verbose = verbose,
       sample_struct_hist = sample_struct_hist
     )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+    ctl <- r4ss::SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
                       datlist = new_EM_dat
     )
     if (ctl[["EmpiricalWAA"]] == 1) {
@@ -2687,7 +2687,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     
     #Increment main recruitment phase end year by number of assessment years
     #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
+    ctl <- r4ss::SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
@@ -2703,14 +2703,14 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   
   # Update SS random seed
   start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
+  r4ss::SS_writestarter(start, file.path(EM_out_dir),
                   verbose = FALSE,
                   overwrite = TRUE
   )
   # manipulate the forecasting file.
   # make sure enough yrs can be forecasted.
   
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
+  fcast <- r4ss::SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
                            readAll = TRUE,
                            verbose = FALSE
   )
@@ -2758,14 +2758,14 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   Constant_fixed_catch <- extras[["Constant_fixed_catch"]]
   Annual_fixed_catch <- extras[["Annual_fixed_catch"]]
   
-  SS_writeforecast(fcast,
+  r4ss::SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
                    verbose = FALSE
   )
   # given all checks are good, run the EM
   # check convergence (figure out way to error if need convergence)
   # get the future catch using the management strategy used in the SS model.
-  run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
+  SSMSE:::run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
   
   # import and run Nathan's code
   source("allocation_forecasting.R")
@@ -2781,6 +2781,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     )
   }
 
+  
   #Run projection code with inputs for allocations, fixed fleets, and forecatch.
   if(verbose==TRUE){
   run.projections(Assessment_dir=EM_out_dir,
@@ -2810,7 +2811,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   
   #eventually remove excess files/folders: Working_dir, files in base folder?
   # get the forecasted catch.
-  new_EM_catch_list <- get_EM_catch_df(EM_dir = paste0(EM_out_dir,"/OFL_target"), dat = new_EM_dat)   
+  new_EM_catch_list <- SSMSE:::get_EM_catch_df(EM_dir = file.path(EM_out_dir,"OFL_target"), dat = new_EM_dat)   
   
   ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
   # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
@@ -2917,10 +2918,10 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   
   new_catch_list<-new_OM_catch_list
   #Subset to years in the OM because Nathan's code goes 100 years into future
-  new_catch_list$catch<-new_catch_list$catch[new_catch_list$catch$year<=(dat$endyr+projyrs),]
-  new_catch_list$discards<-new_catch_list$discards[new_catch_list$discards$Yr<=(dat$endyr+projyrs),]
-  new_catch_list$catch_bio<-new_catch_list$catch_bio[new_catch_list$catch_bio$year<=(dat$endyr+projyrs),]
-  new_catch_list$catch_F<-new_catch_list$catch_F[new_catch_list$catch_F$year<=(dat$endyr+projyrs),]
+  new_catch_list$catch<-new_catch_list$catch[new_catch_list$catch$year<=(new_EM_dat$endyr+nyrs_assess),]
+  new_catch_list$discards<-new_catch_list$discards[new_catch_list$discards$Yr<=(new_EM_dat$endyr+nyrs_assess),]
+  new_catch_list$catch_bio<-new_catch_list$catch_bio[new_catch_list$catch_bio$year<=(new_EM_dat$endyr+nyrs_assess),]
+  new_catch_list$catch_F<-new_catch_list$catch_F[new_catch_list$catch_F$year<=(new_EM_dat$endyr+nyrs_assess),]
   
   #Remove NAs
   new_catch_list$catch<-na.omit(new_catch_list$catch)
@@ -3608,8 +3609,8 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
   assertive.types::assert_is_a_bool(verbose)
   
   # read in the dat files
-  EM_dat <- SS_readdat(file.path(EM_dir, EM_datfile), verbose = FALSE)
-  OM_dat <- SS_readdat(file.path(EM_dir, OM_datfile), verbose = FALSE)
+  EM_dat <- r4ss::SS_readdat(file.path(EM_dir, EM_datfile), verbose = FALSE)
+  OM_dat <- r4ss::SS_readdat(file.path(EM_dir, OM_datfile), verbose = FALSE)
   
   # remove extra years of data in the OM data file to create EM.
   new_EM_dat <- get_EM_dat(
@@ -3627,7 +3628,7 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
 
   
   # write out the modified files that can be used in future EM run
-  SS_writedat(new_EM_dat, file.path(EM_dir, OM_datfile),
+  r4ss::SS_writedat(new_EM_dat, file.path(EM_dir, OM_datfile),
               verbose = FALSE,
               overwrite = TRUE
   )
