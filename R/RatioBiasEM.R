@@ -2768,7 +2768,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   SSMSE:::run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
   
   # import and run Nathan's code
-  source("allocation_forecasting.R")
+  source("Allocation_forecasting.R")
   # need copy of executable in folder to run - maybe can code around requiring this
   # file.copy(from = file.path("ss.exe"), to = EM_out_dir,recursive=TRUE)
   
