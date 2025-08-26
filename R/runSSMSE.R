@@ -676,7 +676,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     # )
     OM_dat <- run_OM(
       OM_dir = Base_out_dir, boot = use_SS_boot, nboot = 1,
-      sample_catch = sample_catch,
+      sample_catch = TRUE,
       verbose = verbose, init_run = TRUE, seed = (iter_seed[["iter"]][1] + 12345)
     )
   }
