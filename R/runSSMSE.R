@@ -790,8 +790,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
         }
       } else {
         new_OM_dat <- run_OM(
-          OM_dir = OM_out_dir, boot = use_SS_boot, nboot = 1,
-          sample_catch = sample_catch,
+          OM_dir = OM_out_dir, boot = use_SS_boot, nboot = 0,
+          sample_catch = TRUE,
           verbose = verbose, seed = (iter_seed[["iter"]][1] + 345678 + yr)
         )
       }
