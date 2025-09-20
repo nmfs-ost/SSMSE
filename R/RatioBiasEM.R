@@ -2758,6 +2758,34 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   Constant_fixed_catch <- extras[["Constant_fixed_catch"]]
   Annual_fixed_catch <- extras[["Annual_fixed_catch"]]
   
+  if(!is.null(extras[["Keep_Only_Final"]])){
+    if(extras[["Keep_Only_Final"]]==TRUE){
+      Keep_Only_Final <- extras[["Keep_Only_Final"]]
+    }else if(extras[["Keep_Only_Final"]]==TRUE){
+      Keep_Only_Final <- extras[["Keep_Only_Final"]]
+    }else{
+      stop("ERROR: Keep_Only_Final was included in extras but wasn't a boolean.
+           It must be TRUE or FALSE not ( ",extras[["Keep_Only_Final"]]," )")
+    }
+  }else{
+    Keep_Only_Final <- FALSE #This hard codes in the current default value. May be an issue if the defaults change in the future.
+  }
+  
+  if(!is.null(extras[["Keep_files"]])){
+    if(extras[["Keep_files"]]==1){
+      Keep_files <- extras[["Keep_files"]]
+    }else if(extras[["Keep_files"]]==2){
+      Keep_files <- extras[["Keep_files"]]
+    }else if(extras[["Keep_files"]]==3){
+      Keep_files <- extras[["Keep_files"]]
+    }else{
+      stop("ERROR: Keep_files was included in extras but it must be 1, 2, or 3
+           not ( ",extras[["Keep_files"]]," )")
+    }
+  }else{
+    Keep_files <- 1 #This hard codes in the current default value. May be an issue if the defaults change in the future.
+  }
+  
   r4ss::SS_writeforecast(fcast,
                    dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
                    verbose = FALSE
@@ -2790,6 +2818,8 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
                   #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
                   Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
                   Group_Allocations = Group_Allocations,
+                  Keep_Only_Final = Keep_Only_Final, 
+                  Keep_files = Keep_files,
                   Run_in_MSE = TRUE, Verbose = verbose)
   }else{
     invisible(run.projections(Assessment_dir=EM_out_dir,
@@ -2798,6 +2828,8 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
                               #Starting_Forecatch = Starting_Forecatch, #Input data frame for initial F values in format of forecatch data frame with columns c("Year","Seas","Fleet","Catch or F","Basis") otherwise will default to recent mean F
                               Fleet_group = Fleet_group, #Data frame with columns c("Fleet","Group")specifying fleet grouping for allocations (defaults to forecast file settings if NULL)
                               Group_Allocations = Group_Allocations,
+                              Keep_Only_Final = Keep_Only_Final,
+                              Keep_files = Keep_files,
                               Run_in_MSE = TRUE, Verbose = verbose))
   }
   #If the user inputs a running maxF here we return maxF to the 
@@ -2811,7 +2843,12 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
   
   #eventually remove excess files/folders: Working_dir, files in base folder?
   # get the forecasted catch.
-  new_EM_catch_list <- SSMSE:::get_EM_catch_df(EM_dir = file.path(EM_out_dir,"OFL_target"), dat = new_EM_dat)   
+  if(Keep_Only_Final==TRUE){
+    new_EM_catch_list <- SSMSE:::get_EM_catch_df(EM_dir = file.path(EM_out_dir,"Final"), dat = new_EM_dat)  
+  }else{
+    new_EM_catch_list <- SSMSE:::get_EM_catch_df(EM_dir = file.path(EM_out_dir,"OFL_target"), dat = new_EM_dat)  
+  }
+   
   
   ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
   # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
