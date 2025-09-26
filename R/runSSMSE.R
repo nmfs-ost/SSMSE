@@ -94,6 +94,7 @@ run_SSMSE <- function(scen_name_vec,
                       n_F_search_loops = 20,
                       tolerance_F_search = 0.001,
                       file_removal = FALSE,
+                      cloud_bucket = NULL,
                       run_parallel = FALSE,
                       n_cores = NULL) {
   if (!is.null(custom_MS_source)) {
@@ -215,6 +216,7 @@ run_SSMSE <- function(scen_name_vec,
       n_F_search_loops = n_F_search_loops,
       tolerance_F_search = tolerance_F_search,
       file_removal = file_removal,
+      cloud_bucket = cloud_bucket,
       verbose = verbose,
       run_parallel = run_parallel,
       n_cores = n_cores
@@ -296,7 +298,8 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
                            n_cores = NULL,
                            n_F_search_loops = 20,
                            tolerance_F_search = 0.001,
-                           file_removal = FALSE) {
+                           file_removal = FALSE, 
+                           cloud_bucket = NULL) {
   # input checks
   assertive.types::assert_is_a_string(scen_name)
   assertive.properties::assert_is_atomic(iter)
@@ -373,6 +376,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
           n_F_search_loops = n_F_search_loops,
           tolerance_F_search = tolerance_F_search,
           file_removal = file_removal,
+          cloud_bucket = cloud_bucket,
           verbose = verbose
         )
       }
@@ -410,6 +414,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
         n_F_search_loops = n_F_search_loops,
         tolerance_F_search = tolerance_F_search,
         file_removal = file_removal,
+        cloud_bucket = cloud_bucket,
         verbose = verbose
       ), error = function(e) e)
     }
@@ -528,6 +533,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
                            n_F_search_loops = 20,
                            tolerance_F_search = 0.001,
                            file_removal = FALSE,
+                           cloud_bucket = NULL,
                            verbose = FALSE) {
   # input checks ----
   # checks for out_dir, OM_name, OM_in_dir, EM_name, EM_in_dir done in create_out_dirs
@@ -904,6 +910,49 @@ run_SSMSE_iter <- function(out_dir = NULL,
         file.remove(delete_files)
       }
     }
+  }
+  if (!is.null(cloud_bucket)) {  #cloud_bucket should be the directory of a google bucket
+    
+    # Set the path to your iteration folder
+    iteration_folder <- dirname(new_EM_out_dir)
+    
+    # List all directories in the iteration folder
+    old_dirs <- list.dirs(path = iteration_folder,
+                         full.names = TRUE,
+                         recursive = FALSE)
+    
+    cat("Starting file transfer from local directories to mounted bucket:", cloud_bucket, "\n")
+    
+    # Move all files in the old directories to the mounted bucket directory
+    for (dir in old_dirs) {
+      # List all files in the directory (non-recursive)
+      files_to_move <- list.files(path = dir, full.names = TRUE)
+      
+      if (length(files_to_move) > 0) {
+        cat("Processing directory:", dir, "\n")
+        
+        # 1. Construct the NEW destination paths (in the mounted bucket)
+        # We combine the bucket path with the base file name.
+        file_names <- basename(files_to_move)
+        new_paths_in_bucket <- file.path(cloud_bucket, file_names)
+        
+        # 2. Use file.rename() to move the files from the local disk to the mounted bucket
+        move_results <- file.rename(files_to_move, new_paths_in_bucket)
+        
+        # Check and report results
+        if (all(move_results)) {
+          cat("Successfully moved", length(files_to_move), "files.\n")
+        } else {
+          cat("Failed to move some files. Check file permissions.\n")
+        }
+      }
+      # Optionally, remove the now-empty local directory after all files are moved
+      # This will only work if the directory is empty.
+      unlink(dir, recursive = FALSE)
+    }
+    cat("\n file movement complete.\n")
+  } else {
+    cat("Skipping file transfer because cloud_bucket is NULL.\n")
   }
   message("Finished iteration ", niter, ".")
   invisible(TRUE)
