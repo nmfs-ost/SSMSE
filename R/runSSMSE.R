@@ -942,11 +942,10 @@ run_SSMSE_iter <- function(out_dir = NULL,
                               recursive = FALSE)
       
       for (file in old_files) {
-        move_successful <- file.rename(
-          from = file, 
-          to = file.path(target_dir, basename(file))
-        )
-        if (move_successful) {
+        
+        system(paste("mv", file, file.path(target_dir, basename(file))))
+
+        if (!file.exists(file)) {
           cat("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
           cat(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
         } else {
