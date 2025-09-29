@@ -912,6 +912,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     }
   }
   if (!is.null(cloud_bucket)) {  #cloud_bucket should be the directory of a google bucket
+    
     # create the scenario folder in bucket if needed
     scenario_folder <- file.path(cloud_bucket, basename(dirname(dirname(new_EM_out_dir))))
     if (!file.exists(scenario_folder)) { dir.create(scenario_folder) }
@@ -929,15 +930,28 @@ run_SSMSE_iter <- function(out_dir = NULL,
     
     # for each folder in that list of folders we want to copy that entire folder to the new directory
     for (dir in old_dirs) {
-      move_successful <- file.rename(
-        from = dir, 
-        to = file.path(iteration_folder, basename(dir))
-      )
-      if (move_successful) {
-        cat("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
-        cat(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
-      } else {
-        cat("Move failed. This might be due to permissions or an open file lock.\n")
+      
+      # create the new om/em in the cloud
+      target_dir <- file.path(iteration_folder, basename(dir))
+      dir.create(target_dir)
+      
+      # move all of the files into the new om/em folder
+      
+      old_files <- list.files(path = dir,
+                              full.names = TRUE,
+                              recursive = FALSE)
+      
+      for (file in old_files) {
+        move_successful <- file.rename(
+          from = file, 
+          to = file.path(target_dir, basename(file))
+        )
+        if (move_successful) {
+          cat("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
+          cat(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
+        } else {
+          cat("Move failed. This might be due to permissions or an open file lock.\n")
+        }
       }
     }
     cat("\n file movement complete.\n")
