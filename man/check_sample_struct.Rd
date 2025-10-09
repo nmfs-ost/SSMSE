@@ -10,7 +10,7 @@ check_sample_struct(
     "Seas", "FltSvy", "bias"), CPUE = c("Yr", "Seas", "FltSvy", "SE"), discard_data =
     c("Yr", "Seas", "FltSvy", "SE"), EM2OMdiscard_bias = c("Yr", "Seas", "FltSvy",
     "bias"), FixedCatch = c("Yr", "Seas", "FltSvy", "Catch", "Units"), FixedCatchEM =
-    c("Yr", "Seas", "FltSvy", "Catch", "catch_se"), lencomp = c("Yr", "Seas", "FltSvy",
+    c("Yr", "Seas", "FltSvy", "Catch", "catch_se", "estimate"), lencomp = c("Yr", "Seas", "FltSvy",
     "Sex", "Part", "Nsamp"), agecomp = c("Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr",
     "Lbin_lo", "Lbin_hi", 
      "Nsamp"), meanbodywt = c("Yr", "Seas", "FltSvy", "Part",

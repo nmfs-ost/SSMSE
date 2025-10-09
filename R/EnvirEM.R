@@ -105,7 +105,9 @@ add_new_dat_envir <- function (OM_dat,
   }
   
   if(!is.null(sample_struct$FixedCatchEM)){
-    extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], sample_struct[["FixedCatchEM"]])
+    
+    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "estimate")]
+    extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], result_df)
   }
   
   extracted_dat[["EM2OMcatch_bias"]] <- NULL
@@ -341,6 +343,7 @@ EnvirEM <- function(EM_out_dir = NULL,
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+      
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -374,6 +377,20 @@ EnvirEM <- function(EM_out_dir = NULL,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
+  
+  if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
+    
+    #turn on the fixed F values in the forecast file with a detailed table
+    fcast$Do_Forecast <- 5 
+    
+    #create the table from FixedCatchEM
+    init_table <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate > 0, ]
+    cond_f_table <- init_table[, c("year", "fleet", "catch")]
+    
+    #add the table to the forecast file
+    fcast$Input_Fixed_Catch <- cond_f_table
+  }
+  
   # # Need to update the year of forecast assignments where allocations exist
   # if (fcast[["N_allocation_groups"]] > 0) {
   #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
@@ -798,6 +815,7 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
     for(f in unique(sample_struct$FixedCatchEM$FltSvy)){
       sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
     }
+    sample_struct$FixedCatchEM$estimate <-  0 # a new column that indicates if the EM's catch is estimated or not.  
     sample_struct$FixedCatchEM
   } else{# end if FixedCatches==TRUE
     FixedCatchesEM <- NULL

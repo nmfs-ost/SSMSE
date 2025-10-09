@@ -11,7 +11,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       rep("CPUE", 4), 
                                       rep("discard_data", 4),rep("EM2OMdiscard_bias", 4), rep("lencomp", 6),
                                       rep("agecomp", 9), rep("meanbodywt", 6),
-                                      rep("MeanSize_at_Age_obs", 7), rep("FixedCatchEM", 5)# added fixed catch in EM
+                                      rep("MeanSize_at_Age_obs", 7), rep("FixedCatchEM", 6)# added fixed catch in EM
                                     ),
                                     r4ss_name = c(
                                       #catch names
@@ -41,7 +41,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # "Area", "Yr", "Season", "Gender", "Age", "Nrelease",
                                       # Morph comp
                                       #FixedCatchEM names
-                                      "year", "seas", "fleet", "catch", "catch_se" ## add for Fixed Catch bias in EM
+                                      "year", "seas", "fleet", "catch", "catch_se", "estimate" ## add for Fixed Catch bias in EM
                                     ),
                                     sample_struct_name = c(
                                       #catch names
@@ -71,7 +71,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # Tags return - may not need?
                                       # Morph comp - to add later
                                       #FixedCatchEM bias names
-                                      "Yr", "Seas", "FltSvy", "Catch", "catch_se" # added
+                                      "Yr", "Seas", "FltSvy", "Catch", "catch_se", "estimate" # added
                                     ), stringsAsFactors = FALSE
                                   )) {
   # note test-utils includes a check that the default assumed
@@ -618,7 +618,7 @@ get_full_sample_struct <- function(sample_struct,
             "Yr", "Seas", "FltSvy", "Sex",
             "Part", "Ageerr", "N_"
           )],
-          FixedCatchEM = x[, c("Yr","Seas","FltSvy","Catch","catch_se")], # added
+          FixedCatchEM = x[, c("Yr","Seas","FltSvy","Catch","catch_se", "estimate")], # added
         )
       }
       x <- utils::type.convert(x, as.is = TRUE)

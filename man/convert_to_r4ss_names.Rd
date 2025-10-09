@@ -9,7 +9,7 @@ convert_to_r4ss_names(
   convert_key = data.frame(df_name = c(rep("catch", 4), rep("EM2OMcatch_bias", 4),
     rep("FixedCatch", 5), rep("CPUE", 4), rep("discard_data", 4),
     rep("EM2OMdiscard_bias", 4), rep("lencomp", 6), rep("agecomp", 9), rep("meanbodywt",
-    6), rep("MeanSize_at_Age_obs", 7), rep("FixedCatchEM", 5)), r4ss_name = c("year",
+    6), rep("MeanSize_at_Age_obs", 7), rep("FixedCatchEM", 6)), r4ss_name = c("year",
     "seas", "fleet", "catch_se", "year", "seas", "fleet", "bias", "year", "seas",
     "fleet", "catch", "units", "year", "seas", "index", "se_log", "Yr", "Seas", "Flt",
     "Std_in", "Yr", "Seas", "Flt", "bias", "Yr", 
