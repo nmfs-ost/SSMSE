@@ -885,7 +885,7 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
     for(f in unique(sample_struct$FixedCatchEM$FltSvy)){
       sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
     }
-    sample_struct$FixedCatchEM$estimate <-  0 # a new column that indicates if the EM's catch is estimated or not.  
+    sample_struct$FixedCatchEM$estimate <- rep(0, length=nrow(sample_struct$FixedCatchEM)) # a new column that indicates if the EM's catch is estimated or not.  
     sample_struct$FixedCatchEM
   } else{# end if FixedCatches==TRUE
     FixedCatchesEM <- NULL
