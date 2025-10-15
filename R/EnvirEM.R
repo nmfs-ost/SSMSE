@@ -104,10 +104,9 @@ add_new_dat_envir <- function (OM_dat,
     extracted_dat$discard_data$Discard <- tmp_discard$Discard / tmp_discard$bias
   }
   
-  if(!is.null(sample_struct$FixedCatchEM)){
-    
-    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "estimate")]
-    extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], result_df)
+  if(!is.null(sample_struct$FixedCatchEM)){  # if FixedCatchEM is enabled
+    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "estimate")] # make a data frame without the estimate variable
+    extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], result_df) # append the FixedCatchEM data frame to the extracted data so that SS knows to estimate mortality in the years with provided catch.  
   }
   
   extracted_dat[["EM2OMcatch_bias"]] <- NULL
@@ -314,7 +313,6 @@ EnvirEM <- function(EM_out_dir = NULL,
       )
     }
     
-    
   } else {
     
     if (!is.null(sample_struct)) {
@@ -343,7 +341,92 @@ EnvirEM <- function(EM_out_dir = NULL,
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    
+    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
+    
+      # load the dat file
+      dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
       
+      # identify key fleets
+      fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
+      current_fleets <- unique(ctl$Q_options$fleet)
+      fleets_to_add <- fixed_fleets[!(fixed_fleets %in% current_fleets)]
+      
+      if (length(fleets_to_add) > 0) { # if there are fleets missing from CPUE that are in FixedCatchEM
+      # add the index to the Q_setup in ctl
+      q_options_row <- data.frame(fleet = fleets_to_add, link = 1, link_info = 0, extra_se = 0, biasadj = 0, float = 0)
+      ctl$Q_options <- rbind(ctl$Q_options, q_options_row)
+      ctl$Q_options <- ctl$Q_options[order(ctl$Q_options$fleet), ]
+      
+      if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
+      # add the q_parms to match the q_setup
+      q_parms_row <- data.frame(LO = -25, HI = 25, INIT = 0, PRIOR = 0, PR_SD = 1, PR_type = 0, PHASE = -1, env_var = 0, dev_link = 0, dev_minyr = 0, dev_maxyr = 0, dev_PH = 0, Block = 0, Block_Fxn = 0)
+      q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
+      # add a fleet row to Qparms for organizing
+      ctl$Q_parms$fleet <- current_fleets
+  
+      # create rows for each fleet_to_add and add them to the Qparms
+      for(f in fleets_to_add){
+      q_parms_row$fleet <- f
+      ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
+      }
+      
+      # reorder Qparms by fleet number
+      ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
+      # remove fleet column
+      ctl$Q_parms <- ctl$Q_parms %>% select(-fleet)
+      
+      }
+      
+      # else {
+      #   print("No new fleets to add to ctl file as all fleets already exist.")
+      # }
+      
+      # years where the fleets should be fixed
+      fixed_cpue_rows <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate == 1, ]
+      
+      # add these columns to the dat$CPUE if they are in the previous years of interest
+      previous_yrs <- dat_yrs - nyrs_assess
+      fleets_fixed <- fixed_cpue_rows[
+        fixed_cpue_rows$year %in% previous_yrs,
+      ]
+      # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
+      fleets_fixed <- fleets_fixed %>% select(-estimate) %>% rename(index = fleet, obs = catch, se_log = catch_se)
+      
+      # add the new CPUE lines
+      dat$CPUE <- rbind(dat$CPUE, fleets_fixed)
+      
+      # may need to reorder the CPUE lines here.  
+      
+      SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
+                  overwrite = TRUE, verbose = FALSE)
+      
+      }
+    }
+    
+    # if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
+    #   
+    #   # adjust the FixedCatchEM dataframe to rbind it to the F_setup2
+    #   fixed_catch_df <- sample_struct$FixedCatchEM
+    #   fixed_catch_df$estimate <- ifelse(fixed_catch_df$estimate == 1, -1, 2)
+    #   fixed_catch_df$catch <- ifelse(fixed_catch_df$catch == 0, 0.01, fixed_catch_df$catch)
+    #   fixed_catch_df <- fixed_catch_df[, c("fleet", "year", "seas", "catch", "catch_se", "estimate")]
+    #   colnames(fixed_catch_df) <- c("fleet", "yr", "seas", "Fvalue", "se", "phase")
+    #   # only select the columns that are relevant to this init run
+    #   fixed_catch_df <- fixed_catch_df[fixed_catch_df$yr <= (min(fixed_catch_df$yr) + nyrs_assess-2), ]
+    #   row_to_modify <- which(fixed_catch_df$yr == 2019 & fixed_catch_df$fleet == 5)
+    #   fixed_catch_df$phase[row_to_modify] <- -1
+    #   # add the fixed years to the f_setup table
+    #   ctl$F_setup$F_setup_3 <- 7
+    #   ctl$F_setup2 <- rbind(ctl$F_setup2, fixed_catch_df)
+    #   # overwrite the control file
+    #   r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
+    #                     overwrite = TRUE
+    #   )
+    #   print("FixedCatchEM is Active and I changed the control file")
+    #   
+    # }
+     
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
     )
@@ -377,19 +460,6 @@ EnvirEM <- function(EM_out_dir = NULL,
                                     mod_styr = new_EM_dat[["styr"]],
                                     mod_endyr = new_EM_dat[["endyr"]]
   )
-  
-  if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
-    
-    #turn on the fixed F values in the forecast file with a detailed table
-    fcast$Do_Forecast <- 5 
-    
-    #create the table from FixedCatchEM
-    init_table <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate > 0, ]
-    cond_f_table <- init_table[, c("year", "fleet", "catch")]
-    
-    #add the table to the forecast file
-    fcast$Input_Fixed_Catch <- cond_f_table
-  }
   
   # # Need to update the year of forecast assignments where allocations exist
   # if (fcast[["N_allocation_groups"]] > 0) {
