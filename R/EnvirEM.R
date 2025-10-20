@@ -354,44 +354,30 @@ EnvirEM <- function(EM_out_dir = NULL,
       current_fleets <- unique(ctl$Q_options$fleet)
       fleets_to_add <- fixed_fleets[!(fixed_fleets %in% current_fleets)]
       
-      print("The fleets are identified")
-      
       if (length(fleets_to_add) > 0) { # if there are fleets missing from CPUE that are in FixedCatchEM
         # add the index to the Q_setup in ctl
         q_options_row <- data.frame(fleet = fleets_to_add, link = 1, link_info = 0, extra_se = 0, biasadj = 0, float = 0)
         ctl$Q_options <- rbind(ctl$Q_options, q_options_row)
         ctl$Q_options <- ctl$Q_options[order(ctl$Q_options$fleet), ]
         
-        print("q_options have been changed")
-
         if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
-          print("is the if statement broken?")
           # add the q_parms to match the q_setup
-          print("the q_parms_row is broken")
           q_parms_row <- ctl$Q_parms[1,]
           q_parms_row$INIT <- 0
           # add a fleet row to Qparms for organizing
-          print("the current_fleets is broken") 
           ctl$Q_parms$fleet <- current_fleets
-          print("is this q_parms broken?")
-          
+
           # create rows for each fleet_to_add and add them to the Qparms
           for(f in fleets_to_add){
             q_parms_row$fleet <- f
             ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
           }
-          print("is this looop broken?")
-          
+
           # reorder Qparms by fleet number
           ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
           # remove fleet column
           ctl$Q_parms$fleet <- NULL          
-          print("q_parms have been changed")
         }
-
-        # else {
-        #   print("No new fleets to add to ctl file as all fleets already exist.")
-        # }
 
         # years where the fleets should be fixed
         fixed_cpue_rows <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate == 1, ]
@@ -414,20 +400,13 @@ EnvirEM <- function(EM_out_dir = NULL,
         # Assign the new names to those positions
         names(fleets_fixed)[col_positions] <- new_names
         
-        print("dat file variables have been prepared")
-        
         # add the new CPUE lines
         dat$CPUE <- rbind(dat$CPUE, fleets_fixed)
 
-        print("dat variable overwritten")
-        
         # may need to reorder the CPUE lines here.
 
         SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
                     overwrite = TRUE, verbose = FALSE)
-        
-        print("Even the dat file worked")
-
       }
     }
     
