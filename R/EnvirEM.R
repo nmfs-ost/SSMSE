@@ -365,18 +365,21 @@ EnvirEM <- function(EM_out_dir = NULL,
         print("q_options have been changed")
 
         if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
+          print("is the if statement broken?")
           # add the q_parms to match the q_setup
           q_parms_row <- data.frame(LO = -25, HI = 25, INIT = 0, PRIOR = 0, PR_SD = 1, PR_type = 0, PHASE = -1, env_var = 0, dev_link = 0, dev_minyr = 0, dev_maxyr = 0, dev_PH = 0, Block = 0, Block_Fxn = 0)
           q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
           # add a fleet row to Qparms for organizing
           ctl$Q_parms$fleet <- current_fleets
-
+          print("is this q_parms broken?")
+          
           # create rows for each fleet_to_add and add them to the Qparms
           for(f in fleets_to_add){
             q_parms_row$fleet <- f
             ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
           }
-
+          print("is this looop broken?")
+          
           # reorder Qparms by fleet number
           ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
           # remove fleet column
