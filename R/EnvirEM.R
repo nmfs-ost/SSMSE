@@ -368,9 +368,8 @@ EnvirEM <- function(EM_out_dir = NULL,
           print("is the if statement broken?")
           # add the q_parms to match the q_setup
           print("the q_parms_row is broken")
-          q_parms_row <- data.frame(LO = -25, HI = 25, INIT = 0, PRIOR = 0, PR_SD = 1, PR_type = 0, PHASE = -1, env_var = 0, dev_link = 0, dev_minyr = 0, dev_maxyr = 0, dev_PH = 0, Block = 0, Block_Fxn = 0)
-          print("the rename is broken")
-          q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
+          q_parms_row <- ctl$Q_parms[1,]
+          q_parms_row$INIT <- 0
           # add a fleet row to Qparms for organizing
           print("the current_fleets is broken") 
           ctl$Q_parms$fleet <- current_fleets
@@ -415,10 +414,10 @@ EnvirEM <- function(EM_out_dir = NULL,
         
         # may need to reorder the CPUE lines here.
 
-        # SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
-        #             overwrite = TRUE, verbose = FALSE)
+        SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
+                    overwrite = TRUE, verbose = FALSE)
         
-        print("Did everything but writing the dat file")
+        print("Even the dat file worked")
 
       }
     }
