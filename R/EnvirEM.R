@@ -372,7 +372,7 @@ EnvirEM <- function(EM_out_dir = NULL,
           print("the rename is broken")
           q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
           # add a fleet row to Qparms for organizing
-          print("the current_fleets is broken" 
+          print("the current_fleets is broken") 
           ctl$Q_parms$fleet <- current_fleets
           print("is this q_parms broken?")
           
