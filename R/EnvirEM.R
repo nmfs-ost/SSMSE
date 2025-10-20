@@ -402,7 +402,17 @@ EnvirEM <- function(EM_out_dir = NULL,
           fixed_cpue_rows$year %in% previous_yrs,
         ]
         # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
-        fleets_fixed <- fleets_fixed %>% select(-estimate) %>% rename(index = fleet, obs = catch, se_log = catch_se)
+        fleets_fixed$estimate <- NULL
+        
+        # Define the mapping of old names to new names
+        old_names <- c("fleet", "catch", "catch_se")
+        new_names <- c("index", "obs", "se_log")
+        
+        # Find the positions of the old names in the data frame's names
+        col_positions <- match(old_names, names(fleets_fixed))
+        
+        # Assign the new names to those positions
+        names(fleets_fixed)[col_positions] <- new_names
         
         print("dat file variables have been prepared")
         
