@@ -342,67 +342,69 @@ EnvirEM <- function(EM_out_dir = NULL,
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
     
-    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
-      
-      # load the dat file
-      dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
-      
-      # identify key fleets
-      fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
-      current_fleets <- unique(ctl$Q_options$fleet)
-      fleets_to_add <- fixed_fleets[!(fixed_fleets %in% current_fleets)]
-      
-      if (length(fleets_to_add) > 0) { # if there are fleets missing from CPUE that are in FixedCatchEM
-        # add the index to the Q_setup in ctl
-        q_options_row <- data.frame(fleet = fleets_to_add, link = 1, link_info = 0, extra_se = 0, biasadj = 0, float = 0)
-        ctl$Q_options <- rbind(ctl$Q_options, q_options_row)
-        ctl$Q_options <- ctl$Q_options[order(ctl$Q_options$fleet), ]
-        
-        if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
-          # add the q_parms to match the q_setup
-          q_parms_row <- data.frame(LO = -25, HI = 25, INIT = 0, PRIOR = 0, PR_SD = 1, PR_type = 0, PHASE = -1, env_var = 0, dev_link = 0, dev_minyr = 0, dev_maxyr = 0, dev_PH = 0, Block = 0, Block_Fxn = 0)
-          q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
-          # add a fleet row to Qparms for organizing
-          ctl$Q_parms$fleet <- current_fleets
-          
-          # create rows for each fleet_to_add and add them to the Qparms
-          for(f in fleets_to_add){
-            q_parms_row$fleet <- f
-            ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
-          }
-          
-          # reorder Qparms by fleet number
-          ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
-          # remove fleet column
-          ctl$Q_parms <- ctl$Q_parms %>% select(-fleet)
-          
-        }
-        
-        # else {
-        #   print("No new fleets to add to ctl file as all fleets already exist.")
-        # }
-        
-        # years where the fleets should be fixed
-        fixed_cpue_rows <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate == 1, ]
-        
-        # add these columns to the dat$CPUE if they are in the previous years of interest
-        previous_yrs <- dat_yrs - nyrs_assess
-        fleets_fixed <- fixed_cpue_rows[
-          fixed_cpue_rows$year %in% previous_yrs,
-        ]
-        # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
-        fleets_fixed <- fleets_fixed %>% select(-estimate) %>% rename(index = fleet, obs = catch, se_log = catch_se)
-        
-        # add the new CPUE lines
-        dat$CPUE <- rbind(dat$CPUE, fleets_fixed)
-        
-        # may need to reorder the CPUE lines here.  
-        
-        SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
-                    overwrite = TRUE, verbose = FALSE)
-        
-      }
-    }
+    # If fixed catches are enabled in the EM, then alter the dat and ctl file
+    # to implement those fixed catches as CPUE indecies.  
+    # if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
+    #   
+    #   # load the dat file
+    #   dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
+    #   
+    #   # identify key fleets
+    #   fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
+    #   current_fleets <- unique(ctl$Q_options$fleet)
+    #   fleets_to_add <- fixed_fleets[!(fixed_fleets %in% current_fleets)]
+    #   
+    #   if (length(fleets_to_add) > 0) { # if there are fleets missing from CPUE that are in FixedCatchEM
+    #     # add the index to the Q_setup in ctl
+    #     q_options_row <- data.frame(fleet = fleets_to_add, link = 1, link_info = 0, extra_se = 0, biasadj = 0, float = 0)
+    #     ctl$Q_options <- rbind(ctl$Q_options, q_options_row)
+    #     ctl$Q_options <- ctl$Q_options[order(ctl$Q_options$fleet), ]
+    #     
+    #     if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
+    #       # add the q_parms to match the q_setup
+    #       q_parms_row <- data.frame(LO = -25, HI = 25, INIT = 0, PRIOR = 0, PR_SD = 1, PR_type = 0, PHASE = -1, env_var = 0, dev_link = 0, dev_minyr = 0, dev_maxyr = 0, dev_PH = 0, Block = 0, Block_Fxn = 0)
+    #       q_parms_row <- q_parms_row %>% rename('env_var&link' = env_var)  # the "&" sign doesn't work in data.frame command
+    #       # add a fleet row to Qparms for organizing
+    #       ctl$Q_parms$fleet <- current_fleets
+    #       
+    #       # create rows for each fleet_to_add and add them to the Qparms
+    #       for(f in fleets_to_add){
+    #         q_parms_row$fleet <- f
+    #         ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
+    #       }
+    #       
+    #       # reorder Qparms by fleet number
+    #       ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
+    #       # remove fleet column
+    #       ctl$Q_parms <- ctl$Q_parms %>% select(-fleet)
+    #       
+    #     }
+    #     
+    #     # else {
+    #     #   print("No new fleets to add to ctl file as all fleets already exist.")
+    #     # }
+    #     
+    #     # years where the fleets should be fixed
+    #     fixed_cpue_rows <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate == 1, ]
+    #     
+    #     # add these columns to the dat$CPUE if they are in the previous years of interest
+    #     previous_yrs <- dat_yrs - nyrs_assess
+    #     fleets_fixed <- fixed_cpue_rows[
+    #       fixed_cpue_rows$year %in% previous_yrs,
+    #     ]
+    #     # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
+    #     fleets_fixed <- fleets_fixed %>% select(-estimate) %>% rename(index = fleet, obs = catch, se_log = catch_se)
+    #     
+    #     # add the new CPUE lines
+    #     dat$CPUE <- rbind(dat$CPUE, fleets_fixed)
+    #     
+    #     # may need to reorder the CPUE lines here.  
+    #     
+    #     SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
+    #                 overwrite = TRUE, verbose = FALSE)
+    #     
+    #   }
+    # }
     
     # if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
     #   
