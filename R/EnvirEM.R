@@ -361,6 +361,8 @@ EnvirEM <- function(EM_out_dir = NULL,
         q_options_row <- data.frame(fleet = fleets_to_add, link = 1, link_info = 0, extra_se = 0, biasadj = 0, float = 0)
         ctl$Q_options <- rbind(ctl$Q_options, q_options_row)
         ctl$Q_options <- ctl$Q_options[order(ctl$Q_options$fleet), ]
+        
+        print("q_options have been changed")
 
         if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
           # add the q_parms to match the q_setup
@@ -379,7 +381,8 @@ EnvirEM <- function(EM_out_dir = NULL,
           ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
           # remove fleet column
           ctl$Q_parms <- ctl$Q_parms %>% select(-fleet)
-
+          
+          print("q_parms have been changed")
         }
 
         # else {
@@ -396,10 +399,14 @@ EnvirEM <- function(EM_out_dir = NULL,
         ]
         # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
         fleets_fixed <- fleets_fixed %>% select(-estimate) %>% rename(index = fleet, obs = catch, se_log = catch_se)
-
+        
+        print("dat file variables have been prepared")
+        
         # add the new CPUE lines
         dat$CPUE <- rbind(dat$CPUE, fleets_fixed)
 
+        print("dat variable overwritten")
+        
         # may need to reorder the CPUE lines here.
 
         # SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
