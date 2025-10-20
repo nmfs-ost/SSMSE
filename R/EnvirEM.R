@@ -385,8 +385,7 @@ EnvirEM <- function(EM_out_dir = NULL,
           # reorder Qparms by fleet number
           ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
           # remove fleet column
-          ctl$Q_parms <- ctl$Q_parms %>% select(-fleet)
-          
+          ctl$Q_parms$fleet <- NULL          
           print("q_parms have been changed")
         }
 
