@@ -346,10 +346,10 @@ EnvirEM <- function(EM_out_dir = NULL,
     # to implement those fixed catches as CPUE indecies.  
     if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
 
-      print("The if statement works")
-      # # load the dat file
-      # dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
-      # 
+      # load the dat file
+      dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
+      print("The dat file is reading")
+      
       # # identify key fleets
       # fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
       # current_fleets <- unique(ctl$Q_options$fleet)
