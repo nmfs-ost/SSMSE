@@ -344,7 +344,7 @@ EnvirEM <- function(EM_out_dir = NULL,
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
     # to implement those fixed catches as CPUE indecies.  
-    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
+    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct_sub$FixedCatchEM$estimate) > 0) {
 
       # load the dat file
       dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
@@ -378,15 +378,9 @@ EnvirEM <- function(EM_out_dir = NULL,
           # remove fleet column
           ctl$Q_parms$fleet <- NULL          
         }
-
+      }
         # years where the fleets should be fixed
-        fixed_cpue_rows <- sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$estimate == 1, ]
-
-        # add these columns to the dat$CPUE if they are in the previous years of interest
-        previous_yrs <- dat_yrs - nyrs_assess
-        fleets_fixed <- fixed_cpue_rows[
-          fixed_cpue_rows$year %in% previous_yrs,
-        ]
+        fleets_fixed <- sample_struct_sub$FixedCatchEM[sample_struct_sub$FixedCatchEM$estimate == 1, ]
         # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
         fleets_fixed$estimate <- NULL
         
@@ -407,7 +401,7 @@ EnvirEM <- function(EM_out_dir = NULL,
 
         SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
                     overwrite = TRUE, verbose = FALSE)
-      }
+      
     }
     
     # if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
