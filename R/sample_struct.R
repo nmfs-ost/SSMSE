@@ -41,7 +41,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # "Area", "Yr", "Season", "Gender", "Age", "Nrelease",
                                       # Morph comp
                                       #FixedCatchEM names
-                                      "year", "seas", "fleet", "catch", "catch_se", "estimate" ## add for Fixed Catch bias in EM
+                                      "year", "seas", "fleet", "catch", "catch_se", "fixed" ## add for Fixed Catch bias in EM
                                     ),
                                     sample_struct_name = c(
                                       #catch names
@@ -71,7 +71,7 @@ convert_to_r4ss_names <- function(sample_struct,
                                       # Tags return - may not need?
                                       # Morph comp - to add later
                                       #FixedCatchEM bias names
-                                      "Yr", "Seas", "FltSvy", "Catch", "catch_se", "estimate" # added
+                                      "Yr", "Seas", "FltSvy", "Catch", "catch_se", "fixed" # added
                                     ), stringsAsFactors = FALSE
                                   )) {
   # note test-utils includes a check that the default assumed
@@ -618,7 +618,7 @@ get_full_sample_struct <- function(sample_struct,
             "Yr", "Seas", "FltSvy", "Sex",
             "Part", "Ageerr", "N_"
           )],
-          FixedCatchEM = x[, c("Yr","Seas","FltSvy","Catch","catch_se", "estimate")], # added
+          FixedCatchEM = x[, c("Yr","Seas","FltSvy","Catch","catch_se", "fixed")], # added
         )
       }
       x <- utils::type.convert(x, as.is = TRUE)

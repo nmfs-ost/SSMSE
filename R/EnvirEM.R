@@ -105,7 +105,7 @@ add_new_dat_envir <- function (OM_dat,
   }
   
   if(!is.null(sample_struct$FixedCatchEM)){  # if FixedCatchEM is enabled
-    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "estimate")] # make a data frame without the estimate variable
+    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "fixed")] # make a data frame without the estimate variable
     extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], result_df) # append the FixedCatchEM data frame to the extracted data so that SS knows to estimate mortality in the years with provided catch.  
   }
   
@@ -344,7 +344,7 @@ EnvirEM <- function(EM_out_dir = NULL,
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
     # to implement those fixed catches as CPUE indecies.  
-    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct_sub$FixedCatchEM$estimate) > 0) {
+    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct_sub$FixedCatchEM$fixed) > 0) {
 
       # load the dat file
       dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
@@ -384,9 +384,9 @@ EnvirEM <- function(EM_out_dir = NULL,
         }
       }
         # years where the fleets should be fixed
-        fleets_fixed <- sample_struct_sub$FixedCatchEM[sample_struct_sub$FixedCatchEM$estimate == 1, ]
+        fleets_fixed <- sample_struct_sub$FixedCatchEM[sample_struct_sub$FixedCatchEM$fixed == 1, ]
         # clean cols and colnames from FixedCatchEM dataframe for rbind to dat$CPUE
-        fleets_fixed$estimate <- NULL
+        fleets_fixed$fixed <- NULL
         
         # Define the mapping of old names to new names
         old_names <- c("fleet", "catch", "catch_se")
@@ -407,29 +407,6 @@ EnvirEM <- function(EM_out_dir = NULL,
                     overwrite = TRUE, verbose = FALSE)
       
     }
-    
-    # if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct$FixedCatchEM$estimate) > 0) {
-    #   
-    #   # adjust the FixedCatchEM dataframe to rbind it to the F_setup2
-    #   fixed_catch_df <- sample_struct$FixedCatchEM
-    #   fixed_catch_df$estimate <- ifelse(fixed_catch_df$estimate == 1, -1, 2)
-    #   fixed_catch_df$catch <- ifelse(fixed_catch_df$catch == 0, 0.01, fixed_catch_df$catch)
-    #   fixed_catch_df <- fixed_catch_df[, c("fleet", "year", "seas", "catch", "catch_se", "estimate")]
-    #   colnames(fixed_catch_df) <- c("fleet", "yr", "seas", "Fvalue", "se", "phase")
-    #   # only select the columns that are relevant to this init run
-    #   fixed_catch_df <- fixed_catch_df[fixed_catch_df$yr <= (min(fixed_catch_df$yr) + nyrs_assess-2), ]
-    #   row_to_modify <- which(fixed_catch_df$yr == 2019 & fixed_catch_df$fleet == 5)
-    #   fixed_catch_df$phase[row_to_modify] <- -1
-    #   # add the fixed years to the f_setup table
-    #   ctl$F_setup$F_setup_3 <- 7
-    #   ctl$F_setup2 <- rbind(ctl$F_setup2, fixed_catch_df)
-    #   # overwrite the control file
-    #   r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-    #                     overwrite = TRUE
-    #   )
-    #   print("FixedCatchEM is Active and I changed the control file")
-    #   
-    # }
     
     r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
                       overwrite = TRUE
@@ -889,7 +866,7 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
     for(f in unique(sample_struct$FixedCatchEM$FltSvy)){
       sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
     }
-    sample_struct$FixedCatchEM$estimate <- rep(0, length=nrow(sample_struct$FixedCatchEM)) # a new column that indicates if the EM's catch is estimated or not.  
+    sample_struct$FixedCatchEM$fixed <- rep(0, length=nrow(sample_struct$FixedCatchEM)) # a new column that indicates if the EM's catch is estimated or not.  
     sample_struct$FixedCatchEM
   } else{# end if FixedCatches==TRUE
     FixedCatchesEM <- NULL
