@@ -347,7 +347,9 @@ EnvirEM <- function(EM_out_dir = NULL,
     if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct_sub$FixedCatchEM$estimate) > 0) {
 
       # load the dat file
-      dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE)
+      dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
+      # dat could be changed to new_EM_dat, but new_EM_dat has EM2OMdiscard_bias 
+      # and FixedCatchEM data.frames that might break things.  
       
       # identify key fleets
       fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
@@ -363,8 +365,10 @@ EnvirEM <- function(EM_out_dir = NULL,
         if(nrow(ctl$Q_options) != nrow(ctl$Q_parms)) { # if the q_options and q_parms have different lengths
           # add the q_parms to match the q_setup
           q_parms_row <- ctl$Q_parms[1,]
+          # the new rows should have zero init and priors, default parms should be confirmed.  
           q_parms_row$INIT <- 0
-          # add a fleet row to Qparms for organizing
+          q_parms_row$PRIOR <- 0
+          # add a fleet row to Q_parms for organizing
           ctl$Q_parms$fleet <- current_fleets
 
           # create rows for each fleet_to_add and add them to the Qparms
@@ -373,7 +377,7 @@ EnvirEM <- function(EM_out_dir = NULL,
             ctl$Q_parms  <- rbind(ctl$Q_parms, q_parms_row)
           }
 
-          # reorder Qparms by fleet number
+          # reorder Q_parms by fleet number
           ctl$Q_parms <- ctl$Q_parms[order(ctl$Q_parms$fleet), ]
           # remove fleet column
           ctl$Q_parms$fleet <- NULL          
