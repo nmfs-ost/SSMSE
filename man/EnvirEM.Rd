@@ -2,7 +2,7 @@
 % Please edit documentation in R/EnvirEM.R
 \name{EnvirEM}
 \alias{EnvirEM}
-\title{Use EM as the management strategy option.}
+\title{Use EnvirEM as the management strategy option.}
 \usage{
 EnvirEM(
   EM_out_dir = NULL,
@@ -52,10 +52,13 @@ object in the correct form. Can be NULL only when MS is not EM.}
 
 \item{seed}{A random seed so that reproducible results are possible.}
 
-\item{OM_out_dir}{The full path to the directory in which the OM is run.}
-
 \item{...}{Any additional parameters}
 }
 \description{
-Use EM as the management strategy option.
+This is a custom managment stratgy for testing environmental mortality events
+using SSMSE.  It incorporates FixedCatch and FixedCatchEM in the sample_struct
+which allows the user to fix catches/F in the EM and OM in specific years.
+}
+\details{
+All of the bias options are also still included in the code but are not tested.
 }

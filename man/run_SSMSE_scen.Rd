@@ -29,7 +29,9 @@ run_SSMSE_scen(
   run_parallel = FALSE,
   n_cores = NULL,
   n_F_search_loops = 20,
-  tolerance_F_search = 0.001
+  tolerance_F_search = 0.001,
+  file_removal = FALSE,
+  cloud_bucket = NULL
 )
 }
 \arguments{

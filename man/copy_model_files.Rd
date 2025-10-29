@@ -9,6 +9,8 @@ copy_model_files(
   OM_out_dir = NULL,
   EM_in_dir = NULL,
   EM_out_dir = NULL,
+  Base_in_dir = NULL,
+  Base_out_dir = NULL,
   verbose = FALSE
 )
 }
@@ -22,6 +24,10 @@ model outside of the SSMSE package. Should be a string.}
 
 \item{EM_out_dir}{Relative or absolute path to the estimation model, if using a
 model outside of the SSMSE package.}
+
+\item{Base_in_dir}{Relative or absolute path to the input base model}
+
+\item{Base_out_dir}{Relative or absolute path to the base model outputs}
 
 \item{verbose}{Want verbose output? Defaults to FALSE.}
 }

@@ -7,6 +7,7 @@
 clean_init_mod_files(
   OM_out_dir,
   EM_out_dir = NULL,
+  Base_out_dir = NULL,
   MS = "EM",
   overwrite = FALSE
 )
@@ -16,6 +17,8 @@ clean_init_mod_files(
 
 \item{EM_out_dir}{Relative or absolute path to the estimation model, if using a
 model outside of the SSMSE package.}
+
+\item{Base_out_dir}{The directory where the base model files will be written.}
 
 \item{MS}{The management strategy to use. Current options
 are:  \code{"last_yr_catch"} which uses the previous year's catch;

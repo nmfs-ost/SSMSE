@@ -2,7 +2,7 @@
 % Please edit documentation in R/EnvirEM.R
 \name{create_sample_struct_envir}
 \alias{create_sample_struct_envir}
-\title{Create the sample_struct list for biased catch and discard data}
+\title{Create the sample_struct list for biased catch, discard data, and fixed catches in the EM or OM.}
 \usage{
 create_sample_struct_envir(
   dat,
@@ -22,6 +22,8 @@ the MSE. A single integer value.}
 \item{rm_NAs}{Should all NAs be removed from dataframes? Defaults to FALSE.}
 
 \item{FixedCatches}{T/F defines whether you want to manually specify catches in the future (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of OM and historical units.}
+
+\item{FixedCatchesEM}{T/F defines whether you want to manually specify catches in the future EM (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of EM and historical units.}
 }
 \value{
 A sample_struct list object, where each list element is a dataframe
@@ -36,14 +38,14 @@ with their names as called in the list object in parentheses are:
 catch (catch), relative indices (CPUE), length composition (lencomp),
 age composition (agecomp), mean body weight (meanbodywt), and mean size at
 age (MeanSize_at_Age_obs). Details for creating the sample structure list are
-available in the \href{https://nmfs-fish-tools.github.io/SSMSE/manual/SSMSE.html#sampling-options}{sampling options section of the SSMSE user manual}.
+available in the \href{https://nmfs-ost.github.io/SSMSE/manual/SSMSE.html#sampling-options}{sampling options section of the SSMSE user manual}.
 }
 \examples{
 OM_path <- system.file("extdata", "models", "cod", "ss3.dat", package = "SSMSE")
 # note there is a warning for lencomp because it does not have a consistent pattern
-sample_struct <- create_sample_struct(OM_path, nyrs = 20)
+sample_struct <- create_sample_struct_envir(OM_path, nyrs = 20)
 print(sample_struct)
 }
 \author{
-Kathryn Doering modified by Cassidy Peterson
+Kathryn Doering modified by Cassidy Peterson and Alexandra Norelli
 }

@@ -17,14 +17,14 @@ convert_to_r4ss_names(
     "Part", "Nsamp", "Yr", "Seas", "FltSvy", "Gender", "Part", "Ageerr", "Lbin_lo",
     "Lbin_hi", "Nsamp", "Year", "Seas", "Fleet", "Partition", "Type", "Std_in", "Yr",
     "Seas", "FltSvy", "Gender", "Part", "AgeErr", "N_", "year", "seas", "fleet", "catch",
-    "catch_se"), sample_struct_name = c("Yr", "Seas", "FltSvy", "SE", "Yr", "Seas",
-    "FltSvy", "bias", "Yr", "Seas", "FltSvy", "Catch", "Units", "Yr", "Seas", "FltSvy",
-    "SE", "Yr", "Seas", "FltSvy", "SE", "Yr", "Seas", "FltSvy", 
-     "bias", "Yr",
-    "Seas", "FltSvy", "Sex", "Part", "Nsamp", "Yr", "Seas", "FltSvy", "Sex", "Part",
-    "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp", "Yr", "Seas", "FltSvy", "Part", "Type",
-    "Std_in", "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_", "Yr", "Seas",
-    "FltSvy", "Catch", "catch_se"), stringsAsFactors = FALSE)
+    "catch_se", "fixed"), sample_struct_name = c("Yr", "Seas", "FltSvy", "SE", "Yr",
+    "Seas", "FltSvy", "bias", "Yr", "Seas", "FltSvy", "Catch", "Units", "Yr", "Seas",
+    "FltSvy", "SE", "Yr", "Seas", "FltSvy", "SE", "Yr", "Seas", 
+     "FltSvy", "bias",
+    "Yr", "Seas", "FltSvy", "Sex", "Part", "Nsamp", "Yr", "Seas", "FltSvy", "Sex",
+    "Part", "Ageerr", "Lbin_lo", "Lbin_hi", "Nsamp", "Yr", "Seas", "FltSvy", "Part",
+    "Type", "Std_in", "Yr", "Seas", "FltSvy", "Sex", "Part", "Ageerr", "N_", "Yr",
+    "Seas", "FltSvy", "Catch", "catch_se", "fixed"), stringsAsFactors = FALSE)
 )
 }
 \arguments{
