@@ -18,6 +18,7 @@ parse_MS(
   sample_struct = NULL,
   sample_struct_hist = NULL,
   interim_struct = NULL,
+  extras = NULL,
   seed = NULL
 )
 }
@@ -79,6 +80,8 @@ object in the correct form. Can be NULL only when MS is not EM.}
 fleet weights, the scaling rate (Beta) of catch relative to the index change for each fleet,
 and the reference year for each fleet (either a fixed year or <=0 relative to end_yr, fixed year
 will stay constant during simulation while relative year will progress with simulation).}
+
+\item{extras}{A list object of extra information for EM/OM}
 
 \item{seed}{A random seed so that reproducible results are possible.}
 }

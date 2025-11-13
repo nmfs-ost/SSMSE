@@ -12,6 +12,8 @@
 #' @template verbose
 #' @template F_search_loops
 #' @param extras_list A list of lists containing any extra data to be passed to EM/OM for each scenario
+#' @param file_removal A boolean that designates if model runs should be deleted after an iteration is finished and summarized
+#' @param cloud_bucket A file path that indicates where a cloud bucket is located for offloading data when using Google Cloud Computing.  
 #' @export
 #' @author Kathryn Doering & Nathan Vaughan
 #' @examples
@@ -252,6 +254,7 @@ run_SSMSE <- function(scen_name_vec,
 #' @template verbose
 #' @template F_search_loops
 #' @template sample_catch
+#' @inheritParams run_SSMSE
 #' @author Kathryn Doering & Nathan Vaughan
 #' @examples
 #' \dontrun{

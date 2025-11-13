@@ -14,7 +14,7 @@
 #'  init_loop is TRUE.
 #' @template OM_out_dir
 #' @template sample_struct
-#' @param sample_struct_hist
+#' @param sample_struct_hist historical sample structure object
 #' @template seed
 #' @param ... Any additional parameters
 #' @author Kathryn Doering

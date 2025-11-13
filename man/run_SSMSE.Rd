@@ -23,6 +23,7 @@ run_SSMSE(
   sample_struct_hist_list = NULL,
   sample_catch_vec = FALSE,
   interim_struct_list = NULL,
+  extras_list = NULL,
   verbose = FALSE,
   seed = NULL,
   n_F_search_loops = 20,
@@ -126,6 +127,8 @@ every year, and Index_weights is a vector of length n indexes that weights all i
 inference.
 \code{interim_struct_list<-list(Beta=1,MA_years=3,assess_freq=5,Index_weights=rep(1,max(ref_index[,3])))}}
 
+\item{extras_list}{A list of lists containing any extra data to be passed to EM/OM for each scenario}
+
 \item{verbose}{Want verbose output? Defaults to FALSE.}
 
 \item{seed}{Input a fixed seed to replicate previous simulation runs. Seed
@@ -142,6 +145,10 @@ catches input in the OM. Defaults to 20.}
 \item{tolerance_F_search}{How far apart the input catch and achieved
 catch can be in tried to find an F that achieves the catch input in the
 OM. Defaults to 0.001.}
+
+\item{file_removal}{A boolean that designates if model runs should be deleted after an iteration is finished and summarized}
+
+\item{cloud_bucket}{A file path that indicates where a cloud bucket is located for offloading data when using Google Cloud Computing.}
 
 \item{run_parallel}{Option to use parallel processing on iterations.
 Defaults to FALSE}

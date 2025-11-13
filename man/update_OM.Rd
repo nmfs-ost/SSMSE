@@ -15,6 +15,7 @@ update_OM(
   write_dat = TRUE,
   impl_error = NULL,
   verbose = FALSE,
+  extras = NULL,
   seed = NULL,
   n_F_search_loops = 20,
   tolerance_F_search = 0.001
@@ -46,7 +47,7 @@ retained biomass for all cases)}
 
 \item{F_limit}{data frame with columns year, fleet, season, limit that specifies a maximum F
 allowed in the OM or a negative value to specify a multiple of the historic maximum F. Any year/season/fleet
-not listed will assume a value of 1.5. Entering -99 for any of year, season, or fleet will
+not listed will assume a value of maxF from the OM control file. Entering -99 for any of year, season, or fleet will
 apply the limit across all values of that variable (i.e. a single row with -99, -99, -99, -2 would implement
 a cap of twice the historic maximum F for all cases)}
 
@@ -57,6 +58,8 @@ a cap of twice the historic maximum F for all cases)}
 \item{impl_error}{The implementation error}
 
 \item{verbose}{Want verbose output? Defaults to FALSE.}
+
+\item{extras}{A list object of extra information for the OM}
 
 \item{seed}{A random seed so that reproducible results are possible.}
 

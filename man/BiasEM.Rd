@@ -15,6 +15,7 @@ BiasEM(
   sample_struct_hist = NULL,
   seed = NULL,
   OM_out_dir,
+  extras = NULL,
   ...
 )
 }
@@ -53,6 +54,8 @@ object in the correct form. Can be NULL only when MS is not EM.}
 \item{seed}{A random seed so that reproducible results are possible.}
 
 \item{OM_out_dir}{The full path to the directory in which the OM is run.}
+
+\item{extras}{List to pass any extra inputs for custom EM}
 
 \item{...}{Any additional parameters}
 }

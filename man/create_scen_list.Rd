@@ -19,7 +19,8 @@ create_scen_list(
   sample_struct_list = NULL,
   sample_struct_hist_list = NULL,
   sample_catch_vec = NULL,
-  interim_struct_list = NULL
+  interim_struct_list = NULL,
+  extras_list = NULL
 )
 }
 \arguments{

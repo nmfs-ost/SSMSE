@@ -10,7 +10,8 @@ biasEM_change_dat(
   EM_dir,
   do_checks = TRUE,
   verbose = FALSE,
-  sample_struct_hist = NULL
+  sample_struct_hist = NULL,
+  extras = NULL
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ EM_dir.}
 \item{verbose}{Want verbose output? Defaults to FALSE.}
 
 \item{sample_struct_hist}{historical sample structure object}
+
+\item{extras}{List to pass any extra inputs for custom EM}
 }
 \value{
 the new EM data file. Side effect is saving over the OM_dat file in

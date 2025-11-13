@@ -26,6 +26,7 @@ run_SSMSE_iter(
   sample_struct_hist = NULL,
   sample_catch = FALSE,
   interim_struct = NULL,
+  extras = NULL,
   n_F_search_loops = 20,
   tolerance_F_search = 0.001,
   file_removal = FALSE,
@@ -135,6 +136,8 @@ that weights all indexes for multi index inference.
                      assess_freq = 5,
                      Index_weights = rep(1, max(ref_index[, 3])))
 }\if{html}{\out{</div>}}}
+
+\item{extras}{A list object containing any extra information to be passed to EM/OM}
 
 \item{n_F_search_loops}{Number of times to try to find an F that achieves the
 catches input in the OM. Defaults to 20.}

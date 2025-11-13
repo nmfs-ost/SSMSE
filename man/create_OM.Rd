@@ -18,6 +18,7 @@ create_OM(
   verify_OM = TRUE,
   sample_struct_hist = NULL,
   sample_struct = NULL,
+  extras = NULL,
   seed = NULL
 )
 }
@@ -64,6 +65,8 @@ used in \code{r4ss::SS_readdat()}. The \code{run_SSMSE_iter} function
 examples give an example of what this structure should be. Running the
 function \code{create_sample_struct()} will also produce a sample_struct
 object in the correct form. Can be NULL only when MS is not EM.}
+
+\item{extras}{Extra values passes to modify OM creation setup}
 
 \item{seed}{A random seed so that reproducible results are possible.}
 }

@@ -25,6 +25,7 @@ run_SSMSE_scen(
   sample_struct_hist = NULL,
   sample_catch = FALSE,
   interim_struct = NULL,
+  extras = NULL,
   verbose = FALSE,
   run_parallel = FALSE,
   n_cores = NULL,
@@ -133,6 +134,8 @@ that weights all indexes for multi index inference.
                      Index_weights = rep(1, max(ref_index[, 3])))
 }\if{html}{\out{</div>}}}
 
+\item{extras}{A list object containing any extra information to be passed to EM/OM}
+
 \item{verbose}{Want verbose output? Defaults to FALSE.}
 
 \item{run_parallel}{Option to use parallel processing on iterations.
@@ -148,6 +151,10 @@ catches input in the OM. Defaults to 20.}
 \item{tolerance_F_search}{How far apart the input catch and achieved
 catch can be in tried to find an F that achieves the catch input in the
 OM. Defaults to 0.001.}
+
+\item{file_removal}{A boolean that designates if model runs should be deleted after an iteration is finished and summarized}
+
+\item{cloud_bucket}{A file path that indicates where a cloud bucket is located for offloading data when using Google Cloud Computing.}
 }
 \description{
 High level function to run 1 scenario (but potentially many iterations) for
