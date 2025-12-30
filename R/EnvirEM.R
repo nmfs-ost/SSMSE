@@ -800,7 +800,6 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
     FixedCatchesEM <- NULL
   }
   
-  
   ## ADD EM2OMdiscard_bias
   if(!is.null(ncol(sample_struct$discard_data))){
     sample_struct$EM2OMdiscard_bias<- sample_struct$discard_data
@@ -810,8 +809,65 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
     sample_struct$EM2OMdiscard_bias<-NA
   }
   
-  
-  
-  
   sample_struct
+}
+
+
+#' Add FixedCatch and/or FixedCatchEM to sample_struct  
+#'
+#' After creating a base sample_struct, this function can add FixedCatch or 
+#' FixedCatchEM when scenarios require specified fixed catches in the OM or EM.  
+#'
+#' @param sample_struct The sample_struct object you want to add FixedCatch or FixedCatchEM to.  
+#' @param om_on TRUE if FixedCatch is on.  
+#' @param em_on TRUE if FixedCatchEM is on.  
+#' @param rt_year_om Years where the environmental event occur in the OM, "rt" stands for red tide since it was the original use case.  
+#' @param rt_year_em Years where the environmental event occur in the EM.   
+#' @param rt_fleet The number associated with the fleet that is being altered. 
+#' @param rt_mortality_om The mortality magnitude of the event in the OM, this is always fixed. 
+#' @param rt_mortality_em The mortality magnitude of the event in the EM, this is a placeholder unless the EM is fixed.  
+#' @param em_fixed If 0 the mortality in the EM will be estimated.  If 1 the mortality will be fixed to the provided rt_mortality_em in the EM.  
+#' @return A sample_struct list object with appended FixedCatch and FixedCatchEM information.
+#' @author Kathryn Doering modified by Cassidy Peterson and Alexandra Norelli
+#' @examples
+#' # Create a sample_struct where the OM has a mortality event every 3 years, and the EM has one in every year.  
+#' sample_struct_rep_3_x_all_yrs <- add_sample_struct_FixedCatches(sample_struct, rt_year_om = seq(from = 2018, to = 2047, by = 3), rt_year_em = seq(from = 2018, to = 2047, by = 1))
+#' print(head(sample_struct_rep_3_x_all_yrs$FixedCatch))
+#' print(head(sample_struct_rep_3_x_all_yrs$FixedCatchEM))
+#' 
+#' @export
+
+add_sample_struct_FixedCatches <- function(sample_struct,
+                                           om_on = TRUE,
+                                           em_on = TRUE,
+                                           rt_year_om = c(2018, 2021),
+                                           rt_year_em = c(2018, 2021),
+                                           rt_fleet = 5,
+                                           rt_mortality_om = 0.1,
+                                           rt_mortality_em = 0.1,
+                                           em_fixed = 0) {
+  
+  
+  sample_struct_fc <- SSMSE::create_sample_struct_envir(dat=datfile, nyrs=projyrs, FixedCatches = TRUE, FixedCatchesEM = TRUE)
+  sample_struct_copy <- sample_struct
+  
+  if(om_on == TRUE){
+    #Add fixed catches in the OM
+    sample_struct_copy$FixedCatch <- sample_struct_fc$FixedCatch %>% 
+      filter(FltSvy == rt_fleet) 
+    sample_struct_copy$FixedCatch <- sample_struct_copy$FixedCatch %>%
+      mutate(Catch = if_else(FltSvy == rt_fleet & Yr %in% rt_year_om, rt_mortality_om, Catch))
+  }
+  
+  if(em_on == TRUE) {
+    #Add fixed catches in the EM
+    sample_struct_copy$FixedCatchEM <- sample_struct_fc$FixedCatchEM
+    sample_struct_copy$FixedCatchEM <- sample_struct_copy$FixedCatchEM %>% 
+      filter(FltSvy == rt_fleet) 
+    sample_struct_copy$FixedCatchEM <- sample_struct_copy$FixedCatchEM %>%
+      mutate(Catch = if_else(FltSvy == rt_fleet & Yr %in% rt_year_em, rt_mortality_em, Catch)) %>%
+      mutate(fixed = if_else(FltSvy == rt_fleet & Yr %in% rt_year_em, em_fixed, 0))
+  }
+  
+  return(sample_struct_copy)
 }
