@@ -949,16 +949,13 @@ run_SSMSE_iter <- function(out_dir = NULL,
         system(paste("mv", shQuote(file), shQuote(file.path(target_dir, basename(file)))))
         
         if (!file.exists(file)) {
-          cat("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
-          cat(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
+          message("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
+          message(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
         } else {
-          cat("Move failed. This might be due to permissions or an open file lock.\n")
+          warning("Move failed. This might be due to permissions or an open file lock.\n")
         }
       }
     }
-    cat("\n file movement complete.\n")
-  } else {
-    cat("Skipping file transfer because cloud_bucket is NULL.\n")
   }
   message("Finished iteration ", niter, ".")
   invisible(TRUE)
