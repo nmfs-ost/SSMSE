@@ -531,7 +531,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
   assertive.types::assert_is_any_of(nyrs_assess, c("integer", "numeric"))
   assertive.types::assert_is_any_of(niter, c("integer", "numeric"))
   assertive.types::assert_is_any_of(nscen, c("integer", "numeric"))
-
+  
   # temp_sample_struct <- sample_struct
   # sample_struct[["run_maxF"]] <- NULL
   # sample_struct[["Fleet_group"]] <- NULL
@@ -606,7 +606,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     OM_dir = OM_out_dir, base_dat = Base_dat,
     verbose = verbose, seed = (iter_seed[["iter"]][1] + 12345)
   )
- 
+  
   # convert sample_struct names ----
   # get the full sampling structure for components that the user didnt specify.
   # if meaning is ambiguous, then this will exit on error.
