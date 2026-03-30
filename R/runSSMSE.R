@@ -341,6 +341,11 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   } else {
     max_prev_iter <- 0
   }
+  # create an extras list to store max_prev_iter 
+  if (is.null(extras)) {
+    extras <- list()
+  }
+  extras$max_prev_iter <- max_prev_iter
   # make a dataframe to store dataframes that error
   return_val <- vector(mode = "list", length = iter)
   
@@ -727,7 +732,9 @@ run_SSMSE_iter <- function(out_dir = NULL,
     seed = (iter_seed[["iter"]][1] + 123456),
     sample_struct = sample_struct, # add for bias
     sample_struct_hist = sample_struct_hist,  # add for bias
-    extras = extras
+    extras = extras, 
+    niter = niter, 
+    nscen = nscen 
   )
  
   message(
@@ -852,7 +859,9 @@ run_SSMSE_iter <- function(out_dir = NULL,
         sample_struct_hist = sample_struct_hist,  # add for bias
         interim_struct = interim_struct,
         extras = extras,
-        seed = (iter_seed[["iter"]][1] + 5678901 + yr)
+        seed = (iter_seed[["iter"]][1] + 5678901 + yr), 
+        niter = niter, 
+        nscen = nscen
       )
       message(
         paste0("Finished getting catch (years ", (yr + 1), " to ",

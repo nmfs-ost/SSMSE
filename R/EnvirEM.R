@@ -180,7 +180,10 @@ EnvirEM <- function(EM_out_dir = NULL,
                     sample_struct = NULL,
                     sample_struct_hist = NULL,
                     seed = NULL,
-                    OM_out_dir,
+                    OM_out_dir, 
+                    niter = niter, 
+                    nscen = nscen,
+                    extras = extras,
                     ...) {
   
   SSMSE:::check_dir(EM_out_dir)
@@ -190,6 +193,42 @@ EnvirEM <- function(EM_out_dir = NULL,
   start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
+  ## Add the extras$FixedCatchEM and move OM check here
+  ## If RandomFixedCatch exists
+  # check if it is a list or data.frame with scenarios and iterations
+  # use the specific iteration/scenario combo to define FixedCatches in the OM.  
+  fc_names <- names(sample_struct$FixedCatch)
+  if (!is.null(extras$RandomFixedCatch)) {
+    if (is.list(extras$RandomFixedCatch)) {
+      sample_struct$FixedCatch <- extras$RandomFixedCatch[[niter-extras$max_prev_iter]]
+    } else if (is.data.frame(extras$RandomFixedCatch)) {
+      sample_struct$FixedCatch <- extras$RandomFixedCatch[[nscen]][[niter-extras$max_prev_iter]]
+    } else {
+      warning("Error: RandomFixedCatch format is not list or data.frame")
+    }
+  }
+  names(sample_struct$FixedCatch) <- fc_names
+  
+  ## If RandomFixedCatchEMEM exists
+  # check if it is a list or data.frame with scenarios and iterations
+  # use the specific iteration/scenario combo to define FixedCatchEMes in the OM.  
+  fcem_names <- names(sample_struct$FixedCatchEM)
+  if (!is.null(extras$RandomFixedCatchEM)) {
+    if (is.list(extras$RandomFixedCatchEM)) {
+      if (is.list(extras$RandomFixedCatchEM[[1]])) {
+        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM[[niter-extras$max_prev_iter]]
+      } else if (is.data.frame(extras$RandomFixedCatchEM)) {
+        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM[[nscen]][[niter-extras$max_prev_iter]]
+      } else {
+        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM
+      }
+    } else if (is.data.frame(extras$RandomFixedCatchEM)) {
+      sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM
+    } else {
+      warning("Error: RandomFixedCatchEM format is not list or data.frame")
+    }
+  }
+  names(sample_struct$FixedCatchEM) <- fcem_names
   
   if (init_loop) {
     

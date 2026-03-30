@@ -36,7 +36,7 @@ parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
                      init_loop = TRUE, OM_dat, OM_out_dir = NULL,
                      verbose = FALSE, nyrs_assess, dat_yrs, future_om_list = NULL,
                      sample_struct = NULL, sample_struct_hist = NULL, 
-                     interim_struct = NULL, extras = NULL, seed = NULL) {
+                     interim_struct = NULL, extras = NULL, seed = NULL, niter = NULL, nscen = NULL) {
   if (verbose) {
     message("Parsing the management strategy.")
   }
@@ -69,7 +69,9 @@ parse_MS <- function(MS, EM_out_dir = NULL, EM_init_dir = NULL,
     sample_struct_hist = sample_struct_hist,
     interim_struct = interim_struct,
     extras = extras,
-    seed = seed
+    seed = seed, 
+    niter = niter, 
+    nscen = nscen
   )
   
   new_catch_list <- do.call(MS, args = pars_list)
