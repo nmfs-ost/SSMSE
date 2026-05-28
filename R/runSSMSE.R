@@ -321,13 +321,14 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   dir.create(out_dir_iter, showWarnings = FALSE)
   # find the first iteration, in case other iterations have been run previously
   # for this scenario.
+  
   all_folds <- list.dirs(path = out_dir_iter, full.names = FALSE)
-  existing_iters <- grep("^[0-9]+$", all_folds, value = TRUE)
+  existing_iters <- grep("[0-9]+$", all_folds, value = TRUE)
   if (length(existing_iters) > 0) {
-    get_iter_index <- function(inter_names){
-      iter_num <- rep(NA,length(inter_names))
-      for(iter_val in seq_along(inter_names)){
-        temp_string  <- strsplit(inter_names[iter_val],"iter_",fixed=TRUE)
+    get_iter_index <- function(iter_names){
+      iter_num <- rep(NA,length(iter_names))
+      for(iter_val in seq_along(iter_names)){
+        temp_string  <- strsplit(iter_names[iter_val],"iter_",fixed=TRUE)[[1]]
         temp_string <- temp_string[which(temp_string!="")]
         iter_num[iter_val] <- temp_string[1]
       }
