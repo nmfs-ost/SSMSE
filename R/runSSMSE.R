@@ -324,7 +324,16 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   all_folds <- list.dirs(path = out_dir_iter, full.names = FALSE)
   existing_iters <- grep("^[0-9]+$", all_folds, value = TRUE)
   if (length(existing_iters) > 0) {
-    max_prev_iter <- max(as.integer(existing_iters))
+    get_iter_index <- function(inter_names){
+      iter_num <- rep(NA,length(inter_names))
+      for(iter_val in seq_along(inter_names)){
+        temp_string  <- strsplit(inter_names[iter_val],"iter_",fixed=TRUE)
+        temp_string <- temp_string[which(temp_string!="")]
+        iter_num[iter_val] <- temp_string[1]
+      }
+      return(iter_num)
+    }
+    max_prev_iter <- max(as.integer(get_iter_index(existing_iters)))
     message(
       "Previous iterations found in folder for scenario ", scen_name, ".",
       " First iteration folder will be ", max_prev_iter + 1, "."
@@ -334,8 +343,7 @@ run_SSMSE_scen <- function(scen_name = "scen_1",
   }
   # make a dataframe to store dataframes that error
   return_val <- vector(mode = "list", length = iter)
-  
-  
+
   if (run_parallel) {
     return_val <- foreach::`%dopar%`(
       foreach::foreach(i = seq_len(iter), .errorhandling = "pass"),

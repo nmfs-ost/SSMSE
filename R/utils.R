@@ -498,7 +498,7 @@ create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
   if (!is.null(EM_in_dir)) assertive.types::assert_is_a_string(EM_in_dir)
   # create out_dir, named by the value of niter
   if (is.null(out_dir)) out_dir <- getwd()
-  out_dir <- file.path(out_dir, as.character(niter))
+  out_dir <- file.path(out_dir, paste0("iter_", as.character(niter)))
   if (dir.exists(out_dir)) {
     warning(out_dir, " already exists, so skipping the iteration.")
     return(NULL)
