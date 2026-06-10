@@ -397,11 +397,6 @@ add_dev_changes <- function(fut_list, scen, iter, parlist, dat, vals_df, nyrs, c
         parname = i
       )
 
-      if (i == "rec_devs") {
-        if(is.na(fut_list[["pattern"]][2])){
-          fut_list[["pattern"]][2] <- "lognormal"
-        }
-      }
       # if it is specified: then parse this input to figure out what the
       # sampled mean should be.
       # find the sd: 2) is the sd specified? If not, use sd of 1 to sample (or historical sd?)
@@ -410,9 +405,9 @@ add_dev_changes <- function(fut_list, scen, iter, parlist, dat, vals_df, nyrs, c
         ndevs = nyrs,
         dist = fut_list[["pattern"]][2]
       )
-      #if (i == "rec_devs") {
-      #  samp_vals <- samp_vals - mean(samp_vals) + mean
-      #}
+      if (i == "rec_devs") {
+        samp_vals <- samp_vals - 0.5*(sd^2)
+      }
       # add the sampled values to the vals_df
       vals_df[[i]] <- samp_vals
     }
