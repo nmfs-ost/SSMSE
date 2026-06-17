@@ -13,11 +13,22 @@
 #' @param hess Should the hessian be estimated if reffiting the OMs? defaults to
 #'  FALSE
 #' @export
-develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par_name, par_vals,
-                        refit_OMs = TRUE, hess = FALSE) {
+develop_OMs <- function(
+  OM_name = NULL,
+  OM_in_dir = NULL,
+  out_dir = getwd(),
+  par_name,
+  par_vals,
+  refit_OMs = TRUE,
+  hess = FALSE
+) {
   # check input
-  if (!is.null(OM_name)) assertive.types::assert_is_a_string(OM_name)
-  if (!is.null(OM_in_dir)) assertive.types::assert_is_a_string(OM_in_dir)
+  if (!is.null(OM_name)) {
+    assertive.types::assert_is_a_string(OM_name)
+  }
+  if (!is.null(OM_in_dir)) {
+    assertive.types::assert_is_a_string(OM_in_dir)
+  }
   assertive.types::assert_is_a_string(out_dir)
   assertive.types::assert_is_a_string(par_name)
   assertive.properties::assert_is_atomic(par_vals)
@@ -40,11 +51,16 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
     OM_in_dir <- pkg_dirs[grep(OM_name, pkg_dirs)]
     if (length(OM_in_dir) != 1) {
       stop(
-        "OM_name ", OM_name, " matched ", length(OM_in_dir), " models in ",
+        "OM_name ",
+        OM_name,
+        " matched ",
+        length(OM_in_dir),
+        " models in ",
         "SSMSE external package data, but should match 1. Please ",
         "change OM_name to match (or partially match unambiguously) with 1 ",
         "model in the models folder of the SSMSE external package data. ",
-        "Model options are: ", paste0(basename(pkg_dirs), collapse = ", ")
+        "Model options are: ",
+        paste0(basename(pkg_dirs), collapse = ", ")
       )
     }
   }
@@ -83,9 +99,12 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       to = tmp_mod_path
     )
     r4ss::SS_changepars(
-      dir = tmp_mod_path, ctlfile = "control.ss_new",
-      newctlfile = "control_modified.ss", strings = par_name,
-      newvals = i, verbose = FALSE
+      dir = tmp_mod_path,
+      ctlfile = "control.ss_new",
+      newctlfile = "control_modified.ss",
+      strings = par_name,
+      newvals = i,
+      verbose = FALSE
     )
     # remove files with old values
     file.remove(file.path(tmp_mod_path, "control.ss_new"))
@@ -110,13 +129,12 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {
         warning("Problem refitting model in ", tmp_mod_path)
       }
-      data_files <- list.files(
-        tmp_mod_path,
-        pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
-        full.names = TRUE
-      )
-      if (length(data_files) > 0) {
-        file.remove(data_files)
+      if (
+        # if redundant files exist, delete the one with the old name
+        file.exists(file.path(tmp_mod_path, "data.ss_new")) &&
+          file.exists(file.path(tmp_mod_path, "data_echo.ss_new"))
+      ) {
+        file.remove(file.path(tmp_mod_path, "data.ss_new"))
       }
     } else {
       # run with no estimation
@@ -128,35 +146,39 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {
         warning("Problem running model without estimation in ", tmp_mod_path)
       }
-      data_files <- list.files(
-        tmp_mod_path,
-        pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
-        full.names = TRUE
-      )
-      if (length(data_files) > 0) {
-        file.remove(data_files)
+      if (
+        # if redundant files exist, delete the one with the old name
+        file.exists(file.path(tmp_mod_path, "data.ss_new")) &&
+          file.exists(file.path(tmp_mod_path, "data_echo.ss_new"))
+      ) {
+        file.remove(file.path(tmp_mod_path, "data.ss_new"))
       }
       # add back original recdevs into the model (b/c not specified through the ctl file)
       new_parfile <- r4ss::SS_readpar_3.30(
         parfile = get_ss_par_file(tmp_mod_path),
         datsource = file.path(tmp_mod_path, start[["datfile"]]),
-        ctlsource = file.path(tmp_mod_path, start[["ctlfile"]]), verbose = FALSE
+        ctlsource = file.path(tmp_mod_path, start[["ctlfile"]]),
+        verbose = FALSE
       )
       if (!is.null(new_parfile[["recdev1"]])) {
         recdev_name <- "recdev1"
       } else {
         recdev_name <- "recdev2"
       }
-      new_parfile[[recdev_name]][, "recdev"] <- parfile[[recdev_name]][, "recdev"]
+      new_parfile[[recdev_name]][, "recdev"] <- parfile[[recdev_name]][,
+        "recdev"
+      ]
 
       # add back original F estimates for F method 2 assessments otherwise they all default to 0.05
       if (!is.null(new_parfile[["F_rate"]])) {
         new_parfile[["F_rate"]][, "F"] <- parfile[["F_rate"]][, "F"]
       }
 
-      r4ss::SS_writepar_3.30(new_parfile,
+      r4ss::SS_writepar_3.30(
+        new_parfile,
         outfile = get_ss_par_file(tmp_mod_path),
-        verbose = FALSE, overwrite = TRUE
+        verbose = FALSE,
+        overwrite = TRUE
       )
     }
   }
