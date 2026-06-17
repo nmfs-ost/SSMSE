@@ -25,7 +25,13 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
     dir = file.path(new_mod_dir), overwrite = TRUE,
     verbose = FALSE
   )
-  try(run_ss_model(new_mod_dir, "-maxfn 0 -phase 50 -nohess", verbose = FALSE))
+  try(r4ss::run(
+    dir = new_mod_dir,
+    exe = get_bin(),
+    extras = "-maxfn 0 -phase 50 -nohess",
+    skipfinished = FALSE,
+    verbose = FALSE
+  ))
   # read in the 2 par files.
   orig_par <- readLines(get_ss_par_file(orig_mod_dir))
 

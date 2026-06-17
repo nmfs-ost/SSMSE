@@ -121,9 +121,11 @@ develop_OMs <- function(
       to = file.path(tmp_mod_path, start[["ctlfile"]])
     )
     if (refit_OMs == TRUE) {
-      run_ss_model(
+      r4ss::run(
         dir = tmp_mod_path,
-        admb_options = opts,
+        exe = get_bin(),
+        extras = opts,
+        skipfinished = FALSE,
         verbose = FALSE
       )
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {
@@ -138,9 +140,11 @@ develop_OMs <- function(
       }
     } else {
       # run with no estimation
-      run_ss_model(
+      r4ss::run(
         dir = tmp_mod_path,
-        admb_options = "-maxfn 0 -phase 50 -nohess",
+        exe = get_bin(),
+        extras = "-maxfn 0 -phase 50 -nohess",
+        skipfinished = FALSE,
         verbose = FALSE
       )
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {

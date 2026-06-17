@@ -58,7 +58,11 @@ test_that("create_OM can modify model", {
   start <- r4ss::SS_readstarter(file.path(temp_path, "cod", "starter.ss"))
   expect_true(start[["init_values_src"]] == 1) # b/c should be running from.par.
   file.remove(file.path(temp_path, "cod", "control.ss_new"))
-  run_ss_model(file.path(temp_path, "cod"), "-maxfn 0 -phase 50 -nohess",
+  r4ss::run(
+    dir = file.path(temp_path, "cod"),
+    exe = get_bin(),
+    extras = "-maxfn 0 -phase 50 -nohess",
+    skipfinished = FALSE,
     verbose = FALSE
   )
   expect_true(file.exists(file.path(temp_path, "cod", "control.ss_new")))
