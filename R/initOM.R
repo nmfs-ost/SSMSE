@@ -86,8 +86,9 @@ create_OM <- function(OM_out_dir,
     verbose = FALSE, printstats = FALSE,
     covar = FALSE
   )
+  par_file <- get_ss_par_file(OM_out_dir)
   parlist <- r4ss::SS_readpar_3.30(
-    parfile = file.path(OM_out_dir, "ss.par"),
+    parfile = par_file,
     datsource = dat, ctlsource = ctl,
     verbose = FALSE
   )
@@ -344,7 +345,7 @@ create_OM <- function(OM_out_dir,
   )
   r4ss::SS_writepar_3.30(
     parlist = parlist,
-    outfile = file.path(OM_out_dir, "ss.par"),
+    outfile = get_ss_par_file(OM_out_dir),
     overwrite = TRUE
   )
 
@@ -363,11 +364,8 @@ create_OM <- function(OM_out_dir,
       verbose = verbose,
       debug_par_run = TRUE
     )
-    if (file.exists(file.path(OM_out_dir, "data.ss_new")) && file.exists(file.path(OM_out_dir, "data_echo.ss_new"))) {
-      file.remove(file.path(OM_out_dir, "data.ss_new"))
-    }
     # TODO: maybe add the following check into the debug par run arg of run_ss_model?
-    check_par <- readLines(file.path(OM_out_dir, "ss.par"))
+    check_par <- readLines(get_ss_par_file(OM_out_dir))
     check_sum_val <- check_par[grep("checksum999", check_par) + 1]
     if (as.numeric(check_sum_val) != 999) {
       stop(
@@ -385,8 +383,18 @@ create_OM <- function(OM_out_dir,
       )
     }
     # check model runs without producing nans in the data file
-    data_filepath <- list.files(file.path(OM_out_dir), pattern = "data.ss_new|data_echo.ss_new", full.names = TRUE)
-    tmp_new_dat <- readLines(data_filepath)
+    data_filepath <- list.files(
+      file.path(OM_out_dir),
+      pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
+      full.names = TRUE
+    )
+    if (length(data_filepath) == 0) {
+      stop(
+        "No SS3 data output file was created in ", OM_out_dir,
+        ". Please check the model run."
+      )
+    }
+    tmp_new_dat <- readLines(data_filepath[1])
     nan_vals <- grep("nan", tmp_new_dat)
     if (length(nan_vals) > 0) {
       stop(
@@ -491,29 +499,40 @@ run_OM <- function(OM_dir,
   if (file.exists(file.path(OM_dir, "data.ss_new")) && file.exists(file.path(OM_dir, "data_echo.ss_new"))) {
     file.remove(file.path(OM_dir, "data.ss_new"))
   }
-  data_filename <- list.files(file.path(OM_dir), pattern = "data.ss_new|data_echo.ss_new")
-  if (data_filename == "data.ss_new") {
+  data_filename <- get_data_file(OM_dir, "bootstrap")
+  if (is.null(data_filename)) {
+    stop(
+      "Could not find a bootstrap data file in ", OM_dir,
+      ". Expected data_boot_001.ss or an older data.ss_new style output."
+    )
+  }
+  if (data_filename %in% c("data.ss_new", "data_echo.ss_new")) {
     dat <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
-      section = max_section, # bootstrap file in v3.30.21
+      section = max_section,
       verbose = FALSE
     )
   } else {
-    # for SS3 v3.30.21
-    dat <- r4ss::SS_readdat(file.path(OM_dir, "data_boot_001.ss"),
+    dat <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
       verbose = FALSE
     )
   }
   # replace with the expected catch values if sample_catch is FALSE and using
   # bootstrap
-  if (boot == TRUE & sample_catch == FALSE) {
-    if (data_filename == "data.ss_new") {
-      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, data_filename),
-        section = 2, # expected values data file in v3.30.21
+  if (boot == TRUE && sample_catch == FALSE) {
+    exp_filename <- get_data_file(OM_dir, "expected")
+    if (is.null(exp_filename)) {
+      stop(
+        "Could not find an expected-values data file in ", OM_dir,
+        ". Expected data_expval.ss or an older data.ss_new style output."
+      )
+    }
+    if (exp_filename %in% c("data.ss_new", "data_echo.ss_new")) {
+      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, exp_filename),
+        section = 2,
         verbose = FALSE
       )
     } else {
-      # for SS3 v3.30.21
-      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, "data_expval.ss"),
+      exp_vals <- r4ss::SS_readdat(file.path(OM_dir, exp_filename),
         verbose = FALSE
       )
     }

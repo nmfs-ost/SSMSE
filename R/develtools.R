@@ -27,13 +27,16 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
   )
   try(run_ss_model(new_mod_dir, "-maxfn 0 -phase 50 -nohess", verbose = FALSE))
   # read in the 2 par files.
-  orig_par <- readLines(file.path(orig_mod_dir, "ss.par"))
+  orig_par <- readLines(get_ss_par_file(orig_mod_dir))
 
-  dat_file <- list.files(new_mod_dir, pattern = "data.ss_new|data_echo.ss_new")
+  dat_file <- list.files(
+    new_mod_dir,
+    pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$"
+  )
 
   if (length(dat_file) > 0) {
     if (file.exists(file.path(new_mod_dir, dat_file))) {
-      new_par <- readLines(file.path(new_mod_dir, "ss.par"))
+      new_par <- readLines(get_ss_par_file(new_mod_dir))
       if (length(orig_par) != length(new_par)) {
         new_par_names <- grep("^# [^N]", new_par, value = TRUE)
         orig_par_names <- grep("^# [^N]", orig_par, value = TRUE)

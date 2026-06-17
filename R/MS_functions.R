@@ -408,14 +408,15 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     verbose = FALSE, readAll = TRUE
   )
   # read par file (using read lines for simplicity.)
-  par <- readLines(file.path(OM_dir, "ss.par"))
+  par_file <- get_ss_par_file(OM_dir)
+  par <- readLines(par_file)
   # use forecasting to find the values desired
   # keep old forecasting
   file.copy(file.path(OM_dir, "forecast.ss"),
     file.path(OM_dir, "forecast_OM.ss"),
     overwrite = TRUE
   )
-  file.copy(file.path(OM_dir, "ss.par"), file.path(OM_dir, "ss_OM.par"),
+  file.copy(par_file, file.path(OM_dir, "ss_OM.par"),
     overwrite = TRUE
   )
   # get the catch values by MS.
@@ -485,7 +486,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     par[Fcast_rec_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
     Fcast_impl_err_line <- grep("^# Fcast_impl_error:$", par) + 1
     par[Fcast_impl_err_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
-    writeLines(par, file.path(OM_dir, "ss.par"))
+    writeLines(par, par_file)
     # Run SS3 with the new catch set as forecast targets. This will use SS3 to
     # calculate the F required in the OM to achieve these catches.
     run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
@@ -529,7 +530,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     file.path(OM_dir, "forecast.ss"),
     overwrite = TRUE
   )
-  file.copy(file.path(OM_dir, "ss_OM.par"), file.path(OM_dir, "ss.par"),
+  file.copy(file.path(OM_dir, "ss_OM.par"), par_file,
     overwrite = TRUE
   )
   return_list <- list(
@@ -593,7 +594,12 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
     )
     Reference_ctl <- SS_readctl(file = file.path(EM_out_dir, start[["ctlfile"]]), use_datlist = TRUE, datlist = Reference_dat, verbose = FALSE)
     Reference_forecast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"), verbose = FALSE)
-    Reference_par <- SS_readpar_3.30(parfile = file.path(EM_out_dir, "ss.par"), datsource = Reference_dat, ctlsource = Reference_ctl, verbose = FALSE)
+    Reference_par <- SS_readpar_3.30(
+      parfile = get_ss_par_file(EM_out_dir),
+      datsource = Reference_dat,
+      ctlsource = Reference_ctl,
+      verbose = FALSE
+    )
     SS_writestarter(
       mylist = start,
       dir = EM_out_dir,
@@ -616,7 +622,11 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
     colnames(temp_impl_error) <- c("year", "impl_error")
     Reference_par[["Fcast_impl_error"]] <- as.data.frame(temp_impl_error)
 
-    SS_writepar_3.30(parlist = Reference_par, outfile = file.path(EM_out_dir, "ss.par"), overwrite = TRUE)
+    SS_writepar_3.30(
+      parlist = Reference_par,
+      outfile = get_ss_par_file(EM_out_dir),
+      overwrite = TRUE
+    )
 
     SS_writeforecast(
       mylist = Reference_forecast,
@@ -674,15 +684,20 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
     run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
 
 
-    data_filename <- list.files(file.path(EM_out_dir), pattern = "data.ss_new|data_expval.ss")
-    if (data_filename == "data.ss_new") {
-      exp_vals <- SS_readdat(file.path(EM_out_dir, data_filename),
-        section = 2, # expected values data file in v3.30.21
+    exp_filename <- get_data_file(EM_out_dir, "expected")
+    if (is.null(exp_filename)) {
+      stop(
+        "Could not find an expected-values data file in ", EM_out_dir,
+        ". Expected data_expval.ss or an older data.ss_new style output."
+      )
+    }
+    if (exp_filename %in% c("data.ss_new", "data_echo.ss_new")) {
+      exp_vals <- SS_readdat(file.path(EM_out_dir, exp_filename),
+        section = 2,
         verbose = FALSE
       )
     } else {
-      # for SS3 v3.30.21
-      exp_vals <- r4ss::SS_readdat(file.path(EM_out_dir, "data_expval.ss"),
+      exp_vals <- r4ss::SS_readdat(file.path(EM_out_dir, exp_filename),
         verbose = FALSE
       )
     }

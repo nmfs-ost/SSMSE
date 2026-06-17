@@ -58,7 +58,7 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
     #         " If parameter devs are desired, use refit_OMs = TRUE.")
     # read in parfile to save the recdevs.
     parfile <- r4ss::SS_readpar_3.30(
-      parfile = file.path(OM_in_dir, "ss.par"),
+      parfile = get_ss_par_file(OM_in_dir),
       datsource = file.path(OM_in_dir, start[["datfile"]]),
       ctlsource = file.path(OM_in_dir, start[["ctlfile"]]),
       verbose = FALSE
@@ -90,7 +90,13 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
     # remove files with old values
     file.remove(file.path(tmp_mod_path, "control.ss_new"))
     file.remove(file.path(tmp_mod_path, start[["ctlfile"]]))
-    file.remove(file.path(tmp_mod_path, "ss.par"))
+    par_file <- get_ss_par_file(tmp_mod_path)
+    if (file.exists(par_file)) {
+      file.remove(par_file)
+    }
+    if (file.exists(file.path(tmp_mod_path, "ss.par"))) {
+      file.remove(file.path(tmp_mod_path, "ss.par"))
+    }
     file.rename(
       from = file.path(tmp_mod_path, "control_modified.ss"),
       to = file.path(tmp_mod_path, start[["ctlfile"]])
@@ -104,8 +110,13 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {
         warning("Problem refitting model in ", tmp_mod_path)
       }
-      if (file.exists(file.path(tmp_mod_path, "data.ss_new")) && file.exists(file.path(tmp_mod_path, "data_echo.ss_new"))) {
-        file.remove(file.path(tmp_mod_path, "data.ss_new"))
+      data_files <- list.files(
+        tmp_mod_path,
+        pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
+        full.names = TRUE
+      )
+      if (length(data_files) > 0) {
+        file.remove(data_files)
       }
     } else {
       # run with no estimation
@@ -117,12 +128,17 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       if (!file.exists(file.path(tmp_mod_path, "control.ss_new"))) {
         warning("Problem running model without estimation in ", tmp_mod_path)
       }
-      if (file.exists(file.path(tmp_mod_path, "data.ss_new")) && file.exists(file.path(tmp_mod_path, "data_echo.ss_new"))) {
-        file.remove(file.path(tmp_mod_path, "data.ss_new"))
+      data_files <- list.files(
+        tmp_mod_path,
+        pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
+        full.names = TRUE
+      )
+      if (length(data_files) > 0) {
+        file.remove(data_files)
       }
       # add back original recdevs into the model (b/c not specified through the ctl file)
       new_parfile <- r4ss::SS_readpar_3.30(
-        parfile = file.path(tmp_mod_path, "ss.par"),
+        parfile = get_ss_par_file(tmp_mod_path),
         datsource = file.path(tmp_mod_path, start[["datfile"]]),
         ctlsource = file.path(tmp_mod_path, start[["ctlfile"]]), verbose = FALSE
       )
@@ -139,7 +155,7 @@ develop_OMs <- function(OM_name = NULL, OM_in_dir = NULL, out_dir = getwd(), par
       }
 
       r4ss::SS_writepar_3.30(new_parfile,
-        outfile = file.path(tmp_mod_path, "ss.par"),
+        outfile = get_ss_par_file(tmp_mod_path),
         verbose = FALSE, overwrite = TRUE
       )
     }

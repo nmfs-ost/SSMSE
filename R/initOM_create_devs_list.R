@@ -70,7 +70,7 @@ convert_future_om_list_to_devs_df <- function(future_om_list, scen_name,
     datlist = dat
   )
   par <- r4ss::SS_readpar_3.30(
-    parfile = file.path(om_mod_path, "ss.par"),
+    parfile = get_ss_par_file(om_mod_path),
     datsource = file.path(om_mod_path, start[["datfile"]]),
     ctlsource = file.path(om_mod_path, start[["ctlfile"]]),
     verbose = FALSE

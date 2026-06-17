@@ -55,15 +55,15 @@ run_ss_model <- function(dir,
   os <- .Platform[["OS.type"]]
   bin <- get_bin(ss3_bin)
   if (check_run == TRUE) {
-    # new data file named for ss3 v.3.30.18 and prior
-    if (file.exists(file.path(dir, "data.ss_new")) && file.exists(file.path(dir, "data_echo.ss_new"))) {
-      file.remove(file.path(dir, "data.ss_new"))
-    }
-    ss_new_path <- list.files(dir, pattern = "data.ss_new|data_echo.ss_new", full.names = TRUE)
+    # remove any previous data outputs before rerunning, covering both
+    # the legacy and current SS3 naming conventions.
+    ss_new_path <- list.files(
+      dir,
+      pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$",
+      full.names = TRUE
+    )
     if (length(ss_new_path) > 0) {
-      if (file.exists(ss_new_path)) {
-        file.remove(ss_new_path)
-      }
+      file.remove(ss_new_path)
     }
   }
   if (verbose) message("Running SS3.")
@@ -83,7 +83,11 @@ run_ss_model <- function(dir,
     )
   }
   if (check_run == TRUE) {
-    if (!file.exists(file.path(dir, "data.ss_new")) && !file.exists(file.path(dir, "data_echo.ss_new"))) {
+    ss_new_path <- list.files(
+      dir,
+      pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$"
+    )
+    if (length(ss_new_path) == 0) {
       if (debug_par_run) {
         test_no_par(
           orig_mod_dir = dir,
@@ -92,13 +96,18 @@ run_ss_model <- function(dir,
         # note that this will exit on error.
       } else {
         stop(
-          "New data file (data.ss_new if using SS3 v3.30.18 or data_echo.ss_new ",
-          "if using SS3 v3.30.21) was not created during the model run, which ",
-          "suggests SS3 did not run correctly."
+          "No SS3 output data files were created during the model run. ",
+          "Expected one of data.ss_new, data_echo.ss_new, data_expval.ss, ",
+          "or data_boot_001.ss."
         )
       }
     } else {
-      if (verbose) "new data file (data.ss_new if using SS3 3.30.18 or data_echo.ss_new if using SS3 3.30.21) created during model run."
+      if (verbose) {
+        message(
+          "SS3 output data files created during model run: ",
+          paste(ss_new_path, collapse = ", ")
+        )
+      }
     }
   }
   Sys.sleep(admb_pause)
