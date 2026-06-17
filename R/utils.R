@@ -1,5 +1,12 @@
 # utility functions for the packages. Construct objects, move files, etc.
 
+#' Locate the SS3 parameter file used by a model run.
+#'
+#' This helper prefers the current `ss3.par` filename when present and falls
+#' back to the legacy `ss.par` name for older model directories.
+#'
+#' @param dir Directory containing the SS3 model files.
+#' @return A character string giving the full path to the parameter file.
 get_ss_par_file <- function(dir) {
   par_file <- c("ss3.par", "ss.par")
   found <- par_file[file.exists(file.path(dir, par_file))]
@@ -9,6 +16,16 @@ get_ss_par_file <- function(dir) {
   file.path(dir, found[1])
 }
 
+#' Locate the SS3 data file(s) associated with a model run.
+#'
+#' The helper recognizes both legacy and current output layouts, including
+#' `data.ss_new`, `data_echo.ss_new`, `data_expval.ss`, and `data_boot_001.ss`.
+#'
+#' @param dir Directory containing the SS3 model files.
+#' @param file_type Which type of output file to look for. Supported values
+#'   are `all`, `input`, `expected`, and `bootstrap`.
+#' @return The first matching data file name in the requested priority order,
+#'   or `NULL` if no matching file is present.
 get_data_file <- function(dir, file_type = c("all", "input", "expected", "bootstrap")) {
   file_type <- match.arg(file_type)
   if (file_type == "input") {

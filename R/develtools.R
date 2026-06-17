@@ -74,3 +74,35 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
   }
   invisible(orig_mod_dir)
 }
+
+#' function for package developers to update SS3 input files
+#' 
+#' @param dir_models directory containing the model input files
+
+update_ss3_version <- function(dir_models = "inst/extdata/models") {
+  # get list of models
+  models <- dir(dir_models, full.names = TRUE)
+
+  # get current executable
+  dir_exe <- r4ss::get_ss3_exe(dir = tempdir())
+  
+  # run with current SS3 version without estimation
+  for (i in 1:length(models)) {
+    r4ss::run(
+      dir = models[i],
+      exe = dir_exe,
+      skipfinished = FALSE,
+      extras = "-nohess -stopph 0"
+    )
+  }
+
+  # replace original files with renamed ss_new files
+  for (i in 1:length(models)) {
+    r4ss::copy_SS_inputs(
+      dir.old = models[i],
+      dir.new = models[i],
+      use_ss_new = TRUE,
+      overwrite = TRUE
+    )
+  }
+}

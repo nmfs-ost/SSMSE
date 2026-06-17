@@ -1,5 +1,9 @@
 # SSMSE
 
+## SSMSE 0.4.0
+
+- Update for compatibility with newer Stock Synthesis releases (up to 3.30.24.2), including current file naming conventions such as `ss3.par`, `data_expval.ss`, and `data_boot_001.ss`.
+
 # SSMSE 0.3.0
 
 ## Major changes
