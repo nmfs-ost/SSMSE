@@ -71,7 +71,7 @@ update_OM <- function(OM_dir,
   )
   # read in parameter file
   parlist <- r4ss::SS_readpar_3.30(
-    parfile = file.path(OM_dir, "ss.par"),
+    parfile = get_ss_par_file(OM_dir),
     datsource = dat, ctlsource = ctl,
     verbose = FALSE
   )
@@ -335,7 +335,7 @@ update_OM <- function(OM_dir,
 
   # write new files
   r4ss::SS_writepar_3.30(
-    parlist = parlist, outfile = file.path(OM_dir, "ss.par"),
+    parlist = parlist, outfile = get_ss_par_file(OM_dir),
     overwrite = TRUE, verbose = FALSE
   )
 
@@ -358,7 +358,7 @@ update_OM <- function(OM_dir,
       achieved_Catch <- FALSE
 
       r4ss::SS_writepar_3.30(
-        parlist = parlist, outfile = file.path(OM_dir, "ss.par"),
+        parlist = parlist, outfile = get_ss_par_file(OM_dir),
         overwrite = TRUE, verbose = FALSE
       )
 
@@ -487,7 +487,7 @@ update_OM <- function(OM_dir,
       achieved_Catch <- TRUE
 
       parlist <- r4ss::SS_readpar_3.30(
-        parfile = file.path(OM_dir, "ss.par"),
+        parfile = get_ss_par_file(OM_dir),
         datsource = dat, ctlsource = ctl,
         verbose = FALSE
       )

@@ -119,6 +119,20 @@ test_that("create_scen_list works with NAs", {
   expect_equal(scen_list_out, scen_list)
 })
 
+test_that("SS3 file helpers recognize updated file names", {
+  helper_dir <- file.path(tempdir(), "ss3_file_helpers")
+  dir.create(helper_dir, recursive = TRUE, showWarnings = FALSE)
+  on.exit(unlink(helper_dir, recursive = TRUE), add = TRUE)
+
+  writeLines("test", file.path(helper_dir, "ss3.par"))
+  writeLines("test", file.path(helper_dir, "data_expval.ss"))
+  writeLines("test", file.path(helper_dir, "data_boot_001.ss"))
+
+  expect_equal(basename(get_ss_par_file(helper_dir)), "ss3.par")
+  expect_equal(get_data_file(helper_dir, "expected"), "data_expval.ss")
+  expect_equal(get_data_file(helper_dir, "bootstrap"), "data_boot_001.ss")
+})
+
 # TODO: Add checks for error messages.
 
 # get_input_value tests.

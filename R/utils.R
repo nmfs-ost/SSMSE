@@ -1,5 +1,35 @@
 # utility functions for the packages. Construct objects, move files, etc.
 
+get_ss_par_file <- function(dir) {
+  par_file <- c("ss3.par", "ss.par")
+  found <- par_file[file.exists(file.path(dir, par_file))]
+  if (length(found) == 0) {
+    found <- "ss3.par"
+  }
+  file.path(dir, found[1])
+}
+
+get_data_file <- function(dir, file_type = c("all", "input", "expected", "bootstrap")) {
+  file_type <- match.arg(file_type)
+  if (file_type == "input") {
+    candidates <- c("data.ss_new", "data_echo.ss_new")
+  } else if (file_type == "expected") {
+    candidates <- c("data_expval.ss", "data.ss_new", "data_echo.ss_new")
+  } else if (file_type == "bootstrap") {
+    candidates <- c("data_boot_001.ss", "data.ss_new", "data_echo.ss_new")
+  } else {
+    candidates <- c(
+      "data_expval.ss", "data_boot_001.ss",
+      "data.ss_new", "data_echo.ss_new"
+    )
+  }
+  found <- candidates[file.exists(file.path(dir, candidates))]
+  if (length(found) == 0) {
+    return(NULL)
+  }
+  found[1]
+}
+
 #' Create scen_list object to use in run_SSMSE function.
 #'
 #' Function to create parameter \code{scen_list} in
@@ -597,10 +627,11 @@ copy_model_files <- function(OM_in_dir = NULL,
                              verbose = FALSE) {
   # checks
   if (!is.null(OM_in_dir)) {
-    dat_file <- list.files(OM_in_dir, pattern = "data.ss_new|data_echo.ss_new")
+    dat_file <- get_data_file(OM_in_dir)
+    par_file <- basename(get_ss_par_file(OM_in_dir))
     if (!all(c(
       "control.ss_new", dat_file, "starter.ss_new",
-      "forecast.ss_new", "ss.par"
+      "forecast.ss_new", par_file
     ) %in% list.files(OM_in_dir))) {
       stop(
         ".ss_new files not found in the original OM directory ",

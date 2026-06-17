@@ -140,21 +140,22 @@ plot_index_sampling <- function(dir = getwd()) {
   ), value = TRUE)
   assertive.types::assert_is_a_string(om_name)
 
-  data_file <- list.files(file.path(dir, as.character(iters[1]), om_name), pattern = "data.ss_new|data_echo.ss_new")
-  if (data_file == "data.ss_new") {
+  om_data_dir <- file.path(dir, as.character(iters[1]), om_name)
+  data_file <- get_data_file(om_data_dir)
+  if (is.null(data_file)) {
+    stop(
+      "Could not find a SS3 data output file in ", om_data_dir,
+      ". Expected one of data.ss_new, data_echo.ss_new, data_expval.ss, or data_boot_001.ss."
+    )
+  }
+  if (data_file %in% c("data.ss_new", "data_echo.ss_new")) {
     tmp_dat_OM <- r4ss::SS_readdat(
-      file.path(
-        dir, as.character(iters[1]),
-        om_name, data_file
-      ),
+      file.path(om_data_dir, data_file),
       verbose = FALSE, section = 1
     )
   } else {
     tmp_dat_OM <- r4ss::SS_readdat(
-      file.path(
-        dir, as.character(iters[1]),
-        om_name, data_file
-      ),
+      file.path(om_data_dir, data_file),
       verbose = FALSE
     )
   }
@@ -163,20 +164,18 @@ plot_index_sampling <- function(dir = getwd()) {
   tmp_dat_OM[["CPUE"]][["model_run"]] <- "historical_values"
   index_dat <- tmp_dat_OM[["CPUE"]]
   # get the OM expected values
-  if (data_file == "data.ss_new") {
+  expected_data_file <- get_data_file(om_data_dir, "expected")
+  if (is.null(expected_data_file)) {
+    expected_data_file <- data_file
+  }
+  if (expected_data_file %in% c("data.ss_new", "data_echo.ss_new")) {
     tmp_dat_OM <- r4ss::SS_readdat(
-      file.path(
-        dir, as.character(iters[1]),
-        om_name, data_file
-      ),
+      file.path(om_data_dir, expected_data_file),
       verbose = FALSE, section = 2
     )
   } else {
     tmp_dat_OM <- r4ss::SS_readdat(
-      file.path(
-        dir, as.character(iters[1]),
-        om_name, "data_expval.ss"
-      ),
+      file.path(om_data_dir, expected_data_file),
       verbose = FALSE
     )
   }
@@ -192,20 +191,19 @@ plot_index_sampling <- function(dir = getwd()) {
   ), value = TRUE)
   assertive.types::assert_is_a_string(em_name)
   for (i in iters) {
-    if (data_file == "data.ss_new") {
+    em_data_dir <- file.path(dir, as.character(i), em_name)
+    em_data_file <- get_data_file(em_data_dir)
+    if (is.null(em_data_file)) {
+      em_data_file <- data_file
+    }
+    if (em_data_file %in% c("data.ss_new", "data_echo.ss_new")) {
       tmp_dat_EM <- r4ss::SS_readdat(
-        file.path(
-          dir, as.character(i),
-          em_name, data_file
-        ),
+        file.path(em_data_dir, em_data_file),
         verbose = FALSE, section = 1
       )
     } else {
       tmp_dat_EM <- r4ss::SS_readdat(
-        file.path(
-          dir, as.character(i),
-          em_name, data_file
-        ),
+        file.path(em_data_dir, em_data_file),
         verbose = FALSE
       )
     }
@@ -395,8 +393,14 @@ get_performance_metrics <- function(dir = getwd(),
           )
         }
         om_mod_path <- tmp_mods[om_mod]
-        om_mod_dat <- list.files(om_mod_path, pattern = "data.ss_new|data_echo.ss_new")
-        if (om_mod_dat == "data.ss_new") {
+        om_mod_dat <- get_data_file(om_mod_path)
+        if (is.null(om_mod_dat)) {
+          stop(
+            "Could not find a SS3 data output file in ", om_mod_path,
+            ". Expected one of data.ss_new, data_echo.ss_new, data_expval.ss, or data_boot_001.ss."
+          )
+        }
+        if (om_mod_dat %in% c("data.ss_new", "data_echo.ss_new")) {
           dat <- r4ss::SS_readdat(file.path(om_mod_path, om_mod_dat),
             section = 1, verbose = FALSE
           )
