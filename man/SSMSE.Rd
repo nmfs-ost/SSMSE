@@ -27,6 +27,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Kathryn Doering \email{kathryn.doering@noaa.gov}
   \item Nathan Vaughan \email{nathan.vaughan@noaa.gov}
 }
 

@@ -117,10 +117,13 @@ You can read the help files with
 Note that when SSMSE is installed, [Stock
 Synthesis](https://github.com/nmfs-ost/ss3-source-code) binaries are
 included in the `SSMSE/bin/` folder downloaded to the user’s local R
-library. Currently, Stock Synthesis 3.30.18 is included and 3.30.21 has
-been tested. Separate binaries are included for Windows, Mac and Linux.
-Users may swap out these binaries, but SSMSE is not tested with all
-versions of SSMSE.
+library. SSMSE is being updated for compatibility with newer Stock Synthesis
+releases, including 3.30.24.2. The package logic recognizes both legacy and
+current SS3 file layouts (for example, `ss.par` or `ss3.par`, and the older
+`data.ss_new`/`data_echo.ss_new` outputs as well as the newer
+`data_expval.ss` and `data_boot_001.ss` files). Separate binaries are
+included for Windows, Mac and Linux. Users may swap out these binaries, but
+SSMSE is not tested with all versions of SSMSE.
 
 To swap out the binaries replace them in the installed version of SS3:
 
@@ -136,16 +139,15 @@ path_to_ss3 <- system.file("bin", "Windows64", "ss.exe", package = "SSMSE")
 # path_to_ss3 <- system.file("bin", "Linux64", "ss3", package = "SSMSE")
 
 # Overwrite the included SSMSE binary
-r4ss::get_ss3_exe(dir = path_to_ss3, version = "3.30.21")
+r4ss::get_ss3_exe(dir = path_to_ss3, version = "3.30.24.2")
 
 # For Linux and Mac, the permissions may need to be changed on the binary so that it is executable.
 ```
 
-Note that if you swap the binaries yourself, you will still see a
-message when you load SSMSE that SSMSE is using Stock Synthesis version
-3.30.18, even though this is not true. To verify which version of SS3 is
-being used, check on the header information in the files produced when
-running simulations.
+Note that if you swap the binaries yourself, you may still see a message when
+you load SSMSE that refers to the packaged default version. To verify which
+version of SS3 is actually being used, check the header information in the
+files produced when running simulations.
 
 # Troubleshooting Installation
 
