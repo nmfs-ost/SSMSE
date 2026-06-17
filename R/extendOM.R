@@ -364,9 +364,12 @@ update_OM <- function(OM_dir,
 
       search_loops <- search_loops + 1
 
-      run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
-        verbose = verbose,
-        debug_par_run = TRUE
+      r4ss::run(
+        dir = OM_dir,
+        exe = get_bin(),
+        extras = "-maxfn 0 -phase 50 -nohess",
+        skipfinished = FALSE,
+        verbose = verbose
       )
       # Load the SS3 results
       outlist <- r4ss::SS_output(OM_dir,

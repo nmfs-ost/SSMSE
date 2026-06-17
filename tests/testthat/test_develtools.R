@@ -33,7 +33,11 @@ new_mod_dir <- file.path(temp_path, "new_mod_dir")
 test_that("test_no_par works as expected", {
   skip_on_cran()
   expect_error(
-    run_ss_model(orig_mod_dir, "-maxfn 0 -phase 50 -nohess",
+    r4ss::run(
+      dir = orig_mod_dir,
+      exe = get_bin(),
+      extras = "-maxfn 0 -phase 50 -nohess",
+      skipfinished = FALSE,
       verbose = FALSE
     ),
     "New data file (data.ss_new if using SS3 v3.30.18 or data_echo.ss_new ",

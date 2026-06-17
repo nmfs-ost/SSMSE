@@ -489,9 +489,12 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     writeLines(par, par_file)
     # Run SS3 with the new catch set as forecast targets. This will use SS3 to
     # calculate the F required in the OM to achieve these catches.
-    run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
-      verbose = FALSE,
-      debug_par_run = TRUE
+    r4ss::run(
+      dir = OM_dir,
+      exe = get_bin(),
+      extras = "-maxfn 0 -phase 50 -nohess",
+      skipfinished = FALSE,
+      verbose = FALSE
     )
     # Load the SS3 results
     outlist <- r4ss::SS_output(OM_dir,

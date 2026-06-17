@@ -160,7 +160,13 @@ run_EM <- function(EM_dir,
   } else {
     options <- "-nohess"
   }
-  run_ss_model(EM_dir, options, verbose = verbose)
+  r4ss::run(
+    dir = EM_dir,
+    exe = get_bin(),
+    extras = options,
+    skipfinished = FALSE,
+    verbose = verbose
+  )
   if (check_converged == TRUE) {
     # TODO: add additional checks for convergence, and if additional model runs
     # should be done. perhaps user defined?

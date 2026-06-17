@@ -65,8 +65,11 @@ create_OM <- function(OM_out_dir,
     overwrite = TRUE
   )
   # run model to get standardized output ----
-  run_ss_model(OM_out_dir, "-maxfn 0 -phase 50 -nohess",
-    debug_par_run = TRUE,
+  r4ss::run(
+    dir = OM_out_dir,
+    exe = get_bin(),
+    extras = "-maxfn 0 -phase 50 -nohess",
+    skipfinished = FALSE,
     verbose = verbose
   )
   # read in files to use ----
@@ -360,11 +363,14 @@ create_OM <- function(OM_out_dir,
     if (file.exists(file.path(OM_out_dir, "control.ss_new"))) {
       file.remove(file.path(OM_out_dir, "control.ss_new"))
     }
-    run_ss_model(OM_out_dir, "-maxfn 0 -phase 50 -nohess",
-      verbose = verbose,
-      debug_par_run = TRUE
+    r4ss::run(
+      dir = OM_out_dir,
+      exe = get_bin(),
+      extras = "-maxfn 0 -phase 50 -nohess",
+      skipfinished = FALSE,
+      verbose = verbose
     )
-    # TODO: maybe add the following check into the debug par run arg of run_ss_model?
+    # TODO: maybe add the following check into a dedicated validation helper.
     check_par <- readLines(get_ss_par_file(OM_out_dir))
     check_sum_val <- check_par[grep("checksum999", check_par) + 1]
     if (as.numeric(check_sum_val) != 999) {
@@ -492,9 +498,12 @@ run_OM <- function(OM_dir,
   )
 
   # run SS3 and get the data set
-  run_ss_model(OM_dir, "-maxfn 0 -phase 50 -nohess",
-    verbose = verbose,
-    debug_par_run = debug_par_run
+  r4ss::run(
+    dir = OM_dir,
+    exe = get_bin(),
+    extras = "-maxfn 0 -phase 50 -nohess",
+    skipfinished = FALSE,
+    verbose = verbose
   )
   if (file.exists(file.path(OM_dir, "data.ss_new")) && file.exists(file.path(OM_dir, "data_echo.ss_new"))) {
     file.remove(file.path(OM_dir, "data.ss_new"))

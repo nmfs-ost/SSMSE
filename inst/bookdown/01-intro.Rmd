@@ -36,8 +36,7 @@ Exported functions that can be used for writing [custom management strategies](#
 
 Function    | Description
 -----------  | ------------
-`run_EM()`       |  Run an SS3 estimation model (uses run_ss_model)
-`run_ss_model()` | Run an SS3 model
+`run_EM()`       |  Run an SS3 estimation model (uses `r4ss::run()`)
 `get_bin()`      | Get location of the SS3 binary.
 `parse_MS()`     | Function that runs the management strategy and returns catch by fleet for the projections. A reference function for those setting up custom management strategies. 
 
