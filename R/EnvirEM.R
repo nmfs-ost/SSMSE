@@ -307,6 +307,8 @@ EnvirEM <- function(EM_out_dir = NULL,
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    ctl$last_yr_fullbias_adj <- ctl$last_yr_fullbias_adj + nyrs_assess
+    ctl$first_recent_yr_nobias_adj <- ctl$first_recent_yr_nobias_adj + nyrs_assess
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
     # to implement those fixed catches as CPUE indecies.  
