@@ -307,8 +307,19 @@ EnvirEM <- function(EM_out_dir = NULL,
                       datlist = new_EM_dat
     )
     ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
+    
+    # Adding the bias adjustment back in to the assessment years
     ctl$last_yr_fullbias_adj <- ctl$last_yr_fullbias_adj + nyrs_assess
     ctl$first_recent_yr_nobias_adj <- ctl$first_recent_yr_nobias_adj + nyrs_assess
+    # Adding red tide into the assessment years
+    dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
+    
+    dat$bycatch_fleet_info$F_or_first_year <- F_or_first_year + nyrs_assess
+    dat$bycatch_fleet_info$F_or_last_year <- F_or_last_year + nyrs_assess
+    
+    SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
+                overwrite = TRUE, verbose = FALSE)
+    
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
     # to implement those fixed catches as CPUE indecies.  
