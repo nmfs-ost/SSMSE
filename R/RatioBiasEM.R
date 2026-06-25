@@ -865,807 +865,6 @@ RatioBiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = F
   
 }
 
-RatioBiasEM1 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-                        nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                        seed = NULL, OM_out_dir, extras = NULL, ...) { 
-  SSMSE:::check_dir(EM_out_dir)
-  # TODO: change this name to make it less ambiguous
-  new_datfile_name <- "init_dat.ss"
-  # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  
-  if (init_loop) {
-    
-    # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
-                file.path(EM_out_dir, new_datfile_name),
-                overwrite = TRUE,
-                verbose = FALSE
-    )
-    orig_datfile_name <- start[["datfile"]] # save the original data file name.
-    start[["datfile"]] <- new_datfile_name
-    start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    ### NOTE:: BY THIS POINT, THE EM DATAFILE HAS BEEN UPDATED TO INCLUDE FORECAST YRS. 
-    
-    # make sure the data file has the correct formatting (use existing data
-    # file in the EM directory to make sure)??
-    # TODO: is this necessary, given we have sample structures?
-    new_EM_dat <- biasEM_change_dat(           # edited func to account for historical bias
-      OM_datfile = new_datfile_name,
-      EM_datfile = orig_datfile_name,
-      EM_dir = EM_out_dir,
-      do_checks = TRUE,
-      verbose = verbose,
-      sample_struct_hist = sample_struct_hist
-    )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    if (ctl[["EmpiricalWAA"]] == 1) {
-      message(
-        "EM uses weight at age, so copying over wtatage file from OM.",
-        "\nNote wtatage data is not sampled."
-      )
-      file.copy(
-        from = file.path(OM_out_dir, "wtatage.ss"),
-        to = file.path(EM_out_dir, "wtatage.ss"),
-        overwrite = TRUE
-      )
-    }
-    if (!all(ctl[["time_vary_auto_generation"]] == 1)) {
-      warning("Turning off autogeneration of time varying lines in the control file of the EM")
-      ctl[["time_vary_auto_generation"]] <- rep(1, times = 5)
-      r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                        overwrite = TRUE
-      )
-    }
-    
-  } else { # end if init_loop==T
-    if (!is.null(sample_struct)) {
-      sample_struct_sub <- lapply(sample_struct,
-                                  function(df, y) df[df[, 1] %in% y, ],
-                                  y = dat_yrs - nyrs_assess
-      )
-    } else {
-      sample_struct_sub <- NULL
-    }
-    
-    new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
-      OM_dat = OM_dat,
-      EM_datfile = new_datfile_name,
-      sample_struct = sample_struct_sub,
-      EM_dir = EM_out_dir,
-      nyrs_assess = nyrs_assess,
-      do_checks = TRUE,
-      new_datfile_name = new_datfile_name,
-      verbose = verbose
-    )
-    
-    #Increment main recruitment phase end year by number of assessment years
-    #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
-    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
-        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
-      }
-    }
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-  } # end else not first iteration
-  
-  # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
-                  verbose = FALSE,
-                  overwrite = TRUE
-  )
-  # manipulate the forecasting file.
-  # make sure enough yrs can be forecasted.
-  
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
-                           readAll = TRUE,
-                           verbose = FALSE
-  )
-  # check that it can be used in the EM. fleets shoul
-  SSMSE:::check_EM_forecast(fcast,
-                            n_flts_catch = length(which(new_EM_dat[["fleetinfo"]][, "type"] %in%
-                                                          c(1, 2)))
-  )
-  fcast <- SSMSE:::change_yrs_fcast(fcast,
-                                    make_yrs_rel = (init_loop == TRUE),
-                                    nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
-                                    mod_styr = new_EM_dat[["styr"]],
-                                    mod_endyr = new_EM_dat[["endyr"]]
-  )
-  # # Need to update the year of forecast assignments where allocations exist
-  # if (fcast[["N_allocation_groups"]] > 0) {
-  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  # }
-  
-  SS_writeforecast(fcast,
-                   dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
-                   verbose = FALSE
-  )
-  # given all checks are good, run the EM
-  # check convergence (figure out way to error if need convergence)
-  # get the future catch using the management strategy used in the SS model.
-  run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-  
-  #If the user inputs a running maxF use this to update F for projections 
-  if(!is.null(extras[["run_maxF"]])){
-    fit_maxF <- ctl[["maxF"]]
-    ctl[["maxF"]] <- extras[["run_maxF"]]
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    orig_init <- start[["init_values_src"]] 
-    orig_estim <- start[["last_estimation_phase"]] 
-    start[["init_values_src"]] <- 1
-    start[["last_estimation_phase"]] <- 0
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    
-    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-    
-    ctl[["maxF"]] <- fit_maxF
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    start[["init_values_src"]] <- orig_init
-    start[["last_estimation_phase"]] <- orig_estim
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-  }
-  
-  # get the forecasted catch.
-  new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
-                                            changeup=10, changedown=10, c1=1)
-  ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
-  # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
-  new_OM_catch_list = new_EM_catch_list
-  
-  ## IF FixedCatches==TRUE
-  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
-  # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedCatch)){
-    
-    # tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year %in% dat_yrs,] # create obj of fixed catches
-    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
-    
-    if(nrow(tmp_ss)>0){
-      if(!is.null(new_OM_catch_list$catch)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-      
-      if(!is.null(new_OM_catch_list$catch_bio)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }else{
-        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-      
-      if(!is.null(new_OM_catch_list$catch_F)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-    }# end if fixed catches in this mgmt cycle. 
-    
-  }# end fixed catches
-  
-  # Address EM2OM Catch Bias
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
-  if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
-    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-    new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
-  }
-  if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
-    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
-    new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
-  }
-  # new_OM_catch_list$catch_bio <- NULL
-  if(!is.null(new_OM_catch_list$discards)){
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
-    if(!is.null(new_OM_catch_list$discards)){
-      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
-      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
-    }
-  }
-  
-  if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
-    
-    byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
-    new_OM_catch_list$catch<- new_OM_catch_list$catch[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[which(is.element(new_OM_catch_list$catch_F$fleet,byc_f)),]
-    # new_OM_catch_list$catch<- new_OM_catch_list$catch[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[new_OM_catch_list$catch_F$fleet==byc_f,]
-    
-  } else{
-    new_OM_catch_list$catch_F <- NULL
-  }
-  
-  
-  new_catch_list<-new_OM_catch_list
-  new_catch_list
-  
-}
-
-RatioBiasEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-                         nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                         seed = NULL, OM_out_dir, extras = NULL, ...) { 
-  SSMSE:::check_dir(EM_out_dir)
-  # TODO: change this name to make it less ambiguous
-  new_datfile_name <- "init_dat.ss"
-  # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  
-  if (init_loop) {
-    
-    # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
-                file.path(EM_out_dir, new_datfile_name),
-                overwrite = TRUE,
-                verbose = FALSE
-    )
-    orig_datfile_name <- start[["datfile"]] # save the original data file name.
-    start[["datfile"]] <- new_datfile_name
-    start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    ### NOTE:: BY THIS POINT, THE EM DATAFILE HAS BEEN UPDATED TO INCLUDE FORECAST YRS. 
-    
-    # make sure the data file has the correct formatting (use existing data
-    # file in the EM directory to make sure)??
-    # TODO: is this necessary, given we have sample structures?
-    new_EM_dat <- biasEM_change_dat(           # edited func to account for historical bias
-      OM_datfile = new_datfile_name,
-      EM_datfile = orig_datfile_name,
-      EM_dir = EM_out_dir,
-      do_checks = TRUE,
-      verbose = verbose,
-      sample_struct_hist = sample_struct_hist
-    )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    if (ctl[["EmpiricalWAA"]] == 1) {
-      message(
-        "EM uses weight at age, so copying over wtatage file from OM.",
-        "\nNote wtatage data is not sampled."
-      )
-      file.copy(
-        from = file.path(OM_out_dir, "wtatage.ss"),
-        to = file.path(EM_out_dir, "wtatage.ss"),
-        overwrite = TRUE
-      )
-    }
-    if (!all(ctl[["time_vary_auto_generation"]] == 1)) {
-      warning("Turning off autogeneration of time varying lines in the control file of the EM")
-      ctl[["time_vary_auto_generation"]] <- rep(1, times = 5)
-      r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                        overwrite = TRUE
-      )
-    }
-    
-  } else { # end if init_loop==T
-    if (!is.null(sample_struct)) {
-      sample_struct_sub <- lapply(sample_struct,
-                                  function(df, y) df[df[, 1] %in% y, ],
-                                  y = dat_yrs - nyrs_assess
-      )
-    } else {
-      sample_struct_sub <- NULL
-    }
-    
-    new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
-      OM_dat = OM_dat,
-      EM_datfile = new_datfile_name,
-      sample_struct = sample_struct_sub,
-      EM_dir = EM_out_dir,
-      nyrs_assess = nyrs_assess,
-      do_checks = TRUE,
-      new_datfile_name = new_datfile_name,
-      verbose = verbose
-    )
-    
-    #Increment main recruitment phase end year by number of assessment years
-    #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
-    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
-        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
-      }
-    }
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-  } # end else not first iteration
-  
-  # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
-                  verbose = FALSE,
-                  overwrite = TRUE
-  )
-  # manipulate the forecasting file.
-  # make sure enough yrs can be forecasted.
-  
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
-                           readAll = TRUE,
-                           verbose = FALSE
-  )
-  # check that it can be used in the EM. fleets shoul
-  SSMSE:::check_EM_forecast(fcast,
-                            n_flts_catch = length(which(new_EM_dat[["fleetinfo"]][, "type"] %in%
-                                                          c(1, 2)))
-  )
-  fcast <- SSMSE:::change_yrs_fcast(fcast,
-                                    make_yrs_rel = (init_loop == TRUE),
-                                    nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
-                                    mod_styr = new_EM_dat[["styr"]],
-                                    mod_endyr = new_EM_dat[["endyr"]]
-  )
-  # # Need to update the year of forecast assignments where allocations exist
-  # if (fcast[["N_allocation_groups"]] > 0) {
-  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  # }
-  
-  SS_writeforecast(fcast,
-                   dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
-                   verbose = FALSE
-  )
-  # given all checks are good, run the EM
-  # check convergence (figure out way to error if need convergence)
-  # get the future catch using the management strategy used in the SS model.
-  run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-  
-  #If the user inputs a running maxF use this to update F for projections 
-  if(!is.null(extras[["run_maxF"]])){
-    fit_maxF <- ctl[["maxF"]]
-    ctl[["maxF"]] <- extras[["run_maxF"]]
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    orig_init <- start[["init_values_src"]] 
-    orig_estim <- start[["last_estimation_phase"]] 
-    start[["init_values_src"]] <- 1
-    start[["last_estimation_phase"]] <- 0
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    
-    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-    
-    ctl[["maxF"]] <- fit_maxF
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    start[["init_values_src"]] <- orig_init
-    start[["last_estimation_phase"]] <- orig_estim
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-  }
-  
-  # get the forecasted catch.
-  new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
-                                            changeup=10, changedown=10,c1=0.75)
-  ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
-  # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
-  new_OM_catch_list = new_EM_catch_list
-  
-  ## IF FixedCatches==TRUE
-  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
-  # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedCatch)){
-    
-    # tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year %in% dat_yrs,] # create obj of fixed catches
-    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
-    
-    if(nrow(tmp_ss)>0){
-      if(!is.null(new_OM_catch_list$catch)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-      
-      if(!is.null(new_OM_catch_list$catch_bio)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }else{
-        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-      
-      if(!is.null(new_OM_catch_list$catch_F)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-    }# end if fixed catches in this mgmt cycle. 
-    
-  }# end fixed catches
-  
-  # Address EM2OM Catch Bias
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
-  if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
-    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-    new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
-  }
-  if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
-    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
-    new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
-  }
-  # new_OM_catch_list$catch_bio <- NULL
-  if(!is.null(new_OM_catch_list$discards)){
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
-    if(!is.null(new_OM_catch_list$discards)){
-      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
-      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
-    }
-  }
-  
-  if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
-    
-    byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
-    new_OM_catch_list$catch<- new_OM_catch_list$catch[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[which(is.element(new_OM_catch_list$catch_F$fleet,byc_f)),]
-    # new_OM_catch_list$catch<- new_OM_catch_list$catch[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[new_OM_catch_list$catch_F$fleet==byc_f,]
-    
-  } else{
-    new_OM_catch_list$catch_F <- NULL
-  }
-  
-  
-  new_catch_list<-new_OM_catch_list
-  new_catch_list
-  
-}
-RatioBiasEM3 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-                         nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                         seed = NULL, OM_out_dir, extras = NULL, ...) { 
-  SSMSE:::check_dir(EM_out_dir)
-  # TODO: change this name to make it less ambiguous
-  new_datfile_name <- "init_dat.ss"
-  # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  
-  if (init_loop) {
-    
-    # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
-                file.path(EM_out_dir, new_datfile_name),
-                overwrite = TRUE,
-                verbose = FALSE
-    )
-    orig_datfile_name <- start[["datfile"]] # save the original data file name.
-    start[["datfile"]] <- new_datfile_name
-    start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    ### NOTE:: BY THIS POINT, THE EM DATAFILE HAS BEEN UPDATED TO INCLUDE FORECAST YRS. 
-    
-    # make sure the data file has the correct formatting (use existing data
-    # file in the EM directory to make sure)??
-    # TODO: is this necessary, given we have sample structures?
-    new_EM_dat <- biasEM_change_dat(           # edited func to account for historical bias
-      OM_datfile = new_datfile_name,
-      EM_datfile = orig_datfile_name,
-      EM_dir = EM_out_dir,
-      do_checks = TRUE,
-      verbose = verbose,
-      sample_struct_hist = sample_struct_hist
-    )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    if (ctl[["EmpiricalWAA"]] == 1) {
-      message(
-        "EM uses weight at age, so copying over wtatage file from OM.",
-        "\nNote wtatage data is not sampled."
-      )
-      file.copy(
-        from = file.path(OM_out_dir, "wtatage.ss"),
-        to = file.path(EM_out_dir, "wtatage.ss"),
-        overwrite = TRUE
-      )
-    }
-    if (!all(ctl[["time_vary_auto_generation"]] == 1)) {
-      warning("Turning off autogeneration of time varying lines in the control file of the EM")
-      ctl[["time_vary_auto_generation"]] <- rep(1, times = 5)
-      r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                        overwrite = TRUE
-      )
-    }
-    
-  } else { # end if init_loop==T
-    if (!is.null(sample_struct)) {
-      sample_struct_sub <- lapply(sample_struct,
-                                  function(df, y) df[df[, 1] %in% y, ],
-                                  y = dat_yrs - nyrs_assess
-      )
-    } else {
-      sample_struct_sub <- NULL
-    }
-    
-    new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
-      OM_dat = OM_dat,
-      EM_datfile = new_datfile_name,
-      sample_struct = sample_struct_sub,
-      EM_dir = EM_out_dir,
-      nyrs_assess = nyrs_assess,
-      do_checks = TRUE,
-      new_datfile_name = new_datfile_name,
-      verbose = verbose
-    )
-    
-    #Increment main recruitment phase end year by number of assessment years
-    #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
-    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
-        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
-      }
-    }
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-  } # end else not first iteration
-  
-  # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
-                  verbose = FALSE,
-                  overwrite = TRUE
-  )
-  # manipulate the forecasting file.
-  # make sure enough yrs can be forecasted.
-  
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
-                           readAll = TRUE,
-                           verbose = FALSE
-  )
-  # check that it can be used in the EM. fleets shoul
-  SSMSE:::check_EM_forecast(fcast,
-                            n_flts_catch = length(which(new_EM_dat[["fleetinfo"]][, "type"] %in%
-                                                          c(1, 2)))
-  )
-  fcast <- SSMSE:::change_yrs_fcast(fcast,
-                                    make_yrs_rel = (init_loop == TRUE),
-                                    nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
-                                    mod_styr = new_EM_dat[["styr"]],
-                                    mod_endyr = new_EM_dat[["endyr"]]
-  )
-  # # Need to update the year of forecast assignments where allocations exist
-  # if (fcast[["N_allocation_groups"]] > 0) {
-  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  # }
-  
-  SS_writeforecast(fcast,
-                   dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
-                   verbose = FALSE
-  )
-  # given all checks are good, run the EM
-  # check convergence (figure out way to error if need convergence)
-  # get the future catch using the management strategy used in the SS model.
-  run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-  
-  #If the user inputs a running maxF use this to update F for projections 
-  if(!is.null(extras[["run_maxF"]])){
-    fit_maxF <- ctl[["maxF"]]
-    ctl[["maxF"]] <- extras[["run_maxF"]]
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    orig_init <- start[["init_values_src"]] 
-    orig_estim <- start[["last_estimation_phase"]] 
-    start[["init_values_src"]] <- 1
-    start[["last_estimation_phase"]] <- 0
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    
-    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-    
-    ctl[["maxF"]] <- fit_maxF
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    start[["init_values_src"]] <- orig_init
-    start[["last_estimation_phase"]] <- orig_estim
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-  }
-  
-  # get the forecasted catch.
-  new_EM_catch_list <- get_RatioEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs,
-                                            changeup=0.2, changedown=0.2,c1=1)
-  ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
-  # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
-  new_OM_catch_list = new_EM_catch_list
-  
-  ## IF FixedCatches==TRUE
-  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
-  # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedCatch)){
-    
-    # tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year %in% dat_yrs,] # create obj of fixed catches
-    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
-    
-    if(nrow(tmp_ss)>0){
-      if(!is.null(new_OM_catch_list$catch)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-      
-      if(!is.null(new_OM_catch_list$catch_bio)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }else{
-        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-      
-      if(!is.null(new_OM_catch_list$catch_F)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-    }# end if fixed catches in this mgmt cycle. 
-    
-  }# end fixed catches
-  
-  # Address EM2OM Catch Bias
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
-  if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
-    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-    new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
-  }
-  if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
-    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
-    new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
-  }
-  # new_OM_catch_list$catch_bio <- NULL
-  if(!is.null(new_OM_catch_list$discards)){
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
-    if(!is.null(new_OM_catch_list$discards)){
-      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
-      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
-    }
-  }
-  
-  if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
-    
-    byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
-    new_OM_catch_list$catch<- new_OM_catch_list$catch[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[which(is.element(new_OM_catch_list$catch_F$fleet,byc_f)),]
-    # new_OM_catch_list$catch<- new_OM_catch_list$catch[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[new_OM_catch_list$catch_F$fleet==byc_f,]
-    
-  } else{
-    new_OM_catch_list$catch_F <- NULL
-  }
-  
-  
-  new_catch_list<-new_OM_catch_list
-  new_catch_list
-  
-}
-
-
 
 ## PercentChangeEM is as RatioEM but relative to last assess year 
 PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
@@ -1938,277 +1137,9 @@ PercentChangeEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose
 }
 
 
-PercentChangeEM2 <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
-                            nyrs_assess, dat_yrs, sample_struct = NULL, sample_struct_hist = NULL,
-                            seed = NULL, OM_out_dir, extras = NULL, ...) { 
-  SSMSE:::check_dir(EM_out_dir)
-  # TODO: change this name to make it less ambiguous
-  new_datfile_name <- "init_dat.ss"
-  # change the name of data file.
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  
-  if (init_loop) {
-    
-    # copy over raw data file from the OM to EM folder
-    SS_writedat(OM_dat,
-                file.path(EM_out_dir, new_datfile_name),
-                overwrite = TRUE,
-                verbose = FALSE
-    )
-    orig_datfile_name <- start[["datfile"]] # save the original data file name.
-    start[["datfile"]] <- new_datfile_name
-    start[["seed"]] <- seed
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    ### NOTE:: BY THIS POINT, THE EM DATAFILE HAS BEEN UPDATED TO INCLUDE FORECAST YRS. 
-    
-    # make sure the data file has the correct formatting (use existing data
-    # file in the EM directory to make sure)??
-    # TODO: is this necessary, given we have sample structures?
-    new_EM_dat <- biasEM_change_dat(           # edited func to account for historical bias
-      OM_datfile = new_datfile_name,
-      EM_datfile = orig_datfile_name,
-      EM_dir = EM_out_dir,
-      do_checks = TRUE,
-      verbose = verbose,
-      sample_struct_hist = sample_struct_hist
-    )
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    if (ctl[["EmpiricalWAA"]] == 1) {
-      message(
-        "EM uses weight at age, so copying over wtatage file from OM.",
-        "\nNote wtatage data is not sampled."
-      )
-      file.copy(
-        from = file.path(OM_out_dir, "wtatage.ss"),
-        to = file.path(EM_out_dir, "wtatage.ss"),
-        overwrite = TRUE
-      )
-    }
-    if (!all(ctl[["time_vary_auto_generation"]] == 1)) {
-      warning("Turning off autogeneration of time varying lines in the control file of the EM")
-      ctl[["time_vary_auto_generation"]] <- rep(1, times = 5)
-      r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                        overwrite = TRUE
-      )
-    }
-    
-  } else { # end if init_loop==T
-    if (!is.null(sample_struct)) {
-      sample_struct_sub <- lapply(sample_struct,
-                                  function(df, y) df[df[, 1] %in% y, ],
-                                  y = dat_yrs - nyrs_assess
-      )
-    } else {
-      sample_struct_sub <- NULL
-    }
-    
-    new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
-      OM_dat = OM_dat,
-      EM_datfile = new_datfile_name,
-      sample_struct = sample_struct_sub,
-      EM_dir = EM_out_dir,
-      nyrs_assess = nyrs_assess,
-      do_checks = TRUE,
-      new_datfile_name = new_datfile_name,
-      verbose = verbose
-    )
-    
-    #Increment main recruitment phase end year by number of assessment years
-    #So the model can continue to estimate rec devs 
-    ctl <- SS_readctl(file.path(EM_out_dir, start[["ctlfile"]]),
-                      datlist = new_EM_dat
-    )
-    ctl$MainRdevYrLast <- ctl$MainRdevYrLast + nyrs_assess
-    if(length(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr)>0){
-      if(ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr>0){
-        ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr<-ctl$MG_parms[rownames(ctl$MG_parms)=="RecrDist_Area_1",]$dev_maxyr + nyrs_assess
-      }
-    }
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-  } # end else not first iteration
-  
-  # Update SS random seed
-  start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
-                          verbose = FALSE
-  )
-  start[["seed"]] <- seed
-  SS_writestarter(start, file.path(EM_out_dir),
-                  verbose = FALSE,
-                  overwrite = TRUE
-  )
-  # manipulate the forecasting file.
-  # make sure enough yrs can be forecasted.
-  
-  fcast <- SS_readforecast(file.path(EM_out_dir, "forecast.ss"),
-                           readAll = TRUE,
-                           verbose = FALSE
-  )
-  # check that it can be used in the EM. fleets shoul
-  SSMSE:::check_EM_forecast(fcast,
-                            n_flts_catch = length(which(new_EM_dat[["fleetinfo"]][, "type"] %in%
-                                                          c(1, 2)))
-  )
-  fcast <- SSMSE:::change_yrs_fcast(fcast,
-                                    make_yrs_rel = (init_loop == TRUE),
-                                    nyrs_fore = nyrs_assess,
-                                    nyrs_increment = ifelse(init_loop,0,nyrs_assess),
-                                    mod_styr = new_EM_dat[["styr"]],
-                                    mod_endyr = new_EM_dat[["endyr"]]
-  )
-  # # Need to update the year of forecast assignments where allocations exist
-  # if (fcast[["N_allocation_groups"]] > 0) {
-  #   fcast$allocation_among_groups$Year <-(new_EM_dat[["endyr"]]+1)
-  # }
-  
-  SS_writeforecast(fcast,
-                   dir = EM_out_dir, writeAll = TRUE, overwrite = TRUE,
-                   verbose = FALSE
-  )
-  # given all checks are good, run the EM
-  # check convergence (figure out way to error if need convergence)
-  # get the future catch using the management strategy used in the SS model.
-  run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-  
-  #If the user inputs a running maxF use this to update F for projections 
-  if(!is.null(extras[["run_maxF"]])){
-    fit_maxF <- ctl[["maxF"]]
-    ctl[["maxF"]] <- extras[["run_maxF"]]
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    orig_init <- start[["init_values_src"]] 
-    orig_estim <- start[["last_estimation_phase"]] 
-    start[["init_values_src"]] <- 1
-    start[["last_estimation_phase"]] <- 0
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-    
-    run_EM(EM_dir = EM_out_dir, verbose = verbose, check_converged = TRUE)
-    
-    ctl[["maxF"]] <- fit_maxF
-    r4ss::SS_writectl(ctl, file.path(EM_out_dir, start[["ctlfile"]]),
-                      overwrite = TRUE
-    )
-    
-    start[["init_values_src"]] <- orig_init
-    start[["last_estimation_phase"]] <- orig_estim
-    
-    SS_writestarter(start, file.path(EM_out_dir),
-                    verbose = FALSE,
-                    overwrite = TRUE
-    )
-  }
-  
-  # get the forecasted catch.
-  new_EM_catch_list <- get_PercentEM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat, dat_yrs=dat_yrs, nyrs_assess,
-                                              changeup=10, changedown=10, c1=1)
-  ## COnSIDER MAKING A get_OM_catch_df if structure of OM =/= EM. 
-  # For the simple approach, we can just apply a series of scalars from the EM catch list to create an OM catch list
-  new_OM_catch_list = new_EM_catch_list
-  
-  ## IF FixedCatches==TRUE
-  # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
-  # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedCatch)){
-    
-    # tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year %in% dat_yrs,] # create obj of fixed catches
-    colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
-    
-    if(nrow(tmp_ss)>0){
-      if(!is.null(new_OM_catch_list$catch)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units!=99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-      
-      if(!is.null(new_OM_catch_list$catch_bio)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==1,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with
-          new_OM_catch_list$catch_bio<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }else{
-        new_OM_catch_list$catch_bio <- NULL }#end if catch_bio exists
-      
-      if(!is.null(new_OM_catch_list$catch_F)){
-        tmp_ss_catch <- tmp_ss[tmp_ss$units==99,]
-        if(nrow(tmp_ss_catch)>0){
-          tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
-          tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
-          new_OM_catch_list$catch_F<-tmp_merge[,c(1:5)] #reorder columns of merged
-        }
-      }#end if catch exists
-    }# end if fixed catches in this mgmt cycle. 
-    
-  }# end fixed catches
-  
-  # Address EM2OM Catch Bias
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[base::order(base::abs(sample_struct$EM2OMcatch_bias$fleet),base::abs(sample_struct$EM2OMcatch_bias$year),base::abs(sample_struct$EM2OMcatch_bias$seas)),]
-  sample_struct$EM2OMcatch_bias <- sample_struct$EM2OMcatch_bias[!duplicated(sample_struct$EM2OMcatch_bias),]
-  if(!is.null(new_OM_catch_list$catch)){
-    tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
-    tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-    new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
-  }
-  if(!is.null(new_OM_catch_list$catch_bio)){
-    tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
-    tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
-    new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
-  }
-  # new_OM_catch_list$catch_bio <- NULL
-  if(!is.null(new_OM_catch_list$discards)){
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[base::order(base::abs(sample_struct$EM2OMdiscard_bias$Flt),base::abs(sample_struct$EM2OMdiscard_bias$Yr),base::abs(sample_struct$EM2OMdiscard_bias$Seas)),]
-    sample_struct$EM2OMdiscard_bias <- sample_struct$EM2OMdiscard_bias[!duplicated(sample_struct$EM2OMdiscard_bias),]
-    if(!is.null(new_OM_catch_list$discards)){
-      tmp_discards <- base::merge(base::abs(new_OM_catch_list$discards), base::abs(sample_struct$EM2OMdiscard_bias), all.x=TRUE) #need to sort to figure this out
-      tmp_discards <- tmp_discards[base::order(base::abs(tmp_discards$Flt),base::abs(tmp_discards$Yr),base::abs(tmp_discards$Seas)),]
-      new_OM_catch_list$discards$Discard <- new_OM_catch_list$discards$Discard * tmp_discards$bias 
-    }
-  }
-  
-  if(2 %in% OM_dat$fleetinfo$type){ # if bycatch fleet -- remove from catch list and keep only bycatch fleets in catch_F list
-    
-    byc_f <- which(OM_dat$fleetinfo$type==2)#as.numeric(row.names(OM_dat$fleetinfo[which(OM_dat$fleetinfo$type==2),]))
-    new_OM_catch_list$catch<- new_OM_catch_list$catch[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[which(!is.element(new_OM_catch_list$catch$fleet,byc_f)),]
-    new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[which(is.element(new_OM_catch_list$catch_F$fleet,byc_f)),]
-    # new_OM_catch_list$catch<- new_OM_catch_list$catch[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_bio<- new_OM_catch_list$catch_bio[new_OM_catch_list$catch$fleet!=byc_f,]
-    # new_OM_catch_list$catch_F<- new_OM_catch_list$catch_F[new_OM_catch_list$catch_F$fleet==byc_f,]
-    
-  } else{
-    new_OM_catch_list$catch_F <- NULL
-  }
-  
-  
-  new_catch_list<-new_OM_catch_list
-  new_catch_list
-  
-}
 
 
-
-
-#### add_new_dat Function Line-By-Line ####
+#### add_new_dat to EM Function Line-By-Line ####
 add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_assess, 
                              do_checks = TRUE, new_datfile_name = NULL, verbose = FALSE, extras = NULL) 
 {
@@ -2280,6 +1211,13 @@ add_new_dat_BIAS<- function (OM_dat, EM_datfile, sample_struct, EM_dir, nyrs_ass
     extracted_dat$catch$catch<- tmp_catch$catch / tmp_catch$bias ### EM2OM edits to get EM catch back to OM
   }
   
+  # # don't use this code -- for if apply imp error to new EM from OM.
+  # if(!is.null(extracted_dat$catch) && !is.null(sample_struct$ImpError)){
+  #   extracted_dat$catch <- extracted_dat$catch[order(base::abs(extracted_dat$catch$fleet),base::abs(extracted_dat$catch$year),base::abs(extracted_dat$catch$seas)),]
+  #   tmp_catch<- merge(extracted_dat$catch, sample_struct$ImpError)
+  #   tmp_catch <- tmp_catch[order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
+  #   extracted_dat$catch$catch<- tmp_catch$catch * tmp_catch$ImpError ### ImpError edits to get EM catch back to OM
+  # }
   
 
   if(!is.null(extracted_dat$discard_data)){
@@ -2344,7 +1282,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   start <- r4ss::SS_readstarter(file.path(EM_out_dir, "starter.ss"),
                           verbose = FALSE
   )
-
+  
   if (init_loop) {
     
     # copy over raw data file from the OM to EM folder
@@ -2363,6 +1301,8 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     # make sure the data file has the correct formatting (use existing data
     # file in the EM directory to make sure)??
     # TODO: is this necessary, given we have sample structures?
+    
+    # get observed data from OM, put into EM
     new_EM_dat <- biasEM_change_dat(  ###--------------------------------- NEW FUNCTION FOR BIASEM #
       OM_datfile = new_datfile_name,
       EM_datfile = orig_datfile_name,
@@ -2405,6 +1345,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
       sample_struct_sub <- NULL
     }
     
+    # take new observed data from OM, add to EM. 
     new_EM_dat <- add_new_dat_BIAS( ######## NEW FUNCTION TO BUILD IN CONVERSION FACTOR
       OM_dat = OM_dat,
       EM_datfile = new_datfile_name,
@@ -2509,7 +1450,7 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
     )
   }
   
-  # get the forecasted catch.
+  # get the forecasted catch from EM
   new_EM_catch_list <- get_EM_catch_df(EM_dir = EM_out_dir, dat = new_EM_dat) 
   
   
@@ -2565,11 +1506,13 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   if(!is.null(new_OM_catch_list$catch)){
     tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE, all.y=FALSE)
     tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
+    tmp_catch$bias[is.na(tmp_catch$bias)]<-1 # if bias = NA, set =1. 
     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$bias 
   }
   if(!is.null(new_OM_catch_list$catch_bio)){
     tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$EM2OMcatch_bias), all.x=TRUE)
     tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
+    tmp_catch_bio$bias[is.na(tmp_catch_bio$bias)]<-1 # if bias = NA, set =1.
     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$bias
   }
   # new_OM_catch_list$catch_bio <- NULL
@@ -2596,7 +1539,25 @@ BiasEM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
   } else{
     new_OM_catch_list$catch_F <- NULL
   }
+  
+  # Apply ImpError
+  if(!is.null(sample_struct$ImpError)){
+    sample_struct$ImpError <- sample_struct$ImpError[base::order(base::abs(sample_struct$ImpError$fleet),base::abs(sample_struct$ImpError$year),base::abs(sample_struct$ImpError$seas)),]
+    sample_struct$ImpError <- sample_struct$ImpError[!duplicated(sample_struct$ImpError),]
 
+    if(!is.null(new_OM_catch_list$catch)){
+      tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$ImpError), all.x=TRUE, all.y=FALSE)
+      tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
+      new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$ImpError
+    }
+
+
+    if(!is.null(new_OM_catch_list$catch_bio)){
+      tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$ImpError), all.x=TRUE)
+      tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
+      new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$ImpError
+    }
+  }
 
   new_catch_list<-new_OM_catch_list
   new_catch_list
@@ -2933,24 +1894,24 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
     new_OM_catch_list$catch_F <- NULL
   }
   
-  # # Apply ImpError -- untested. 
-  # if(ImpError){
-  #   sample_struct$ImpError <- sample_struct$ImpError[base::order(base::abs(sample_struct$ImpError$fleet),base::abs(sample_struct$ImpError$year),base::abs(sample_struct$ImpError$seas)),]
-  #   sample_struct$ImpError <- sample_struct$ImpError[!duplicated(sample_struct$ImpError),]
-  #   
-  #   if(!is.null(new_OM_catch_list$catch)){
-  #     tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$ImpError), all.x=TRUE, all.y=FALSE)
-  #     tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
-  #     new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$ImpError 
-  #   }
-  #   
-  #   
-  #   if(!is.null(new_OM_catch_list$catch_bio)){
-  #     tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$ImpError), all.x=TRUE)
-  #     tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
-  #     new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$ImpError
-  #   }
-  # }
+  # Apply ImpError -- untested.
+  if(!is.null(sample_struct$ImpError)){
+    sample_struct$ImpError <- sample_struct$ImpError[base::order(base::abs(sample_struct$ImpError$fleet),base::abs(sample_struct$ImpError$year),base::abs(sample_struct$ImpError$seas)),]
+    sample_struct$ImpError <- sample_struct$ImpError[!duplicated(sample_struct$ImpError),]
+    
+    if(!is.null(new_OM_catch_list$catch)){
+      tmp_catch <- base::merge(base::abs(new_OM_catch_list$catch), base::abs(sample_struct$ImpError), all.x=TRUE, all.y=FALSE)
+      tmp_catch <- tmp_catch[base::order(base::abs(tmp_catch$fleet),base::abs(tmp_catch$year),base::abs(tmp_catch$seas)),]
+      new_OM_catch_list$catch$catch <- new_OM_catch_list$catch$catch * tmp_catch$ImpError
+    }
+    
+    
+    if(!is.null(new_OM_catch_list$catch_bio)){
+      tmp_catch_bio <- base::merge(base::abs(new_OM_catch_list$catch_bio), base::abs(sample_struct$ImpError), all.x=TRUE)
+      tmp_catch_bio <- tmp_catch_bio[base::order(base::abs(tmp_catch_bio$fleet),base::abs(tmp_catch_bio$year),base::abs(tmp_catch_bio$seas)),]
+      new_OM_catch_list$catch_bio$catch <- new_OM_catch_list$catch_bio$catch * tmp_catch_bio$ImpError
+    }
+  }
   
   
   new_catch_list<-new_OM_catch_list
@@ -2998,7 +1959,7 @@ BiasEM_AchieveAlloc <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, ver
 #' @param FixedCatches T/F defines whether you want to manually specify catches in the future (e.g., for an environmental or bycatch fleet). When switched on, default values to catch in terminal year of OM and historical units. 
 #' 
 create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches = FALSE
-                                        #, ImpError=FALSE
+                                        , ImpError=FALSE
                                         ) { ### edited to include EM2OMcatch_bias
   assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
@@ -3006,7 +1967,7 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
   }
   
   list_name <- c(
-    "catch", "EM2OMcatch_bias", "FixedCatch", #"ImpError", ######################## IMP ERROR
+    "catch", "EM2OMcatch_bias", "FixedCatch", "ImpError", ######################## IMP ERROR
     "CPUE", "discard_data", "EM2OMdiscard_bias", 
     "lencomp", "agecomp", "meanbodywt", "MeanSize_at_Age_obs"
   )
@@ -3253,12 +2214,12 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
     FixedCatches <- NULL
   }
   
-  # ## add Imp Error #################################################### IMP ERROR
-  #  if(ImpError == TRUE){
-  #    sample_struct$ImpError <- sample_struct$catch
-  #    names(sample_struct$ImpError)[4] = "ImpErr"
-  #    sample_struct$ImpError$ImpErr<-1
-  #  }
+  ## add Imp Error #################################################### IMP ERROR
+   if(ImpError == TRUE){
+     sample_struct$ImpError <- sample_struct$catch
+     names(sample_struct$ImpError)[4] = "ImpErr"
+     sample_struct$ImpError$ImpErr<-1
+   }
   
   ## ADD EM2OMdiscard_bias
   if(!is.null(ncol(sample_struct$discard_data))){
@@ -3268,8 +2229,6 @@ create_sample_struct_biased <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches 
   } else{
     sample_struct$EM2OMdiscard_bias<-NA
   }
-  
-
   
  
   sample_struct
@@ -3454,14 +2413,17 @@ create_sample_struct_hist <- function(dat, rm_NAs = FALSE) { ### edited to inclu
 
 #' Create the sample_struct list for historical data
 
-create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE) { ### edited to include EM2OMcatch_bias
+create_sample_struct_hist_biased <- function(dat, rm_NAs = FALSE  
+                                             #, ImpError=FALSE
+                                             ) { ### edited to include EM2OMcatch_bias
   # assertive.types::assert_is_a_number(nyrs)
   if (length(dat) == 1 & is.character(dat)) {
     dat <- SS_readdat(dat, verbose = FALSE)
   }
   
   list_name <- c(
-    "catch", "EM2OMcatch_bias", "CPUE", "discard_data", "EM2OMdiscard_bias", 
+    "catch", "EM2OMcatch_bias",#"ImpError", ######################## IMP ERROR
+    "CPUE", "discard_data", "EM2OMdiscard_bias", 
     "lencomp", "agecomp", "meanbodywt", "MeanSize_at_Age_obs"
   )
   
@@ -3658,6 +2620,12 @@ biasEM_change_dat <- function(OM_datfile, EM_datfile, EM_dir, do_checks = TRUE,
   # Add bias-correction in historical period: 
   if(!is.null(sample_struct_hist)){
     new_EM_dat$catch$catch<-new_EM_dat$catch$catch/sample_struct_hist$EM2OMcatch_bias$bias
+    
+    # # don't use this code (below) -- for if apply imp error to new EM from OM.
+    #  if(!is.null(sample_struct_hist$ImpError)){ # ADD HIST IMP ERROR
+    #   new_EM_dat$catch$catch<-new_EM_dat$catch$catch * sample_struct_hist$ImpError$ImpError 
+    # }
+    
     if(new_EM_dat$N_discard_fleets>0){
       new_EM_dat$discard_data$Discard<-new_EM_dat$discard_data$Discard / sample_struct_hist$EM2OMdiscard_bias$bias
     }
