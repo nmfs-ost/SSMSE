@@ -317,34 +317,40 @@ get_EM_catch_df <- function(EM_dir, dat) {
       if (sum(tmp_discard_amount) == 0) {
         dis_df_list[[i]] <- NULL
       } else {
-        # check that an se was created for that fleet (a sanity check)
+        # check that an se was created for that fleet (a sanity check) this just
+        # sends a warning now to allow for red tide fleets that are bycatch 
+        # fleets with no discard data. This data will not be used in the EM so
+        # doesn't need to be included in the sample. We will need to modify this if
+        # people are looking to add a discard fleet that does need to sample but didn't
+        # have any data in the historic model.
         if (length(se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]) == 0) {
-          stop(
+          warning(
             "A standard error value for fleet ", tmp_flt, "could not be ",
             "determined because there was no discard data for that fleet in ",
             "the data file input to the EM. Please add discarding data for ",
             "the fleet to the OM data file or contact the developers for ",
             "assistance with this problem."
           )
-        }
-        
-        if(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1]<0){ # replace dis_df_list[[i]] - 5/16/2024
-          dis_df_list[[i]] <- data.frame(
-            Yr = -(abs(fcast_catch_df[["Yr"]])),
-            Seas = rep(abs(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1]),length(fcast_catch_df[["Yr"]])),
-            Flt = abs(tmp_flt),
-            Discard = tmp_discard_amount,
-            Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
-          )
+          dis_df_list[[i]] <- NULL
         }else{
-          dis_df_list[[i]] <- data.frame(
-            Yr = fcast_catch_df[["Yr"]],
-            Seas = rep(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1],length(fcast_catch_df[["Yr"]])),
-            Flt = tmp_flt,
-            Discard = tmp_discard_amount,
-            Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
-          )
-        }# end ifelse
+          if(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1]<0){ # replace dis_df_list[[i]] - 5/16/2024
+            dis_df_list[[i]] <- data.frame(
+              Yr = -(abs(fcast_catch_df[["Yr"]])),
+              Seas = rep(abs(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1]),length(fcast_catch_df[["Yr"]])),
+              Flt = abs(tmp_flt),
+              Discard = tmp_discard_amount,
+              Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
+            )
+          }else{
+            dis_df_list[[i]] <- data.frame(
+              Yr = fcast_catch_df[["Yr"]],
+              Seas = rep(dat$discard_data[dat$discard_data$Flt==tmp_flt,"Seas"][1],length(fcast_catch_df[["Yr"]])),
+              Flt = tmp_flt,
+              Discard = tmp_discard_amount,
+              Std_in = se_dis[se_dis[["Flt"]] == tmp_flt, "Std_in"]
+            )
+          }# end ifelse
+        }
       }
     }
     dis_df <- do.call("rbind", dis_df_list)
