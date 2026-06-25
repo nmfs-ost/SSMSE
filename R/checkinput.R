@@ -192,10 +192,11 @@ check_sample_struct <- function(sample_struct,
                                 valid_names = list(
                                   catch = c("Yr", "Seas", "FltSvy", "SE"),
                                   EM2OMcatch_bias = c("Yr", "Seas", "FltSvy", "bias"), # added for EM2OM
+                                  FixedCatch = c("Yr","Seas","FltSvy","Catch","Units"), # added for custom (EM2OM) fixed catches
+                                  ImpError = c("Yr", "Seas", "FltSvy", "ImpErr"), # added for ImpError
                                   CPUE = c("Yr", "Seas", "FltSvy", "SE"),
                                   discard_data = c("Yr", "Seas", "FltSvy", "SE"),
                                   EM2OMdiscard_bias = c("Yr", "Seas", "FltSvy", "bias"), # added for EM2OM
-                                  FixedCatch = c("Yr","Seas","FltSvy","Catch","Units"), # added for custom (EM2OM) fixed catches
                                   FixedCatchEM = c("Yr","Seas","FltSvy","Catch","catch_se", "fixed"), # added for custom envir fixed catches in EM
                                   lencomp = c(
                                     "Yr", "Seas", "FltSvy", "Sex",
