@@ -314,8 +314,8 @@ EnvirEM <- function(EM_out_dir = NULL,
     # Adding red tide into the assessment years
     dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
     
-    dat$bycatch_fleet_info$F_or_first_year <- F_or_first_year + nyrs_assess
-    dat$bycatch_fleet_info$F_or_last_year <- F_or_last_year + nyrs_assess
+    dat$bycatch_fleet_info$F_or_first_year <- dat$bycatch_fleet_info$F_or_first_year + nyrs_assess
+    dat$bycatch_fleet_info$F_or_last_year <- dat$bycatch_fleet_info$F_or_last_year + nyrs_assess
     
     SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
                 overwrite = TRUE, verbose = FALSE)
