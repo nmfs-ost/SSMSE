@@ -923,47 +923,39 @@ run_SSMSE_iter <- function(out_dir = NULL,
       }
     }
   }
-  if (!is.null(cloud_bucket)) {  #cloud_bucket should be the directory of a google bucket
+  if (!is.null(cloud_bucket)) {  # cloud_bucket should be the directory of a google bucket (e.g., "gs://my-bucket")
     
-    # create the scenario folder in bucket if needed
-    scenario_folder <- file.path(cloud_bucket, basename(dirname(dirname(new_EM_out_dir))))
-    if (!file.exists(scenario_folder)) { dir.create(scenario_folder) }
+    # Extract the scenario and iteration names to build the target cloud path
+    scenario_name  <- basename(dirname(dirname(new_EM_out_dir)))
+    iteration_name <- basename(dirname(new_EM_out_dir))
     
-    # create the iteration folder in bucket if needed
-    iteration_folder <- file.path(scenario_folder, basename(dirname(new_EM_out_dir)))
-    if (!file.exists(iteration_folder)) { dir.create(iteration_folder) }
+    # Construct the target cloud URI 
+    # Example: gs://my-bucket/scenario_abc/iteration_1
+    target_cloud_iteration_dir <- file.path(cloud_bucket, scenario_name, iteration_name)
     
-    # --- Perform the Move Operation ---
+    # The local directory we want to copy everything from
+    local_iteration_dir <- dirname(new_EM_out_dir)
     
-    # list all of the folders in the original iteration folder
-    old_dirs <- list.dirs(path = dirname(new_EM_out_dir),
-                          full.names = TRUE,
-                          recursive = FALSE)
+    message("Starting sync from local: ", local_iteration_dir, " to cloud: ", target_cloud_iteration_dir)
     
-    # for each folder in that list of folders we want to copy that entire folder to the new directory
-    for (dir in old_dirs) {
+    # --- Perform the rsync Operation ---
+    # -r: recursive (includes all subfolders like om/em)
+    rsync_cmd <- paste(
+      "gcloud storage rsync",
+      shQuote(local_iteration_dir),
+      shQuote(target_cloud_iteration_dir),
+      "-r"
+    )
+    
+    # Run the system command and capture the exit status (0 means success)
+    status <- system(rsync_cmd)
+    
+    if (status == 0) {
+      message("Success! The iteration folder and all its subfolders/contents were synced to the cloud.\n")
+      unlink(local_iteration_dir, recursive = TRUE)
       
-      # create the new om/em in the cloud
-      target_dir <- file.path(iteration_folder, basename(dir))
-      dir.create(target_dir)
-      
-      # move all of the files into the new om/em folder
-      
-      old_files <- list.files(path = dir,
-                              full.names = TRUE,
-                              recursive = FALSE)
-      
-      for (file in old_files) {
-        
-        system(paste("mv", shQuote(file), shQuote(file.path(target_dir, basename(file)))))
-        
-        if (!file.exists(file)) {
-          message("Success! The folder '", dir, "' and all its contents were moved.\n", sep="")
-          message(paste("New location:", file.path(iteration_folder, basename(dir)), "\n"))
-        } else {
-          warning("Move failed. This might be due to permissions or an open file lock.\n")
-        }
-      }
+    } else {
+      warning("gcloud storage rsync failed. Please check your gcloud authentication, bucket permissions, or network connection.\n")
     }
   }
   message("Finished iteration ", niter, ".")
