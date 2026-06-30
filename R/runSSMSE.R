@@ -952,8 +952,8 @@ run_SSMSE_iter <- function(out_dir = NULL,
     
     if (status == 0) {
       message("Success! The iteration folder and all its subfolders/contents were synced to the cloud.\n")
-      unlink(local_iteration_dir, recursive = TRUE)
-      
+      contents <- list.files(local_iteration_dir, full.names = TRUE, all.files = TRUE, no.. = TRUE)
+      unlink(contents, recursive = TRUE)
     } else {
       warning("gcloud storage rsync failed. Please check your gcloud authentication, bucket permissions, or network connection.\n")
     }
