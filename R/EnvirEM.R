@@ -128,8 +128,8 @@ add_new_dat_envir <- function (OM_dat,
     extracted_dat$discard_data$Discard <- tmp_discard$Discard / tmp_discard$bias
   }
   
-  if(!is.null(sample_struct$FixedCatchEM)){  # if FixedCatchEM is enabled
-    result_df <- sample_struct$FixedCatchEM[, which(names(sample_struct$FixedCatchEM) != "fixed")] # make a data frame without the estimate variable
+  if(!is.null(sample_struct[["FixedCatchEM"]])){  # if FixedCatchEM is enabled
+    result_df <- sample_struct[["FixedCatchEM"]][, which(names(sample_struct[["FixedCatchEM"]]) != "fixed")] # make a data frame without the estimate variable
     extracted_dat[["catch"]] <- rbind(extracted_dat[["catch"]], result_df) # append the FixedCatchEM data frame to the extracted data so that SS knows to estimate mortality in the years with provided catch.  
   }
   
@@ -197,38 +197,38 @@ EnvirEM <- function(EM_out_dir = NULL,
   ## If RandomFixedCatch exists
   # check if it is a list or data.frame with scenarios and iterations
   # use the specific iteration/scenario combo to define FixedCatches in the OM.  
-  fc_names <- names(sample_struct$FixedCatch)
-  if (!is.null(extras$RandomFixedCatch)) {
-    if (is.list(extras$RandomFixedCatch)) {
-      sample_struct$FixedCatch <- extras$RandomFixedCatch[[niter-extras$max_prev_iter]]
-    } else if (is.data.frame(extras$RandomFixedCatch)) {
-      sample_struct$FixedCatch <- extras$RandomFixedCatch[[nscen]][[niter-extras$max_prev_iter]]
+  fc_names <- names(sample_struct[["FixedCatch"]])
+  if (!is.null(extras[["RandomFixedCatch"]])) {
+    if (is.list(extras[["RandomFixedCatch"]])) {
+      sample_struct[["FixedCatch"]] <- extras[["RandomFixedCatch"]][[niter-extras[["max_prev_iter"]]]]
+    } else if (is.data.frame(extras[["RandomFixedCatch"]])) {
+      sample_struct[["FixedCatch"]] <- extras[["RandomFixedCatch"]][[nscen]][[niter-extras[["max_prev_iter"]]]]
     } else {
       warning("Error: RandomFixedCatch format is not list or data.frame")
     }
   }
-  names(sample_struct$FixedCatch) <- fc_names
+  names(sample_struct[["FixedCatch"]]) <- fc_names
   
   ## If RandomFixedCatchEMEM exists
   # check if it is a list or data.frame with scenarios and iterations
   # use the specific iteration/scenario combo to define FixedCatchEMes in the OM.  
-  fcem_names <- names(sample_struct$FixedCatchEM)
-  if (!is.null(extras$RandomFixedCatchEM)) {
-    if (is.list(extras$RandomFixedCatchEM)) {
-      if (is.list(extras$RandomFixedCatchEM[[1]])) {
-        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM[[niter-extras$max_prev_iter]]
-      } else if (is.data.frame(extras$RandomFixedCatchEM)) {
-        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM[[nscen]][[niter-extras$max_prev_iter]]
+  fcem_names <- names(sample_struct[["FixedCatchEM"]])
+  if (!is.null(extras[["RandomFixedCatchEM"]])) {
+    if (is.list(extras[["RandomFixedCatchEM"]])) {
+      if (is.list(extras[["RandomFixedCatchEM"]][[1]])) {
+        sample_struct[["FixedCatchEM"]] <- extras[["RandomFixedCatchEM"]][[niter-extras[["max_prev_iter"]]]]
+      } else if (is.data.frame(extras[["RandomFixedCatchEM"]])) {
+        sample_struct[["FixedCatchEM"]] <- extras[["RandomFixedCatchEM"]][[nscen]][[niter-extras[["max_prev_iter"]]]]
       } else {
-        sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM
+        sample_struct[["FixedCatchEM"]] <- extras[["RandomFixedCatchEM"]]
       }
-    } else if (is.data.frame(extras$RandomFixedCatchEM)) {
-      sample_struct$FixedCatchEM <- extras$RandomFixedCatchEM
+    } else if (is.data.frame(extras[["RandomFixedCatchEM"]])) {
+      sample_struct[["FixedCatchEM"]] <- extras[["RandomFixedCatchEM"]]
     } else {
       warning("Error: RandomFixedCatchEM format is not list or data.frame")
     }
   }
-  names(sample_struct$FixedCatchEM) <- fcem_names
+  names(sample_struct[["FixedCatchEM"]]) <- fcem_names
   
   if (init_loop) {
     
@@ -323,7 +323,7 @@ EnvirEM <- function(EM_out_dir = NULL,
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
     # to implement those fixed catches as CPUE indecies.  
-    if (!is.null(sample_struct$FixedCatchEM) && sum(sample_struct_sub$FixedCatchEM$fixed) > 0) {
+    if (!is.null(sample_struct[["FixedCatchEM"]]) && sum(sample_struct_sub$FixedCatchEM$fixed) > 0) {
 
       # load the dat file
       dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
@@ -331,7 +331,7 @@ EnvirEM <- function(EM_out_dir = NULL,
       # and FixedCatchEM data.frames that might break things.  
       
       # identify key fleets
-      fixed_fleets <- unique(sample_struct$FixedCatchEM$fleet)
+      fixed_fleets <- unique(sample_struct[["FixedCatchEM"]]$fleet)
       current_fleets <- unique(ctl$Q_options$fleet)
       fleets_to_add <- fixed_fleets[!(fixed_fleets %in% current_fleets)]
       
@@ -445,10 +445,10 @@ EnvirEM <- function(EM_out_dir = NULL,
   ## IF FixedCatches==TRUE
   # Will need to be mindful about units -- so far, assuming is presented in same units as historical OM
   # come back to this section if want to use different units
-  if(!is.null(sample_struct$FixedCatch)){
+  if(!is.null(sample_struct[["FixedCatch"]])){
     
-    # tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year==dat_yrs,]
-    tmp_ss<- sample_struct$FixedCatch[sample_struct$FixedCatch$year %in% dat_yrs,] # create obj of fixed catches
+    # tmp_ss<- sample_struct[["FixedCatch"]][sample_struct[["FixedCatch"]]$year==dat_yrs,]
+    tmp_ss<- sample_struct[["FixedCatch"]][sample_struct[["FixedCatch"]]$year %in% dat_yrs,] # create obj of fixed catches
     colnames(tmp_ss)[4]<- "Fcatch" # rename fixed catches to allow for merge
     
     if(nrow(tmp_ss)>0){
@@ -479,14 +479,14 @@ EnvirEM <- function(EM_out_dir = NULL,
           tmp_merge <- base::merge(base::abs(new_OM_catch_list$catch_F), base::abs(tmp_ss_catch), all.x=TRUE, all.y=FALSE) # merge 
           tmp_merge$catch[which(!is.na(tmp_merge$Fcatch))] <- tmp_merge$Fcatch[which(!is.na(tmp_merge$Fcatch))] # replace fixed catches with 
           tmp_merge <- tmp_merge[base::order(base::abs(tmp_merge$fleet),base::abs(tmp_merge$year),base::abs(tmp_merge$seas)),]
-          if (!is.null(sample_struct$FixedCatchEM)) {
+          if (!is.null(sample_struct[["FixedCatchEM"]])) {
             # replace the catch_se with the values from FixedCatchEM
             # Create a key to match on
             main_key <- paste(tmp_merge$year, tmp_merge$seas, tmp_merge$fleet, sep = "_")
             update_key <- paste(
-              sample_struct$FixedCatchEM$year,
-              sample_struct$FixedCatchEM$seas,
-              sample_struct$FixedCatchEM$fleet,
+              sample_struct[["FixedCatchEM"]]$year,
+              sample_struct[["FixedCatchEM"]]$seas,
+              sample_struct[["FixedCatchEM"]]$fleet,
               sep = "_"
             )
             
@@ -496,8 +496,8 @@ EnvirEM <- function(EM_out_dir = NULL,
             # Replace catch_se using ifelse inside bracket assignment
             tmp_merge$catch_se <- ifelse(
               !is.na(match_idx) &
-                !is.na(sample_struct$FixedCatchEM$catch_se[match_idx]),
-              sample_struct$FixedCatchEM$catch_se[match_idx],
+                !is.na(sample_struct[["FixedCatchEM"]]$catch_se[match_idx]),
+              sample_struct[["FixedCatchEM"]]$catch_se[match_idx],
               tmp_merge$catch_se
             )
           }
@@ -821,33 +821,33 @@ create_sample_struct_envir <- function(dat, nyrs, rm_NAs = FALSE, FixedCatches =
   
   ## Add FixedCatches
   if(FixedCatches==TRUE){
-    sample_struct$FixedCatch <- sample_struct$catch
-    sample_struct$FixedCatch$Units <- NA
-    names(sample_struct$FixedCatch)[4] = "Catch"
+    sample_struct[["FixedCatch"]] <- sample_struct$catch
+    sample_struct[["FixedCatch"]]$Units <- NA
+    names(sample_struct[["FixedCatch"]])[4] = "Catch"
     
-    for(f in unique(sample_struct$FixedCatch$FltSvy)){
+    for(f in unique(sample_struct[["FixedCatch"]]$FltSvy)){
       
-      sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Catch = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch, nyrs)
+      sample_struct[["FixedCatch"]][sample_struct[["FixedCatch"]]$FltSvy==f,]$Catch = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch, nyrs)
       if(dat$fleetinfo$type[f] == 1){
-        sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
+        sample_struct[["FixedCatch"]][sample_struct[["FixedCatch"]]$FltSvy==f,]$Units = rep(dat$fleetinfo$units[f], nyrs)
       } else{
-        sample_struct$FixedCatch[sample_struct$FixedCatch$FltSvy==f,]$Units = rep(99, nyrs)
+        sample_struct[["FixedCatch"]][sample_struct[["FixedCatch"]]$FltSvy==f,]$Units = rep(99, nyrs)
       }
     }
-    sample_struct$FixedCatch
+    sample_struct[["FixedCatch"]]
   } else{# end if FixedCatches==TRUE
     FixedCatches <- NULL
   }
   
   if(FixedCatchesEM == TRUE){
-    sample_struct$FixedCatchEM <- sample_struct$FixedCatch
-    names(sample_struct$FixedCatchEM)[5] = "catch_se"
+    sample_struct[["FixedCatchEM"]] <- sample_struct[["FixedCatch"]]
+    names(sample_struct[["FixedCatchEM"]])[5] = "catch_se"
     
-    for(f in unique(sample_struct$FixedCatchEM$FltSvy)){
-      sample_struct$FixedCatchEM[sample_struct$FixedCatchEM$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
+    for(f in unique(sample_struct[["FixedCatchEM"]]$FltSvy)){
+      sample_struct[["FixedCatchEM"]][sample_struct[["FixedCatchEM"]]$FltSvy==f,]$catch_se = rep(dat$catch[dat$catch$year==dat$endyr & dat$catch$fleet==f,]$catch_se, nyrs)
     }
-    sample_struct$FixedCatchEM$fixed <- rep(0, length=nrow(sample_struct$FixedCatchEM)) # a new column that indicates if the EM's catch is estimated or not.  
-    sample_struct$FixedCatchEM
+    sample_struct[["FixedCatchEM"]]$fixed <- rep(0, length=nrow(sample_struct[["FixedCatchEM"]])) # a new column that indicates if the EM's catch is estimated or not.  
+    sample_struct[["FixedCatchEM"]]
   } else{# end if FixedCatches==TRUE
     FixedCatchesEM <- NULL
   }
