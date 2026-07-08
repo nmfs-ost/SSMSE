@@ -141,7 +141,7 @@ EM <- function(EM_out_dir = NULL, init_loop = TRUE, OM_dat, verbose = FALSE,
 #' @return A data frame of future catch
 get_EM_catch_df <- function(EM_dir, dat) {
   rpt <- readLines(file.path(EM_dir, "Report.sso"))
-  start <- grep("TIME_SERIES", rpt)
+  start <- grep("^TIME_SERIES", rpt) # need to not match ANNUAL_TIME_SERIES
   start <- start[length(start)] + 1
   end <- grep("SPR_series", rpt, ignore.case = TRUE)
   end <- end[length(end)] - 1
@@ -484,8 +484,10 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     # TODO: figure out what values should go here; probably not 0.
     Fcast_rec_line <- grep("^# Fcast_recruitments:$", par) + 1
     par[Fcast_rec_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
-    Fcast_impl_err_line <- grep("^# Fcast_impl_error:$", par) + 1
-    par[Fcast_impl_err_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
+    # # Forecast implementation error parameters were included in earlier SS3 version 
+    # # whether specified by the user or not. These changes are not needed in 3.30.24.
+    # Fcast_impl_err_line <- grep("^# Fcast_impl_error:$", par) + 1
+    # par[Fcast_impl_err_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
     writeLines(par, par_file)
     # Run SS3 with the new catch set as forecast targets. This will use SS3 to
     # calculate the F required in the OM to achieve these catches.
@@ -620,10 +622,12 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
     temp_forecast[, 1] <- (Reference_dat[["endyr"]] + 1 - forecast_adjust):(Reference_dat[["endyr"]] + Reference_forecast[["Nforecastyrs"]])
     colnames(temp_forecast) <- c("year", "recdev")
     Reference_par[["recdev_forecast"]] <- as.data.frame(temp_forecast)
-    temp_impl_error <- matrix(0, nrow = (Reference_forecast[["Nforecastyrs"]]), ncol = 2)
-    temp_impl_error[, 1] <- (Reference_dat[["endyr"]] + 1):(Reference_dat[["endyr"]] + Reference_forecast[["Nforecastyrs"]])
-    colnames(temp_impl_error) <- c("year", "impl_error")
-    Reference_par[["Fcast_impl_error"]] <- as.data.frame(temp_impl_error)
+    # # Forecast implementation error parameters were included in earlier SS3 version 
+    # # whether specified by the user or not. These changes are not needed in 3.30.24.
+    # temp_impl_error <- matrix(0, nrow = (Reference_forecast[["Nforecastyrs"]]), ncol = 2)
+    # temp_impl_error[, 1] <- (Reference_dat[["endyr"]] + 1):(Reference_dat[["endyr"]] + Reference_forecast[["Nforecastyrs"]])
+    # colnames(temp_impl_error) <- c("year", "impl_error")
+    # Reference_par[["Fcast_impl_error"]] <- as.data.frame(temp_impl_error)
 
     SS_writepar_3.30(
       parlist = Reference_par,

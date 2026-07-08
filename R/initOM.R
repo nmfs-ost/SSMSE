@@ -464,7 +464,7 @@ create_OM <- function(OM_out_dir,
 #' @template verbose
 #' @param debug_par_run If set to TRUE, and the run fails, a new folder called
 #'  error_check will be created, and the model will be run from control start
-#'  values instead of ss.par. The 2 par files are then compared to help debug
+#'  values instead of ss3.par. The 2 par files are then compared to help debug
 #'  the issue with the model run. Defaults to TRUE.
 #' @template sample_catch
 #' @template seed

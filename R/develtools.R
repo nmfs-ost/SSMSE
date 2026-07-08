@@ -54,13 +54,13 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
           msg <- " has added "
         }
         stop(
-          "Problem with the ss.par file - different number of lines. ",
+          "Problem with the ss3.par file - different number of lines. ",
           "The original par file in ", orig_mod_dir, msg, " parameters: ",
           paste0(missing_vars, collapse = ", ")
         )
       } else {
         stop(
-          "Problem with the ss.par file - same number of lines. ",
+          "Problem with the ss3.par file - same number of lines. ",
           "The original par file in ", orig_mod_dir,
           "has the same number of values as the new ",
           "par in ", new_mod_dir, ", so not sure what the issue is."
@@ -71,7 +71,7 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
   } else {
     # problem is not with the par file, but with some other model misspecification.
     stop(
-      "Problem with model - not ss.par related. ",
+      "Problem with model - not ss3.par related. ",
       "Model originally in ", orig_mod_dir, " could not be run from values ",
       "in the ctl file, suggesting the issue is not with bad par file ",
       " specification. Please look at ",
