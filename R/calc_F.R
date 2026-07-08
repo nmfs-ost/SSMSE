@@ -11,7 +11,7 @@
 #' @importFrom tidyr gather separate
 #' @return a list containing: F_df, a long dataframe with F by year, Era, Seas,
 #'  and fleet; F_rate, a data frame with F for the time frame of the model
-#'  only by year, Seas, and fleet, ordered as the ss.par file expects; init_F,
+#'  only by year, Seas, and fleet, ordered as the ss3.par file expects; init_F,
 #'  a named vector of initial F values by Season and fleet, ordered (and named)
 #'  as SS expects; and F_rate_fcast, a dataframe of forecasted F by year, Seas,
 #'  and fleet, ordered as SS would expect in F_rate.

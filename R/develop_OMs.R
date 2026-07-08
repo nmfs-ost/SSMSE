@@ -113,6 +113,7 @@ develop_OMs <- function(
     if (file.exists(par_file)) {
       file.remove(par_file)
     }
+    # also delete older name of .par file if they exist
     if (file.exists(file.path(tmp_mod_path, "ss.par"))) {
       file.remove(file.path(tmp_mod_path, "ss.par"))
     }

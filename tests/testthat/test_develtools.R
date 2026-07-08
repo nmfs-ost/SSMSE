@@ -23,11 +23,11 @@ r4ss::SS_writestarter(start_orig,
 )
 
 # mock a bad par file by deleting a line
-orig_par <- readLines(file.path(orig_mod_dir, "ss.par"))
-writeLines(orig_par, file.path(temp_path, "good_ss.par"))
-fcast_line <- grep("^# Fcast_impl_error:$|^# Fcast_recruitments:$", orig_par)
+orig_par <- readLines(file.path(orig_mod_dir, "ss3.par"))
+writeLines(orig_par, file.path(temp_path, "good_ss3.par"))
+fcast_line <- grep("^# Fcast_recruitments:$", orig_par)
 bad_par <- orig_par[-c(fcast_line, fcast_line + 1)]
-writeLines(bad_par, file.path(orig_mod_dir, "ss.par"))
+writeLines(bad_par, file.path(orig_mod_dir, "ss3.par"))
 new_mod_dir <- file.path(temp_path, "new_mod_dir")
 
 test_that("test_no_par works as expected", {
@@ -48,7 +48,7 @@ test_that("test_no_par works as expected", {
       orig_mod_dir = orig_mod_dir,
       new_mod_dir = new_mod_dir
     ),
-    "Problem with the ss.par file - different number of lines."
+    "Problem with the ss3.par file - different number of lines."
   )
   unlink(new_mod_dir, recursive = TRUE)
   # manipulate the fcast file to make some other issue
@@ -65,7 +65,7 @@ test_that("test_no_par works as expected", {
       orig_mod_dir = orig_mod_dir,
       new_mod_dir = new_mod_dir
     ),
-    "Problem with model - not ss.par related",
+    "Problem with model - not ss3.par related",
     fixed = TRUE
   )
 })
