@@ -35,10 +35,7 @@ test_no_par <- function(orig_mod_dir, new_mod_dir) {
   # read in the 2 par files.
   orig_par <- readLines(get_ss_par_file(orig_mod_dir))
 
-  dat_file <- list.files(
-    new_mod_dir,
-    pattern = "^data(\\.ss_new|_echo\\.ss_new|_expval\\.ss|_boot_[0-9]{3}\\.ss)$"
-  )
+  dat_file <- list.files(new_mod_dir, pattern = "data.ss_new|data_echo.ss_new")
 
   if (length(dat_file) > 0) {
     if (file.exists(file.path(new_mod_dir, dat_file))) {
