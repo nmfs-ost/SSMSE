@@ -226,8 +226,6 @@ clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, MS = "EM",
   endyr <- OM_dat[["endyr"]]
 
 
-
-
   # get years in range function
   get_yrs_in_range <- function(list_name, dat, styr, endyr) {
     df <- dat[[list_name]]

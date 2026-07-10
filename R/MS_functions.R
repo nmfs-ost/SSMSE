@@ -484,7 +484,7 @@ get_no_EM_catch_df <- function(OM_dir, yrs, MS = "last_yr_catch") {
     # TODO: figure out what values should go here; probably not 0.
     Fcast_rec_line <- grep("^# Fcast_recruitments:$", par) + 1
     par[Fcast_rec_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
-    # # Forecast implementation error parameters were included in earlier SS3 version 
+    # # Forecast implementation error parameters were included in earlier SS3 version
     # # whether specified by the user or not. These changes are not needed in 3.30.24.
     # Fcast_impl_err_line <- grep("^# Fcast_impl_error:$", par) + 1
     # par[Fcast_impl_err_line] <- paste0(rep(0, fore[["Nforecastyrs"]]), collapse = " ")
@@ -622,7 +622,7 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
     temp_forecast[, 1] <- (Reference_dat[["endyr"]] + 1 - forecast_adjust):(Reference_dat[["endyr"]] + Reference_forecast[["Nforecastyrs"]])
     colnames(temp_forecast) <- c("year", "recdev")
     Reference_par[["recdev_forecast"]] <- as.data.frame(temp_forecast)
-    # # Forecast implementation error parameters were included in earlier SS3 version 
+    # # Forecast implementation error parameters were included in earlier SS3 version
     # # whether specified by the user or not. These changes are not needed in 3.30.24.
     # temp_impl_error <- matrix(0, nrow = (Reference_forecast[["Nforecastyrs"]]), ncol = 2)
     # temp_impl_error[, 1] <- (Reference_dat[["endyr"]] + 1):(Reference_dat[["endyr"]] + Reference_forecast[["Nforecastyrs"]])
@@ -837,7 +837,6 @@ Interim <- function(EM_out_dir = NULL, EM_init_dir = NULL,
       start <- SS_readstarter(file.path(EM_init_dir, "starter.ss"),
         verbose = FALSE
       )
-
 
 
       if (!is.null(sample_struct)) {

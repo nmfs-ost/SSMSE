@@ -170,7 +170,8 @@ develop_OMs <- function(
       } else {
         recdev_name <- "recdev2"
       }
-      new_parfile[[recdev_name]][, "recdev"] <- parfile[[recdev_name]][,
+      new_parfile[[recdev_name]][, "recdev"] <- parfile[[recdev_name]][
+        ,
         "recdev"
       ]
 
