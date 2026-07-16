@@ -941,11 +941,10 @@ run_SSMSE_iter <- function(out_dir = NULL,
     # --- Perform the rsync Operation ---
     # -r: recursive (includes all subfolders like om/em)
     rsync_cmd <- paste(
-      "gcloud config set storage/process_count 1 &&",
-      "gcloud config set storage/thread_count 4 &&",
-      "gcloud storage cp -r",
+      "gcloud storage rsync",
       shQuote(local_iteration_dir),
-      shQuote(target_cloud_iteration_dir)
+      shQuote(target_cloud_iteration_dir),
+      "-r"
     )
     
     # Run the system command and capture the exit status (0 means success)
