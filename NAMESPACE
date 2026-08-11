@@ -23,16 +23,22 @@ import(ggplot2)
 import(r4ss)
 importFrom(assertive.base,assert_is_identical_to_true)
 importFrom(magrittr,"%>%")
-importFrom(r4ss,SS_read_summary)
-importFrom(r4ss,SS_readdat)
-importFrom(r4ss,SS_readforecast)
-importFrom(r4ss,SS_readstarter)
-importFrom(r4ss,SS_writedat)
-importFrom(r4ss,SS_writeforecast)
-importFrom(r4ss,SS_writestarter)
-importFrom(ss3sim,get_results_all)
-importFrom(ss3sim,get_results_iter)
-importFrom(ss3sim,get_results_scenario)
+importFrom(r4ss,
+  SS_read_summary,
+  SS_readdat,
+  SS_readforecast,
+  SS_readstarter,
+  SS_writedat,
+  SS_writeforecast,
+  SS_writestarter
+)
+importFrom(ss3sim,
+  get_results_all,
+  get_results_iter,
+  get_results_scenario
+)
 importFrom(stats,na.omit)
-importFrom(tidyr,gather)
-importFrom(tidyr,separate)
+importFrom(tidyr,
+  gather,
+  separate
+)
