@@ -50,6 +50,7 @@
 <url><loc>/reference/get_bin.html</loc></url>
 <url><loc>/reference/get_catch_cv.html</loc></url>
 <url><loc>/reference/get_catch_sd.html</loc></url>
+<url><loc>/reference/get_data_file.html</loc></url>
 <url><loc>/reference/get_dead_catch.html</loc></url>
 <url><loc>/reference/get_full_sample_struct.html</loc></url>
 <url><loc>/reference/get_impl_error_matrix.html</loc></url>
@@ -59,6 +60,7 @@
 <url><loc>/reference/get_performance_metrics.html</loc></url>
 <url><loc>/reference/get_rel_SSB_avg.html</loc></url>
 <url><loc>/reference/get_retained_catch.html</loc></url>
+<url><loc>/reference/get_ss_par_file.html</loc></url>
 <url><loc>/reference/get_total_catch.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/last_yr_catch.html</loc></url>
@@ -76,7 +78,6 @@
 <url><loc>/reference/run_SSMSE.html</loc></url>
 <url><loc>/reference/run_SSMSE_iter.html</loc></url>
 <url><loc>/reference/run_SSMSE_scen.html</loc></url>
-<url><loc>/reference/run_ss_model.html</loc></url>
 <url><loc>/reference/sample_vals.html</loc></url>
 <url><loc>/reference/set_MSE_seeds.html</loc></url>
 <url><loc>/reference/test_no_par.html</loc></url>
@@ -84,5 +85,6 @@
 <url><loc>/reference/update_basevals_blocks.html</loc></url>
 <url><loc>/reference/update_basevals_dev.html</loc></url>
 <url><loc>/reference/update_basevals_env.html</loc></url>
+<url><loc>/reference/update_ss3_version.html</loc></url>
 </urlset>
 

@@ -1,0 +1,27 @@
+# Check the general structure of a future OM list and standardize values
+
+Checks that a future OM list is valid. If any values are implicit, then
+add these values. Does not check against arguments in the scenario, just
+the generic structure
+
+## Usage
+
+``` r
+check_future_om_list_str(future_om_list)
+```
+
+## Arguments
+
+- future_om_list:
+
+  An optional list of lists including changes that should be made after
+  the end year of the input model. Each first level list element
+  outlines 1 change to be made to the operating model. To see an
+  example, try running
+  [`create_future_om_list`](create_future_om_list.md). Defaults to NULL,
+  which implies that the model will be extended forward in time assuming
+  the original model structure.
+
+## Value
+
+The future_om_list with implicit arguments made explicit

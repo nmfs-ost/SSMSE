@@ -1,0 +1,84 @@
+# Use EM as the management strategy option.
+
+Use EM as the management strategy option.
+
+## Usage
+
+``` r
+EM(
+  EM_out_dir = NULL,
+  init_loop = TRUE,
+  OM_dat,
+  verbose = FALSE,
+  nyrs_assess,
+  dat_yrs,
+  sample_struct = NULL,
+  seed = NULL,
+  OM_out_dir,
+  ...
+)
+```
+
+## Arguments
+
+- EM_out_dir:
+
+  Relative or absolute path to the estimation model, if using a model
+  outside of the SSMSE package.
+
+- init_loop:
+
+  Logical. If this is the first initialization loop of the MSE,
+  `init_loop` should be TRUE. If it is in further loops, it should be
+  FALSE.
+
+- OM_dat:
+
+  An valid SS3 data file read in using r4ss. In particular, this should
+  be sampled data.
+
+- verbose:
+
+  Want verbose output? Defaults to FALSE.
+
+- nyrs_assess:
+
+  The number of years between assessments (e.g., if an assessment is
+  conducted every 3 years, put 3 here). A single integer value.
+
+- dat_yrs:
+
+  Which years should be added to the new model? Ignored if init_loop is
+  TRUE.
+
+- sample_struct:
+
+  A optional list including which years, seasons, and fleets should be
+  added from the OM into the EM for different types of data. If NULL,
+  the data structure will try to be inferred from the pattern found for
+  each of the datatypes within the EM datafiles. Include this structure
+  for the number of years to extend the model out. Note that the data
+  should be specified using the list component names and column names as
+  in would be used in
+  [`r4ss::SS_readdat()`](https://r4ss.github.io/r4ss/reference/SS_readdat.html).
+  The `run_SSMSE_iter` function examples give an example of what this
+  structure should be. Running the function
+  [`create_sample_struct()`](create_sample_struct.md) will also produce
+  a sample_struct object in the correct form. Can be NULL only when MS
+  is not EM.
+
+- seed:
+
+  A random seed so that reproducible results are possible.
+
+- OM_out_dir:
+
+  The full path to the directory in which the OM is run.
+
+- ...:
+
+  Any additional parameters
+
+## Author
+
+Kathryn Doering
