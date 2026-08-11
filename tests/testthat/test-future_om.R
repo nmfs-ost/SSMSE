@@ -678,7 +678,6 @@ test_that("Tests a model with env link using historical values", {
 })
 
 
-
 test_that("Setting seeds works as intended", {
   # check replicate option works
   ext_files <- system.file(package = "SSMSE")

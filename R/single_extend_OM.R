@@ -374,8 +374,7 @@ add_OM_devs <- function(ctl, dat, parlist, timeseries, future_om_dat) {
           stop("Something is wrong, the number of temp selection parameters is not correct. This is likely a code bug not user error :(")
         }
 
-        if ((tv_size_length + tv_age_length + tv_age_length) == 0) {
-        } else if (!is.null(ctl[["dirichlet_parms"]])) {
+        if ((tv_size_length + tv_age_length + tv_age_length) == 0) {} else if (!is.null(ctl[["dirichlet_parms"]])) {
           insert_row <- which(names(ctl) == "dirichlet_parms")
         } else if (!is.null(ctl[["age_selex_parms"]])) {
           insert_row <- which(names(ctl) == "age_selex_parms")

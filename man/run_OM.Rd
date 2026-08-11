@@ -33,7 +33,7 @@ SS_readdat is equivalent to specifying nboot = 1.}
 
 \item{debug_par_run}{If set to TRUE, and the run fails, a new folder called
 error_check will be created, and the model will be run from control start
-values instead of ss.par. The 2 par files are then compared to help debug
+values instead of ss3.par. The 2 par files are then compared to help debug
 the issue with the model run. Defaults to TRUE.}
 
 \item{sample_catch}{Should catch be sampled or fixed at the OM values?

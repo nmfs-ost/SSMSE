@@ -243,7 +243,6 @@ create_OM <- function(OM_out_dir,
   dat[["catch"]] <- new_catch
 
 
-
   default_F <- F_list[["F_rate"]][F_list[["F_rate"]][, "year"] == dat[["endyr"]], c("year", "seas", "fleet", "F")]
   new_F_rate <- rbind(F_list[["F_rate"]][, c("year", "seas", "fleet", "F")], F_list[["F_rate_fcast"]][, c("year", "seas", "fleet", "F")])
   rownames(new_F_rate) <- c(F_list[["F_rate"]][, c("name")], F_list[["F_rate_fcast"]][, c("name")])
