@@ -311,14 +311,21 @@ EnvirEM <- function(EM_out_dir = NULL,
     # Adding the bias adjustment back in to the assessment years
     ctl$last_yr_fullbias_adj <- ctl$last_yr_fullbias_adj + nyrs_assess
     ctl$first_recent_yr_nobias_adj <- ctl$first_recent_yr_nobias_adj + nyrs_assess
+    
     # Adding red tide into the assessment years
+    # read the dat file to get bycatch fleet projection settings
     dat <- SS_readdat(file.path(EM_out_dir, start[["datfile"]]), verbose = FALSE) 
     
-    dat$bycatch_fleet_info$F_or_first_year <- dat$bycatch_fleet_info$F_or_first_year + nyrs_assess
-    dat$bycatch_fleet_info$F_or_last_year <- dat$bycatch_fleet_info$F_or_last_year + nyrs_assess
-    
-    SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
-                overwrite = TRUE, verbose = FALSE)
+    # Check if the Fmult setting is 3 and using the average red tide in previous years
+    if(dat[["bycatch_fleet_info"]][["Fmult"]] == 3) {
+      
+      # Move the bycatch fleet years forward to the next stock assessment
+      dat[["bycatch_fleet_info"]][["F_or_first_year"]] <- dat[["bycatch_fleet_info"]][["F_or_first_year"]] + nyrs_assess
+      dat[["bycatch_fleet_info"]][["F_or_last_year"]] <- dat[["bycatch_fleet_info"]][["F_or_last_year"]] + nyrs_assess
+      # Update the dat file
+      SS_writedat(dat, file.path(EM_out_dir, start[["datfile"]]),
+                  overwrite = TRUE, verbose = FALSE)
+    }
     
     
     # If fixed catches are enabled in the EM, then alter the dat and ctl file
