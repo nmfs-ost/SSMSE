@@ -900,7 +900,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     )
   }
   if (file_removal == TRUE) {
-    if (runif(1) < 0.9) {
+    if (runif(1) < 0.9) { # Remove files from ~90% of the iterations 
       # Set the path to your iteration folder
       iteration_folder <- dirname(new_EM_out_dir)
       
@@ -915,7 +915,27 @@ run_SSMSE_iter <- function(out_dir = NULL,
         # List all files in the directory (non-recursive)
         files <- list.files(path = dir, full.names = TRUE)
         # Identify files to keep
-        keep_files <- file.path(dir, c("Report.sso", "Forecast-report.sso","ss_summary.sso", "admodel.cov", "wtatage.ss_new", "warning.sso", "posteriors.sso", "CompReport.sso", "derived_posteriors.sso", "data.ss_new", "data_echo.ss_new"))
+        # These are all files required for ss_output or the ss_new files
+        keep_files <- file.path(
+          dir,
+          c(
+            "Report.sso",
+            "Forecast-report.sso",
+            "ss_summary.sso",
+            "admodel.cov",
+            "wtatage.ss_new",
+            "warning.sso",
+            "posteriors.sso",
+            "CompReport.sso",
+            "derived_posteriors.sso",
+            "data.ss_new",
+            "data_echo.ss_new",
+            "ss.par",
+            "control.ss_new",
+            "forecast.ss_new",
+            "starter.ss_new"
+          )
+        )
         # Determine files to delete
         delete_files <- setdiff(files, keep_files)
         # Delete the files
