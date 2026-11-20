@@ -579,12 +579,19 @@ run_SSMSE_iter <- function(out_dir = NULL,
   message("Starting iteration ", niter, ".")
   
   set.seed((iter_seed[["iter"]][1] + 123))
+  
+  if(is.null(extras$use_base)) use_base <- TRUE else use_base <- extras$use_base
+  if(is.null(extras$OM_dat_section)) OM_dat_section <- 1 else OM_dat_section <- extras$OM_dat_section
+  if(is.null(extras$EM_dat_section)) EM_dat_section <- 1 else EM_dat_section <- extras$EM_dat_section
+  if(is.null(extras$refit_OM)) refit_OM <- TRUE else refit_OM <- extras$refit_OM
+
   # get and create directories, copy model files ----
   # assign or reassign OM_dir and OM_in_dir in case they weren't specified
   # as inputs
   out_loc <- create_out_dirs(
     out_dir = out_dir, niter = niter, OM_name = OM_name,
-    OM_in_dir = OM_in_dir, EM_name = EM_name, EM_in_dir = EM_in_dir
+    OM_in_dir = OM_in_dir, EM_name = EM_name, EM_in_dir = EM_in_dir,
+    use_base = use_base
   )
   if (is.null(out_loc)) { # out loc returns false if the iteration was already run.
     return(FALSE)
@@ -593,8 +600,13 @@ run_SSMSE_iter <- function(out_dir = NULL,
   OM_in_dir <- out_loc[["OM_in_dir"]]
   EM_in_dir <- out_loc[["EM_in_dir"]]
   EM_out_dir <- out_loc[["EM_out_dir"]]
-  Base_out_dir <- out_loc[["Base_out_dir"]]
-  Base_in_dir <- out_loc[["Base_in_dir"]]
+  if(use_base==TRUE){
+    Base_out_dir <- out_loc[["Base_out_dir"]]
+    Base_in_dir <- out_loc[["Base_in_dir"]]
+  } else {
+    Base_out_dir <- NULL
+    Base_in_dir <- NULL
+  }
   if (!is.null(EM_out_dir)) {
     EM_out_dir_basename <- strsplit(EM_out_dir, "_init$")[[1]][1]
   } else {
@@ -613,19 +625,27 @@ run_SSMSE_iter <- function(out_dir = NULL,
   clean_init_mod_files(
     OM_out_dir = OM_out_dir, EM_out_dir = EM_out_dir,
     Base_out_dir= Base_out_dir,
-    overwrite = TRUE
-  )
-  # Add code to create a base model that will be used to sample expected values
-  # to inform an OM and bootstrapped values to inform the EM's
-  Base_dat <- run_Base(
-    OM_dir = Base_out_dir, verbose = verbose, 
-    seed = (iter_seed[["iter"]][1] + 12345)
+    overwrite = TRUE, OM_dat_section = OM_dat_section, 
+    EM_dat_section = EM_dat_section, use_base = use_base
   )
   
-  refit_OM(
-    OM_dir = OM_out_dir, base_dat = Base_dat,
-    verbose = verbose, seed = (iter_seed[["iter"]][1] + 12345)
-  )
+  if(use_base==TRUE){
+    # Add code to create a base model that will be used to sample expected values
+    # to inform an OM and bootstrapped values to inform the EM's
+    Base_dat <- run_Base(
+      OM_dir = Base_out_dir, verbose = verbose, 
+      seed = (iter_seed[["iter"]][1] + 12345)
+    )
+  }else{
+    Base_dat <- NULL
+  }
+
+  if(refit_OM==TRUE) { 
+    refit_OM(
+      OM_dir = OM_out_dir, base_dat = Base_dat,
+      verbose = verbose, seed = (iter_seed[["iter"]][1] + 12345)
+    )
+  }
   
   # convert sample_struct names ----
   # get the full sampling structure for components that the user didnt specify.
@@ -647,23 +667,25 @@ run_SSMSE_iter <- function(out_dir = NULL,
   # sample_struct[["Constant_fixed_catch"]] <- temp_sample_struct[["Constant_fixed_catch"]]
   # sample_struct[["Annual_fixed_catch"]] <- temp_sample_struct[["Annual_fixed_catch"]]
   # 
-  # Convert the user input parameter modifications into vectors of annual additive deviations
-  future_base_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = Base_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
-  
-  # MSE first iteration ----
-  # turn the stock assessment model into an OM
-  init_base_mod <- create_OM(
-    OM_out_dir = Base_out_dir, overwrite = TRUE,
-    sample_struct_hist = sample_struct_hist,
-    sample_struct = sample_struct,
-    extras = extras,
-    verbose = verbose, writedat = TRUE, nyrs = nyrs,
-    nyrs_assess = nyrs_assess, nscen = nscen,
-    scen_name = scen_name, niter = niter,
-    future_om_dat = future_base_dat,
-    seed = (iter_seed[["iter"]][1] + 1234)
-  )
-  
+
+  if(use_base == TRUE) {
+    # Convert the user input parameter modifications into vectors of annual additive deviations
+    future_base_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = Base_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
+    
+    # MSE first iteration ----
+    # turn the stock assessment model into an OM
+    init_base_mod <- create_OM(
+      OM_out_dir = Base_out_dir, overwrite = TRUE,
+      sample_struct_hist = sample_struct_hist,
+      sample_struct = sample_struct,
+      extras = extras,
+      verbose = verbose, writedat = TRUE, nyrs = nyrs,
+      nyrs_assess = nyrs_assess, nscen = nscen,
+      scen_name = scen_name, niter = niter,
+      future_om_dat = future_base_dat,
+      seed = (iter_seed[["iter"]][1] + 1234)
+    )
+  }
   # Convert the user input parameter modifications into vectors of annual additive deviations
   future_om_dat <- convert_future_om_list_to_devs_df(future_om_list = future_om_list, scen_name = scen_name, niter = niter, om_mod_path = OM_out_dir, nyrs = nyrs, global_seed = (iter_seed[["iter"]][1] + 1234))
   
@@ -680,6 +702,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     future_om_dat = future_om_dat,
     seed = (iter_seed[["iter"]][1] + 1234)
   )
+
   impl_error <- init_mod[["impl_error"]]
   # Complete the OM run so it can be use for expect values or bootstrap
   if (use_SS_boot == TRUE) {
@@ -689,7 +712,7 @@ run_SSMSE_iter <- function(out_dir = NULL,
     #   verbose = verbose, init_run = TRUE, seed = (iter_seed[["iter"]][1] + 12345)
     # )
     OM_dat <- run_OM(
-      OM_dir = Base_out_dir, boot = use_SS_boot, nboot = 1,
+      OM_dir = if(use_base == TRUE) Base_out_dir else OM_out_dir, boot = use_SS_boot, nboot = 1,
       sample_catch = sample_catch,
       verbose = verbose, init_run = TRUE, seed = (iter_seed[["iter"]][1] + 12345)
     )

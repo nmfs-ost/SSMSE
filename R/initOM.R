@@ -576,7 +576,7 @@ run_Base <- function(OM_dir,
 #' @author Kathryn Doering
 #' @importFrom r4ss SS_readdat SS_readstarter SS_writestarter
 refit_OM <- function(OM_dir,
-                     base_dat,
+                     base_dat=NULL,
                      verbose = FALSE,
                      debug_par_run = TRUE,
                      seed = NULL) {
@@ -607,10 +607,12 @@ refit_OM <- function(OM_dir,
                         dir = OM_dir, verbose = FALSE, overwrite = TRUE
   )
   
-  r4ss::SS_writedat(base_dat, file.path(OM_dir, start[["datfile"]]),
-              overwrite = TRUE,
-              verbose = FALSE
-  )
+  if(!is.null(base_dat)){
+    r4ss::SS_writedat(base_dat, file.path(OM_dir, start[["datfile"]]),
+                overwrite = TRUE,
+                verbose = FALSE
+    )
+  }
   
   # run SS and get the data set
   run_ss_model(OM_dir, "-nohess",

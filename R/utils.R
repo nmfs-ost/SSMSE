@@ -142,34 +142,41 @@ create_scen_list <- function(scen_name_vec,
 #' @template OM_out_dir
 #' @template EM_out_dir
 #' @param Base_out_dir The directory where the base model files will be written.
+#' @param use_base A boolean indicating whether to use a base model to 
+#' inform the OM and EM models. Default is TRUE.
+#' @param OM_dat_section The section of the OM data file to read. Default is 1.
+#' @param EM_dat_section The section of the EM data file to read. Default is 1.
 #' @template MS
 #' @template overwrite
 #' @importFrom r4ss SS_readstarter SS_readdat SS_writedat
 clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, Base_out_dir = NULL, 
-                                 MS = "EM", overwrite = FALSE) {
+                                 MS = "EM", overwrite = FALSE, OM_dat_section = 1, 
+                                 EM_dat_section = 1, use_base = TRUE) {
   # read in files
   OM_start <- SS_readstarter(file.path(OM_out_dir, "starter.ss"),
     verbose = FALSE
   )
   OM_dat <- SS_readdat(file.path(OM_out_dir, OM_start[["datfile"]]),
     verbose = FALSE,
-    section = 1
+    section = OM_dat_section
   )
   OM_ctl <- SS_readctl(file.path(OM_out_dir, OM_start[["ctlfile"]]),
     datlist = OM_dat,
     verbose = FALSE
   )
-  Base_start <- SS_readstarter(file.path(Base_out_dir, "starter.ss"),
-                             verbose = FALSE
-  )
-  Base_dat <- SS_readdat(file.path(Base_out_dir, Base_start[["datfile"]]),
-                       verbose = FALSE,
-                       section = 1
-  )
-  Base_ctl <- SS_readctl(file.path(Base_out_dir, Base_start[["ctlfile"]]),
-                       datlist = Base_dat,
-                       verbose = FALSE
-  )
+  if(use_base == TRUE){
+    Base_start <- SS_readstarter(file.path(Base_out_dir, "starter.ss"),
+                              verbose = FALSE
+    )
+    Base_dat <- SS_readdat(file.path(Base_out_dir, Base_start[["datfile"]]),
+                        verbose = FALSE,
+                        section = OM_dat_section
+    )
+    Base_ctl <- SS_readctl(file.path(Base_out_dir, Base_start[["ctlfile"]]),
+                        datlist = Base_dat,
+                        verbose = FALSE
+    )
+  }
   if (!is.null(EM_out_dir)) {
     EM_start <- SS_readstarter(file.path(EM_out_dir, "starter.ss"),
       verbose = FALSE
@@ -179,7 +186,7 @@ clean_init_mod_files <- function(OM_out_dir, EM_out_dir = NULL, Base_out_dir = N
     EM_start[["minyr_sdreport"]] <- -1
     EM_start[["maxyr_sdreport"]] <- -2
 
-    EM_dat <- SS_readdat(file.path(EM_out_dir, EM_start[["datfile"]]), verbose = FALSE)
+    EM_dat <- SS_readdat(file.path(EM_out_dir, EM_start[["datfile"]]), verbose = FALSE, section = EM_dat_section)
 
     EM_ctl <- SS_readctl(file.path(EM_out_dir, EM_start[["ctlfile"]]), datlist = EM_dat, verbose = FALSE)
   } else {
@@ -480,11 +487,13 @@ get_input_value <- function(data,
 #' @template OM_name
 #' @template OM_EM_in_dir
 #' @param EM_name Name of the EM model
+#' @param use_base Logical indicating whether to create a base model directory for the OM. Default is TRUE.
 #' @return A list with 2 named components each of length 1 characters. The
 #'  components are: OM_dir, where OM will be run, and OM_in_dir, where the model
 #'  files will be copied from.
 create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
-                            EM_name = NULL, EM_in_dir = NULL) {
+                            EM_name = NULL, EM_in_dir = NULL,
+                            use_base = TRUE) {
   # checks
   if (!is.null(out_dir)) assertive.types::assert_is_a_string(out_dir)
   if (!is.null(OM_name)) assertive.types::assert_is_a_string(OM_name)
@@ -523,17 +532,21 @@ create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
   # figure out the OM_name and create the directory within the one just created
   if (!is.null(OM_name)) {
     OM_folder_name <- paste0(OM_name, "_OM")
-    Base_folder_name <- paste0(OM_name, "_OM_Base")
+    if(use_base==TRUE) {
+      Base_folder_name <- paste0(OM_name, "_OM_Base")
+    }
   } else {
     OM_folder_name <- paste0(basename(OM_in_dir), "_OM")
-    Base_folder_name <- paste0(basename(OM_in_dir), "_OM_Base")
+    if(use_base==TRUE) {
+      Base_folder_name <- paste0(basename(OM_in_dir), "_OM_Base")
+    }
   }
   OM_out_dir <- file.path(out_dir, OM_folder_name)
   dir.create(OM_out_dir, showWarnings = FALSE)
-  
-  Base_out_dir <- file.path(out_dir, Base_folder_name)
-  dir.create(Base_out_dir, showWarnings = FALSE)
-  
+  if(use_base==TRUE){
+    Base_out_dir <- file.path(out_dir, Base_folder_name)
+    dir.create(Base_out_dir, showWarnings = FALSE)
+  }
   # Add the EM dir, if necessary
   if (is.null(EM_name) & !is.null(EM_in_dir)) EM_name <- basename(EM_in_dir)
   if (!is.null(EM_name) & is.null(EM_in_dir)) {
@@ -559,7 +572,8 @@ create_out_dirs <- function(out_dir, niter, OM_name, OM_in_dir,
   OM_mod_loc <- list(
     OM_in_dir = OM_in_dir, OM_out_dir = OM_out_dir,
     EM_in_dir = EM_in_dir, EM_out_dir = EM_out_dir,
-    Base_in_dir = OM_in_dir, Base_out_dir = Base_out_dir
+    Base_in_dir = if(use_base==TRUE) Base_in_dir else NULL, 
+    Base_out_dir = if(use_base==TRUE) Base_out_dir else NULL
   )
 }
 
